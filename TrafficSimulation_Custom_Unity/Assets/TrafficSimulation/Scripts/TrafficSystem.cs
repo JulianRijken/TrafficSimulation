@@ -1,50 +1,53 @@
-﻿// Traffic Simulation
-// https://github.com/mchrbn/unity-traffic-simulation
-
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace TrafficSimulation {
-    public class TrafficSystem : MonoBehaviour {
-        public bool hideGuizmos = false;
-        public float segDetectThresh = 0.1f;
-        public ArrowDraw arrowDrawType = ArrowDraw.ByLength;
-        public int arrowCount = 1;
-        public float arrowDistance = 5;
-        public float arrowSizeWaypoint = 1;
-        public float arrowSizeIntersection = 0.5f;
-        public float waypointSize = 0.5f;
-        public string[] collisionLayers;
-        
-        public List<Segment> segments = new List<Segment>();
-        public List<Intersection> intersections = new List<Intersection>();
-        public Segment curSegment = null;  
-        
-        public List<Waypoint> GetAllWaypoints() {
-            List<Waypoint> points = new List<Waypoint>();
+namespace TrafficSimulation.Scripts
+{
+    public class TrafficSystem : MonoBehaviour
+    {
+        public bool HideGizmos;
+        public float SegmentDetectionThreshold = 0.1f;
+        public ArrowDraw ArrowDrawType = ArrowDraw.ByLength;
+        public int ArrowCount = 1;
+        public float ArrowDistance = 5;
+        public float ArrowSizeWaypoint = 1;
+        public float ArrowSizeIntersection = 0.5f;
+        public float WaypointSize = 0.5f;
+        public string[] CollisionLayers;
 
-            foreach (Segment segment in segments) {
-                points.AddRange(segment.waypoints);
-            }
+        public List<Segment> Segments = new();
+        public List<Intersection> Intersections = new();
+        public Segment CurSegment;
+
+        public List<Waypoint> GetAllWaypoints()
+        {
+            var points = new List<Waypoint>();
+
+            foreach (var segment in Segments)
+                points.AddRange(segment.Waypoints);
 
             return points;
         }
 
-        public void SaveTrafficSystem(){
-            Intersection[] its  = GameObject.FindObjectsOfType<Intersection>();
-            foreach(Intersection it in its)
-                it.SaveIntersectionStatus();
+        public void SaveTrafficSystem()
+        {
+            var intersectionsFound = FindObjectsByType<Intersection>(FindObjectsSortMode.None);
+            foreach (var intersection in intersectionsFound)
+                intersection.SaveIntersectionStatus();
         }
 
-        public void ResumeTrafficSystem(){
-            Intersection[] its  = GameObject.FindObjectsOfType<Intersection>();
-            foreach(Intersection it in its)
-                it.ResumeIntersectionStatus();
+        public void ResumeTrafficSystem()
+        {
+            var intersectionsFound = FindObjectsByType<Intersection>(FindObjectsSortMode.None);
+            foreach (var intersection in intersectionsFound)
+                intersection.ResumeIntersectionStatus();
         }
     }
 
-    public enum ArrowDraw {
-        FixedCount, ByLength, Off
+    public enum ArrowDraw
+    {
+        FixedCount,
+        ByLength,
+        Off
     }
 }

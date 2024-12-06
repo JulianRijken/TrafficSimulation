@@ -1,96 +1,98 @@
-﻿// Traffic Simulation
-// https://github.com/mchrbn/unity-traffic-simulation
-
-using System;
+﻿using System;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace TrafficSimulation {
-    public static class TrafficSystemGizmos {
+namespace TrafficSimulation.Scripts.Editor
+{
+    public static class TrafficSystemGizmos
+    {
         //Custom Gizmo function
         [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected | GizmoType.Active)]
-        private static void DrawGizmo(TrafficSystem script, GizmoType gizmoType) {
+        private static void DrawGizmo(TrafficSystem script, GizmoType gizmoType)
+        {
             //Don't go further if we hide gizmos
-            if (script.hideGuizmos) {
+            if (script.HideGizmos)
                 return;
-            }
 
-            foreach (Segment segment in script.segments) {
+            foreach (var segment in script.Segments)
+            {
                 //Draw segment names
-                GUIStyle style = new GUIStyle {normal = {textColor = new Color(1, 0, 0)}, fontSize = 15};
+                var style = new GUIStyle { normal = { textColor = new Color(1, 0, 0) }, fontSize = 15 };
                 Handles.Label(segment.transform.position, segment.name, style);
 
                 //Draw waypoint
-                for (int j = 0; j < segment.waypoints.Count; j++) {
+                for (var j = 0; j < segment.Waypoints.Count; j++)
+                {
                     //Get current waypoint position
-                    Vector3 p = segment.waypoints[j].GetVisualPos();
+                    var p = segment.Waypoints[j].GetVisualPos();
 
                     //Draw sphere, increase color to show the direction
-                    Gizmos.color = new Color(0f, 0f, 1f, (j + 1) / (float) segment.waypoints.Count);
-                    Gizmos.DrawSphere(p, script.waypointSize);
-                    
+                    Gizmos.color = new Color(0f, 0f, 1f, (j + 1) / (float)segment.Waypoints.Count);
+                    // Gizmos.DrawSphere(p, script.WaypointSize);
+
                     //Get next waypoint position
-                    Vector3 pNext = Vector3.zero;
+                    var pNext = Vector3.zero;
 
-                    if (j < segment.waypoints.Count - 1 && segment.waypoints[j + 1] != null) {
-                        pNext = segment.waypoints[j + 1].GetVisualPos();
-                    }
+                    if (j < segment.Waypoints.Count - 1 && segment.Waypoints[j + 1] != null)
+                        pNext = segment.Waypoints[j + 1].GetVisualPos();
 
-                    if (pNext != Vector3.zero) {
-                        if (segment == script.curSegment) {
-                            Gizmos.color = new Color(1f, .3f, .1f);
-                        } else {
-                            Gizmos.color = new Color(1f, 0f, 0f);
-                        }
+                    if (pNext != Vector3.zero)
+                    {
+                        Gizmos.color = segment == script.CurSegment ? new Color(1f, .3f, .1f) : new Color(1f, 0f, 0f);
 
                         //Draw connection line of the two waypoints
                         Gizmos.DrawLine(p, pNext);
 
                         //Set arrow count based on arrowDrawType
-                        int arrows = GetArrowCount(p, pNext, script);
+                        var arrows = GetArrowCount(p, pNext, script);
 
                         //Draw arrows
-                        for (int i = 1; i < arrows + 1; i++) {
-                            Vector3 point = Vector3.Lerp(p, pNext, (float) i / (arrows + 1));
-                            DrawArrow(point, p - pNext, script.arrowSizeWaypoint);
+                        for (var i = 1; i < arrows + 1; i++)
+                        {
+                            var point = Vector3.Lerp(p, pNext, (float)i / (arrows + 1));
+                            DrawArrow(point, p - pNext, script.ArrowSizeWaypoint);
                         }
                     }
                 }
 
                 //Draw line linking segments
-                foreach (Segment nextSegment in segment.nextSegments) {
-                    if (nextSegment != null){
-                        Vector3 p1 = segment.waypoints.Last().GetVisualPos();
-                        Vector3 p2 = nextSegment.waypoints.First().GetVisualPos();
+                foreach (var nextSegment in segment.ConnectedSegments)
+                {
+                    if (nextSegment != null)
+                    {
+                        var p1 = segment.Waypoints.Last().GetVisualPos();
+                        var p2 = nextSegment.Waypoints.First().GetVisualPos();
 
                         Gizmos.color = new Color(1f, 1f, 0f);
                         Gizmos.DrawLine(p1, p2);
 
-                        if (script.arrowDrawType != ArrowDraw.Off) {
-                            DrawArrow((p1 + p2) / 2f, p1 - p2, script.arrowSizeIntersection);
-                        }
+                        if (script.ArrowDrawType != ArrowDraw.Off)
+                            DrawArrow((p1 + p2) / 2f, p1 - p2, script.ArrowSizeIntersection);
                     }
                 }
             }
         }
 
-        private static void DrawArrow(Vector3 point, Vector3 forward, float size) {
+        private static void DrawArrow(Vector3 point, Vector3 forward, float size)
+        {
             forward = forward.normalized * size;
-            Vector3 left = Quaternion.Euler(0, 45, 0) * forward;
-            Vector3 right = Quaternion.Euler(0, -45, 0) * forward;
+            var left = Quaternion.Euler(0, 45, 0) * forward;
+            var right = Quaternion.Euler(0, -45, 0) * forward;
 
             Gizmos.DrawLine(point, point + left);
             Gizmos.DrawLine(point, point + right);
         }
 
-        private static int GetArrowCount(Vector3 pointA, Vector3 pointB, TrafficSystem script) {
-            switch (script.arrowDrawType) {
+        private static int GetArrowCount(Vector3 pointA, Vector3 pointB, TrafficSystem script)
+        {
+            switch (script.ArrowDrawType)
+            {
                 case ArrowDraw.FixedCount:
-                    return script.arrowCount;
+                    return script.ArrowCount;
                 case ArrowDraw.ByLength:
                     //Minimum of one arrow
-                    return Mathf.Max(1, (int) (Vector3.Distance(pointA, pointB) / script.arrowDistance));
+                    return Mathf.Max(1, (int)(Vector3.Distance(pointA, pointB) / script.ArrowDistance));
                 case ArrowDraw.Off:
                     return 0;
                 default:

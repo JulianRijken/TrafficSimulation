@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1046904597629226010}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Raycast Anchor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3093301329792646395}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8150248663203606117}
   - component: {fileID: 8612805110212084436}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Back Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,7 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6954830530314768034}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Wheels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 4296726880473500352}
   - component: {fileID: 6336579341526845250}
   - component: {fileID: 1551774212916044503}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Car Coupe
   m_TagString: AutonomousVehicle
   m_Icon: {fileID: 0}
@@ -197,7 +197,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4641437766986917850}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -41, y: 1.589, z: -19.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -294,7 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 0}
-  _waypointThresh: 2.5
+  _waypointThresh: 1
   _raycastAnchor: {fileID: 1046904597629226010}
   _raycastLength: 3
   _raySpacing: 3
@@ -313,7 +313,7 @@ GameObject:
   - component: {fileID: 2881311312535256591}
   - component: {fileID: 2866577924366486552}
   - component: {fileID: 8225258592631713617}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Car Coupe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -403,7 +403,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2987681565339817373}
   - component: {fileID: 2057157342103458013}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Front Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8086894149202824528}
   - component: {fileID: 2922591316350327168}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Back Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,7 +545,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6645790460351945064}
   - component: {fileID: 466671432288496723}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Convex
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -599,7 +599,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1266962332511540204}
   - component: {fileID: 2496708252368434149}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: Front Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}

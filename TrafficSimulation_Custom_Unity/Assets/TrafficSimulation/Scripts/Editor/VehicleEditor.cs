@@ -1,14 +1,11 @@
-﻿// Traffic Simulation
-// https://github.com/mchrbn/unity-traffic-simulation
-
-using TrafficSimulation.Scripts;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
-namespace TrafficSimulation{
-    public class VehicleEditor : Editor
+namespace TrafficSimulation.Scripts.Editor
+{
+    public class VehicleEditor : UnityEditor.Editor
     {
-        [MenuItem("Component/Traffic Simulation/Setup Vehicle")]
+        [MenuItem("GameObject/Traffic Simulation/Setup Vehicle")]
         private static void SetupVehicle(){
             EditorHelper.SetUndoGroup("Setup Vehicle");
 
@@ -21,14 +18,15 @@ namespace TrafficSimulation{
             VehicleAI veAi = EditorHelper.AddComponent<VehicleAI>(selected);
             WheelDrive wheelDrive = EditorHelper.AddComponent<WheelDrive>(selected);
 
-            TrafficSystem ts = GameObject.FindObjectOfType<TrafficSystem>();
+            var trafficSystem = GameObject.FindFirstObjectByType<TrafficSystem>();
 
             //Configure the vehicle AI script with created objects
             anchor.transform.localPosition = Vector3.zero;
             anchor.transform.localRotation = Quaternion.Euler(Vector3.zero);
             veAi._raycastAnchor = anchor.transform;
 
-            if(ts != null) veAi._trafficSystem = ts;
+            if(trafficSystem != null) 
+                veAi._trafficSystem = trafficSystem;
 
             //Create layer AutonomousVehicle if it doesn't exist
             EditorHelper.CreateLayer("AutonomousVehicle");
