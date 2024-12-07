@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -26,15 +27,15 @@ namespace TrafficSimulation
             _timeScaleInfo.SetInfoText(Time.timeScale.ToString("F2"));
             _collisionsInfo.SetInfoText(_collisionCount.ToString());
 
-            // var carCount = FindObjectsByType<VehicleAI>(FindObjectsSortMode.None).Length;
-            // _carCountInfo.SetInfoText(carCount.ToString());
-            //
-            // var vehicles = FindObjectsByType<Vehicle>(FindObjectsSortMode.None);
-            // if (vehicles.Length > 0)
-            // {
-            //     var averageSpeed = vehicles.Sum(vehicle => vehicle.GetSpeed()) / vehicles.Length;
-            //     _averageSpeedInfo.SetInfoText(averageSpeed.ToString("F2"));
-            // }
+            var carCount = FindObjectsByType<CarBehaviour>(FindObjectsSortMode.None).Length;
+            _carCountInfo.SetInfoText(carCount.ToString());
+
+            var vehicles = FindObjectsByType<CarBehaviour>(FindObjectsSortMode.None);
+            if (vehicles.Length > 0)
+            {
+                var averageSpeed = vehicles.Average(vehicle => vehicle.ForwardSpeedKPH);
+                _averageSpeedInfo.SetInfoText(averageSpeed.ToString("F2") + " km/h");
+            }
         }
 
         private void IncrementCollisionCount()

@@ -19,6 +19,19 @@ namespace TrafficSimulation
 
         [HideInInspector] public List<Segment> Segments = new();
         [HideInInspector] public List<Waypoint> Waypoints = new();
+
+
+        public Waypoint GetNextWaypoint(Waypoint currentWaypoint)
+        {
+            if (currentWaypoint.NextWaypoint != null)
+                return currentWaypoint.NextWaypoint;
+
+            var connectedSegments = currentWaypoint.Segment.ConnectedSegments;
+            if (connectedSegments.Count > 0)
+                return connectedSegments[Random.Range(0, connectedSegments.Count)].Waypoints[0];
+
+            return null;
+        }
     }
 
     public enum ArrowDrawType

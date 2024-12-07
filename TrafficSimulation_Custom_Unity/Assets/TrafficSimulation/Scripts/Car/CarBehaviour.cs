@@ -17,8 +17,10 @@ namespace TrafficSimulation
         [Header("Engine")] [SerializeField] [Range(0.0f, 30000.0f)]
         private float _torqueScale = 10000.0f;
 
-        [SerializeField] private float _topForwardsKPH = 20.0f;
-        [SerializeField] private float _topBackwardsKPH = 5.0f;
+        [SerializeField] private float _topForwardsKPH = 80.0f;
+        [SerializeField] private float _topBackwardsKPH = 30.0f;
+
+
         [SerializeField] private AnimationCurve _torqueOverSpeed;
 
         [Header("Drag")] [SerializeField] private float _maxDrag = 1.0f;
@@ -34,6 +36,20 @@ namespace TrafficSimulation
 
 
         public float Velocity => _rigidbody.linearVelocity.magnitude;
+
+        public float NormalizedSpeed => Mathf.Abs(Vector3.Dot(_rigidbody.linearVelocity, transform.forward)) /
+                                        (_topForwardsKPH / 3.6f);
+
+        public float ForwardSpeed => Vector3.Dot(_rigidbody.linearVelocity, transform.forward);
+
+        public float ForwardSpeedKPH => Vector3.Dot(_rigidbody.linearVelocity, transform.forward) * 3.6f;
+
+        public float NormalizedForwardSpeed =>
+            Mathf.Clamp01(ForwardSpeed / (_topForwardsKPH / 3.6f));
+
+        public float NormalizedBackwardsSpeed =>
+            Mathf.Clamp01(Vector3.Dot(_rigidbody.linearVelocity, -transform.forward) / (_topBackwardsKPH / 3.6f));
+
 
         public float SteerWheelInput
         {
@@ -55,15 +71,6 @@ namespace TrafficSimulation
 
         public bool IsHandBrakeEngaged { get; set; }
 
-
-        private float NormalizedSpeed => Mathf.Abs(Vector3.Dot(_rigidbody.linearVelocity, transform.forward)) /
-                                         (_topForwardsKPH / 3.6f);
-
-        private float NormalizedForwardSpeed =>
-            Mathf.Clamp01(Vector3.Dot(_rigidbody.linearVelocity, transform.forward) / (_topForwardsKPH / 3.6f));
-
-        private float NormalizedBackwardsSpeed =>
-            Mathf.Clamp01(Vector3.Dot(_rigidbody.linearVelocity, -transform.forward) / (_topBackwardsKPH / 3.6f));
 
         private void Awake()
         {

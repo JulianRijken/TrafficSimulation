@@ -101,8 +101,10 @@ namespace TrafficSimulation.Scripts.Editor
 
             //Set the current hovering waypoint
             if (_lastWaypoint == null)
+            {
                 _lastWaypoint = _trafficSystem.Waypoints.FirstOrDefault(i =>
                     EditorHelper.SphereHit(i.transform.position, _trafficSystem.WaypointSize, ray));
+            }
 
             //Update the current segment to the currently interacting one
             if (_lastWaypoint != null && e.type == EventType.MouseDown)
@@ -186,37 +188,39 @@ namespace TrafficSimulation.Scripts.Editor
         private void RestructureSystem()
         {
             //Rename and restructure segments and waypoints
-            var nSegments = new List<Segment>();
-            var itSeg = 0;
-            foreach (Transform tS in _trafficSystem.transform.GetChild(0).transform)
+            var allSegments = new List<Segment>();
+            var allWaypoints = new List<Waypoint>();
+            var segmentIndex = 0;
+            foreach (Transform segmentsTransform in _trafficSystem.transform.GetChild(0).transform)
             {
-                var segment = tS.GetComponent<Segment>();
+                var segment = segmentsTransform.GetComponent<Segment>();
                 if (segment != null)
                 {
-                    var nWaypoints = new List<Waypoint>();
-                    segment.Id = itSeg;
-                    segment.gameObject.name = "Segment-" + itSeg;
+                    var waypoints = new List<Waypoint>();
+                    segment.Id = segmentIndex;
+                    segment.gameObject.name = "Segment-" + segmentIndex;
 
                     var itWp = 0;
-                    foreach (Transform tW in segment.gameObject.transform)
+                    foreach (Transform child in segment.gameObject.transform)
                     {
-                        var waypoint = tW.GetComponent<Waypoint>();
+                        var waypoint = child.GetComponent<Waypoint>();
                         if (waypoint != null)
                         {
                             waypoint.Refresh(itWp, segment);
-                            nWaypoints.Add(waypoint);
+                            waypoints.Add(waypoint);
                             itWp++;
                         }
                     }
 
-                    segment.Waypoints = nWaypoints;
-                    nSegments.Add(segment);
-                    itSeg++;
+                    segment.Waypoints = waypoints;
+                    allWaypoints.AddRange(waypoints);
+                    allSegments.Add(segment);
+                    segmentIndex++;
                 }
             }
 
             //Check if next segments still exist
-            foreach (var segment in nSegments)
+            foreach (var segment in allSegments)
             {
                 var nNextSegments = new List<Segment>();
                 foreach (var nextSeg in segment.ConnectedSegments)
@@ -228,7 +232,16 @@ namespace TrafficSimulation.Scripts.Editor
                 segment.ConnectedSegments = nNextSegments;
             }
 
-            _trafficSystem.Segments = nSegments;
+            // Update waypoint next waypoints
+            foreach (var segment in allSegments)
+            {
+                for (var waypointIndex = segment.Waypoints.Count - 2; waypointIndex >= 0; waypointIndex--)
+                    segment.Waypoints[waypointIndex].NextWaypoint = segment.Waypoints[waypointIndex + 1];
+            }
+
+
+            _trafficSystem.Segments = allSegments;
+            _trafficSystem.Waypoints = allWaypoints;
 
 
             //Tell Unity that something changed and the scene has to be saved

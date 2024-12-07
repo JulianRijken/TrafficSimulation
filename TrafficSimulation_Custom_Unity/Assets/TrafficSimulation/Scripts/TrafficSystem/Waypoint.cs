@@ -5,6 +5,7 @@ namespace TrafficSimulation
     public class Waypoint : MonoBehaviour
     {
         [HideInInspector] public Segment Segment;
+        [HideInInspector] public Waypoint NextWaypoint;
 
         public void Refresh(int newId, Segment newSegment)
         {
