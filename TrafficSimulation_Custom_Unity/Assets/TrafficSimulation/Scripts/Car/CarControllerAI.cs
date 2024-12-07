@@ -1,10 +1,11 @@
 using UnityEngine;
 
-namespace TrafficSimulation.Scripts.Car
+namespace TrafficSimulation
 {
     public class CarControllerAI : MonoBehaviour
     {
         [SerializeField] private CarBehaviour _carBehaviour;
+        [SerializeField] private TrafficSystem _trafficSystem;
 
         private void Update()
         {

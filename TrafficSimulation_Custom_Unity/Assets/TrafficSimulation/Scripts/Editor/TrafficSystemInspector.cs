@@ -5,7 +5,7 @@ namespace TrafficSimulation.Scripts.Editor
     public static class TrafficSystemInspector
     {
         //Whole Inspector layout
-        public static void DrawInspector(TrafficSystem.TrafficSystem trafficSystem, SerializedObject serializedObject,
+        public static void DrawInspector(TrafficSystem trafficSystem, SerializedObject serializedObject,
             out bool restructureSystem)
         {
             //-- Gizmo settings

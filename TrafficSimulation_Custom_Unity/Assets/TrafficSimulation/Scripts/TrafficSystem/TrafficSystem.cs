@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace TrafficSimulation.Scripts.TrafficSystem
+namespace TrafficSimulation
 {
     public class TrafficSystem : MonoBehaviour
     {

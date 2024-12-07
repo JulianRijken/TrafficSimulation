@@ -1,5 +1,4 @@
 ﻿using System;
-using TrafficSimulation.Scripts.TrafficSystem;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace TrafficSimulation.Scripts.Editor
             Undo.SetCurrentGroupName(label);
         }
 
-        public static void BeginUndoGroup(string undoName, TrafficSystem.TrafficSystem trafficSystem)
+        public static void BeginUndoGroup(string undoName, TrafficSystem trafficSystem)
         {
             //Create new Undo Group to collect all changes in one Undo
             Undo.SetCurrentGroupName(undoName);
@@ -151,7 +150,7 @@ namespace TrafficSimulation.Scripts.Editor
             return GUILayout.Button(label);
         }
 
-        public static void DrawArrowTypeSelection(TrafficSystem.TrafficSystem trafficSystem)
+        public static void DrawArrowTypeSelection(TrafficSystem trafficSystem)
         {
             trafficSystem.ArrowDrawType =
                 (ArrowDrawType)EditorGUILayout.EnumPopup("Arrow Draw Type", trafficSystem.ArrowDrawType);

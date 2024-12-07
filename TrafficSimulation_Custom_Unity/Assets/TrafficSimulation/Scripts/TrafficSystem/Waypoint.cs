@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TrafficSimulation.Scripts.TrafficSystem
+namespace TrafficSimulation
 {
     public class Waypoint : MonoBehaviour
     {

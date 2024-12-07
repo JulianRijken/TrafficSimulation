@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace TrafficSimulation.Scripts.Car
+namespace TrafficSimulation
 {
     public class CarController : MonoBehaviour
     {

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TrafficSimulation.Scripts.TrafficSystem;
 using UnityEditor;
 using UnityEngine;
 
 namespace TrafficSimulation.Scripts.Editor
 {
-    [CustomEditor(typeof(TrafficSystem.TrafficSystem))]
+    [CustomEditor(typeof(TrafficSystem))]
     public class TrafficSystemEditor : UnityEditor.Editor
     {
         private Vector3 _lastPoint;
@@ -14,11 +13,11 @@ namespace TrafficSimulation.Scripts.Editor
 
         //References for moving a waypoint
         private Vector3 _startPosition;
-        private TrafficSystem.TrafficSystem _trafficSystem;
+        private TrafficSystem _trafficSystem;
 
         private void OnEnable()
         {
-            _trafficSystem = target as TrafficSystem.TrafficSystem;
+            _trafficSystem = target as TrafficSystem;
         }
 
         private void OnSceneGUI()
@@ -120,7 +119,7 @@ namespace TrafficSimulation.Scripts.Editor
 
             var systemGameObject = EditorHelper.CreateGameObject("Traffic System");
             systemGameObject.transform.position = Vector3.zero;
-            EditorHelper.AddComponent<TrafficSystem.TrafficSystem>(systemGameObject);
+            EditorHelper.AddComponent<TrafficSystem>(systemGameObject);
 
             var segmentsGameObject = EditorHelper.CreateGameObject("Segments", systemGameObject.transform);
             segmentsGameObject.transform.position = Vector3.zero;

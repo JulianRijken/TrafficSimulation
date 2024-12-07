@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
-using TrafficSimulation.Scripts.TrafficSystem;
 using UnityEditor;
 using UnityEngine;
 
-namespace TrafficSimulation.Scripts.Editor
+namespace TrafficSimulation
 {
     public static class TrafficSystemGizmos
     {
         //Custom Gizmo function
         [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected | GizmoType.Active)]
-        private static void DrawGizmo(TrafficSystem.TrafficSystem script, GizmoType gizmoType)
+        private static void DrawGizmo(TrafficSystem script, GizmoType gizmoType)
         {
             //Don't go further if we hide gizmos
             if (script.HideGizmos)
@@ -85,7 +84,7 @@ namespace TrafficSimulation.Scripts.Editor
             Gizmos.DrawLine(point, point + right);
         }
 
-        private static int GetArrowCount(Vector3 pointA, Vector3 pointB, TrafficSystem.TrafficSystem script)
+        private static int GetArrowCount(Vector3 pointA, Vector3 pointB, TrafficSystem script)
         {
             switch (script.ArrowDrawType)
             {

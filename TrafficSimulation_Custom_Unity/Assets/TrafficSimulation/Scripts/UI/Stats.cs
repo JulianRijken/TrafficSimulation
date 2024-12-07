@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TrafficSimulation.Scripts.UI
+namespace TrafficSimulation
 {
     public class Stats : MonoBehaviour
     {
