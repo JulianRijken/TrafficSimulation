@@ -108,9 +108,9 @@ namespace TrafficSimulation.Scripts.Editor
             //Update the current segment to the currently interacting one
             if (_lastWaypoint != null && e.type == EventType.MouseDown)
                 _trafficSystem.CurSegment = _lastWaypoint.Segment;
-
             //Reset current waypoint
-            else if (_lastWaypoint != null && e.type == EventType.MouseMove) _lastWaypoint = null;
+            else if (_lastWaypoint != null && e.type == EventType.MouseMove)
+                _lastWaypoint = null;
         }
 
         [MenuItem("GameObject/Traffic Simulation/Create Traffic Objects")]
@@ -144,7 +144,6 @@ namespace TrafficSimulation.Scripts.Editor
             //Rename waypoints if some have been deleted
             if (restructureSystem)
                 RestructureSystem();
-
 
             //Repaint the scene if values have been edited
             if (EditorGUI.EndChangeCheck())
