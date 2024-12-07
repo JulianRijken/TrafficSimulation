@@ -28,8 +28,8 @@ namespace TrafficSimulation.Scripts.Editor
                     var p = segment.Waypoints[j].GetVisualPos();
 
                     //Draw sphere, increase color to show the direction
-                    Gizmos.color = new Color(0f, 0f, 1f, (j + 1) / (float)segment.Waypoints.Count);
-                    // Gizmos.DrawSphere(p, script.WaypointSize);
+                    Gizmos.color = new Color(1f, 1f, 1f, (j + 1) / (float)segment.Waypoints.Count);
+                    Gizmos.DrawSphere(p, script.WaypointSize);
 
                     //Get next waypoint position
                     var pNext = Vector3.zero;

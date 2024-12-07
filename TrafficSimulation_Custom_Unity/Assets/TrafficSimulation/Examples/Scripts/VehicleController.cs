@@ -1,22 +1,24 @@
-﻿using UnityEngine;
-using TrafficSimulation;
+﻿using TrafficSimulation.Scripts;
+using UnityEngine;
 
-public class VehicleController : MonoBehaviour
+namespace TrafficSimulation.Examples.Scripts
 {
-
-    WheelDrive wheelDrive;
-
-    void Start()
+    public class VehicleController : MonoBehaviour
     {
-        wheelDrive = this.GetComponent<WheelDrive>();
-    }
+        private Vehicle _vehicle;
 
-    void Update()
-    {
-        float acc = Input.GetAxis("Vertical");
-        float steering = Input.GetAxis("Horizontal");
-        float brake = Input.GetKey(KeyCode.Space) ? 1 : 0;
+        private void Start()
+        {
+            _vehicle = GetComponent<Vehicle>();
+        }
 
-        wheelDrive.Move(acc, steering, brake);
+        private void Update()
+        {
+            var acc = Input.GetAxis("Vertical");
+            var steering = Input.GetAxis("Horizontal");
+            float brake = Input.GetKey(KeyCode.Space) ? 1 : 0;
+
+            _vehicle.Move(acc, steering, brake);
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -16,7 +17,7 @@ namespace TrafficSimulation.Scripts
         SlowDown
     }
 
-    [RequireComponent(typeof(WheelDrive))]
+    [RequireComponent(typeof(Vehicle))]
     public class VehicleAI : MonoBehaviour
     {
         [Header("Traffic System")] [Tooltip("Current active traffic system")]
@@ -50,16 +51,16 @@ namespace TrafficSimulation.Scripts
 
         private float _initMaxSpeed;
         private int _pastTargetSegment = -1;
-        private WheelDrive _wheelDrive;
+        private Vehicle _vehicle;
 
         private void Start()
         {
             if (_trafficSystem == null)
                 _trafficSystem = FindFirstObjectByType<TrafficSystem>();
 
-            _wheelDrive = GetComponent<WheelDrive>();
+            _vehicle = GetComponent<Vehicle>();
 
-            _initMaxSpeed = _wheelDrive.maxSpeed;
+            _initMaxSpeed = _vehicle.MaxSpeed;
             UpdateWaypoint();
         }
 
@@ -70,6 +71,12 @@ namespace TrafficSimulation.Scripts
 
             WaypointChecker();
             MoveVehicle();
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.layer == LayerMask.NameToLayer("AutonomousVehicle"))
+                OnVehicleCollision?.Invoke();
         }
 
         private void OnDrawGizmos()
@@ -85,6 +92,7 @@ namespace TrafficSimulation.Scripts
             Gizmos.DrawLine(transform.position, waypoint.transform.position);
         }
 
+        public static event Action OnVehicleCollision;
 
         private void WaypointChecker()
         {
@@ -124,7 +132,7 @@ namespace TrafficSimulation.Scripts
             float acc = 1;
             float brake = 0;
             float steering = 0;
-            _wheelDrive.maxSpeed = _initMaxSpeed;
+            _vehicle.MaxSpeed = _initMaxSpeed;
 
             //Calculate if there is a planned turn
             var targetTransform = _trafficSystem.Segments[_currentTarget.segmentIndex]
@@ -141,7 +149,7 @@ namespace TrafficSimulation.Scripts
             {
                 acc = 0;
                 brake = 1;
-                _wheelDrive.maxSpeed = Mathf.Min(_wheelDrive.maxSpeed / 2f, 5f);
+                _vehicle.MaxSpeed = Mathf.Min(_vehicle.MaxSpeed / 2f, 5f);
             }
             else
             {
@@ -154,7 +162,7 @@ namespace TrafficSimulation.Scripts
 
                 //If planned to steer, decrease the speed
                 if (futureSteering > .3f || futureSteering < -.3f)
-                    _wheelDrive.maxSpeed = Mathf.Min(_wheelDrive.maxSpeed, _wheelDrive.steeringSpeedMax);
+                    _vehicle.MaxSpeed = Mathf.Min(_vehicle.MaxSpeed, _vehicle.SteeringSpeedMax);
 
                 //2. Check if there are obstacles which are detected by the radar
                 float hitDist;
@@ -163,8 +171,8 @@ namespace TrafficSimulation.Scripts
                 //Check if we hit something
                 if (obstacle != null)
                 {
-                    WheelDrive otherVehicle = null;
-                    otherVehicle = obstacle.GetComponent<WheelDrive>();
+                    Vehicle otherVehicle = null;
+                    otherVehicle = obstacle.GetComponent<Vehicle>();
 
                     ///////////////////////////////////////////////////////////////
                     //Differenciate between other vehicles AI and generic obstacles (including controlled vehicle, if any)
@@ -174,10 +182,10 @@ namespace TrafficSimulation.Scripts
                         var dotFront = Vector3.Dot(transform.forward, otherVehicle.transform.forward);
 
                         //If detected front vehicle max speed is lower than ego vehicle, then decrease ego vehicle max speed
-                        if (otherVehicle.maxSpeed < _wheelDrive.maxSpeed && dotFront > .8f)
+                        if (otherVehicle.MaxSpeed < _vehicle.MaxSpeed && dotFront > .8f)
                         {
-                            var ms = Mathf.Max(_wheelDrive.GetSpeedMS(otherVehicle.maxSpeed) - .5f, .1f);
-                            _wheelDrive.maxSpeed = _wheelDrive.GetSpeedUnit(ms);
+                            var ms = Mathf.Max(_vehicle.GetSpeedMS(otherVehicle.MaxSpeed) - .5f, .1f);
+                            _vehicle.MaxSpeed = _vehicle.GetSpeedUnit(ms);
                         }
 
                         //If the two vehicles are too close, and facing the same direction, brake the ego vehicle
@@ -185,7 +193,7 @@ namespace TrafficSimulation.Scripts
                         {
                             acc = 0;
                             brake = 1;
-                            _wheelDrive.maxSpeed = Mathf.Max(_wheelDrive.maxSpeed / 2f, _wheelDrive.minSpeed);
+                            _vehicle.MaxSpeed = Mathf.Max(_vehicle.MaxSpeed / 2f, _vehicle.MinSpeed);
                         }
 
                         //If the two vehicles are too close, and not facing same direction, slight make the ego vehicle go backward
@@ -193,7 +201,7 @@ namespace TrafficSimulation.Scripts
                         {
                             acc = -.3f;
                             brake = 0f;
-                            _wheelDrive.maxSpeed = Mathf.Max(_wheelDrive.maxSpeed / 2f, _wheelDrive.minSpeed);
+                            _vehicle.MaxSpeed = Mathf.Max(_vehicle.MaxSpeed / 2f, _vehicle.MinSpeed);
 
                             //Check if the vehicle we are close to is located on the right or left then apply according steering to try to make it move
                             var dotRight = Vector3.Dot(transform.forward, otherVehicle.transform.right);
@@ -223,7 +231,7 @@ namespace TrafficSimulation.Scripts
                         {
                             acc = 0;
                             brake = 1;
-                            _wheelDrive.maxSpeed = Mathf.Max(_wheelDrive.maxSpeed / 2f, _wheelDrive.minSpeed);
+                            _vehicle.MaxSpeed = Mathf.Max(_vehicle.MaxSpeed / 2f, _vehicle.MinSpeed);
                         }
 
                         //Otherwise if getting relatively close decrease speed
@@ -247,7 +255,7 @@ namespace TrafficSimulation.Scripts
             }
 
             //Move the car
-            _wheelDrive.Move(acc, steering, brake);
+            _vehicle.Move(acc, steering, brake);
         }
 
 
