@@ -6,7 +6,7 @@ PhysicMaterial:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SaarMobile
+  m_Name: BasicCarBody
   dynamicFriction: 0.2
   staticFriction: 0.5
   bounciness: 0.4
