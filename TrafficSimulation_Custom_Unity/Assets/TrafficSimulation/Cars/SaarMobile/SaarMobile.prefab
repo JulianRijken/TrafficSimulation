@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5141284589344598521}
   - component: {fileID: 5783046334133117959}
   - component: {fileID: 6855939628513559686}
-  - component: {fileID: 222934773627856755}
   m_Layer: 7
   m_Name: SaarMobile
   m_TagString: Untagged
@@ -87,7 +86,7 @@ MonoBehaviour:
   _breakingWheels:
   - {fileID: 4828809320104326939}
   - {fileID: 1833113719339675239}
-  _steerSpeed: 0.25
+  _steerSpeed: 0.1
   _steerOverSpeed:
     serializedVersion: 2
     m_Curve:
@@ -182,19 +181,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &222934773627856755
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598603097554462743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f64359390d2496c4e9702735e2ad76a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _car: {fileID: 6855939628513559686}
 --- !u!1001 &678054655012167901
 PrefabInstance:
   m_ObjectHideFlags: 0

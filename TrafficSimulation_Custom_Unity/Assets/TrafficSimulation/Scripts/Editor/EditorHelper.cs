@@ -1,12 +1,9 @@
-﻿// Traffic Simulation
-// https://github.com/mchrbn/unity-traffic-simulation
-
-using System;
-using TrafficSimulation.Scripts;
+﻿using System;
+using TrafficSimulation.Scripts.TrafficSystem;
 using UnityEditor;
 using UnityEngine;
 
-namespace TrafficSimulation
+namespace TrafficSimulation.Scripts.Editor
 {
     public static class EditorHelper
     {
@@ -16,7 +13,7 @@ namespace TrafficSimulation
             Undo.SetCurrentGroupName(label);
         }
 
-        public static void BeginUndoGroup(string undoName, TrafficSystem trafficSystem)
+        public static void BeginUndoGroup(string undoName, TrafficSystem.TrafficSystem trafficSystem)
         {
             //Create new Undo Group to collect all changes in one Undo
             Undo.SetCurrentGroupName(undoName);
@@ -106,6 +103,81 @@ namespace TrafficSimulation
 
             foreach (var child in gameObject.GetComponentsInChildren(typeof(Transform), true))
                 child.gameObject.layer = layer;
+        }
+
+        public static void Label(string label)
+        {
+            EditorGUILayout.LabelField(label);
+        }
+
+        public static void Header(string label)
+        {
+            EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
+        }
+
+        public static void Toggle(string label, ref bool toggle)
+        {
+            toggle = EditorGUILayout.Toggle(label, toggle);
+        }
+
+        public static void IntField(string label, ref int value)
+        {
+            value = EditorGUILayout.IntField(label, value);
+        }
+
+        public static void IntField(string label, ref int value, int min, int max)
+        {
+            value = Mathf.Clamp(EditorGUILayout.IntField(label, value), min, max);
+        }
+
+        public static void FloatField(string label, ref float value)
+        {
+            value = EditorGUILayout.FloatField(label, value);
+        }
+
+        public static void PropertyField(string label, string value, SerializedObject serializedObject)
+        {
+            var extra = serializedObject.FindProperty(value);
+            EditorGUILayout.PropertyField(extra, new GUIContent(label), true);
+        }
+
+        public static void HelpBox(string content)
+        {
+            EditorGUILayout.HelpBox(content, MessageType.Info);
+        }
+
+        public static bool Button(string label)
+        {
+            return GUILayout.Button(label);
+        }
+
+        public static void DrawArrowTypeSelection(TrafficSystem.TrafficSystem trafficSystem)
+        {
+            trafficSystem.ArrowDrawType =
+                (ArrowDrawType)EditorGUILayout.EnumPopup("Arrow Draw Type", trafficSystem.ArrowDrawType);
+            EditorGUI.indentLevel++;
+
+            switch (trafficSystem.ArrowDrawType)
+            {
+                case ArrowDrawType.FixedCount:
+                    IntField("Count", ref trafficSystem.ArrowCount, 1, int.MaxValue);
+                    break;
+                case ArrowDrawType.ByLength:
+                    FloatField("Distance Between Arrows", ref trafficSystem.ArrowDistance);
+                    break;
+                case ArrowDrawType.Off:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (trafficSystem.ArrowDrawType != ArrowDrawType.Off)
+            {
+                FloatField("Arrow Size Waypoint", ref trafficSystem.ArrowSizeWaypoint);
+                FloatField("Arrow Size Intersection", ref trafficSystem.ArrowSizeIntersection);
+            }
+
+            EditorGUI.indentLevel--;
         }
     }
 }

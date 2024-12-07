@@ -1,0 +1,30 @@
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+namespace TrafficSimulation.Scripts.TrafficSystem
+{
+    public class TrafficSystem : MonoBehaviour
+    {
+        public bool HideGizmos;
+        public float SegmentDetectionThreshold = 0.1f;
+        public ArrowDrawType ArrowDrawType = ArrowDrawType.FixedCount;
+        public int ArrowCount = 1;
+        public float ArrowDistance = 5;
+        public float ArrowSizeWaypoint = 1;
+        public float ArrowSizeIntersection = 0.5f;
+        public float WaypointSize = 0.5f;
+        public string[] CollisionLayers;
+
+        public Segment CurSegment;
+
+        [HideInInspector] public List<Segment> Segments = new();
+        [HideInInspector] public List<Waypoint> Waypoints = new();
+    }
+
+    public enum ArrowDrawType
+    {
+        FixedCount,
+        ByLength,
+        Off
+    }
+}

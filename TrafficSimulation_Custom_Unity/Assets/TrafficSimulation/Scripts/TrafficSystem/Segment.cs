@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TrafficSimulation.Scripts.TrafficSystem;
 using UnityEngine;
 
 namespace TrafficSimulation.Scripts
@@ -13,7 +14,7 @@ namespace TrafficSimulation.Scripts
         public bool IsOnSegment(Vector3 position)
         {
             // TODO: Find a more efficient way get the TrafficSystem component
-            var trafficSystem = GetComponentInParent<TrafficSystem>();
+            var trafficSystem = GetComponentInParent<TrafficSystem.TrafficSystem>();
 
             for (var i = 0; i < Waypoints.Count - 1; i++)
             {

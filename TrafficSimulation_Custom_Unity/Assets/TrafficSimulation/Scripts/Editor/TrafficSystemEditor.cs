@@ -1,23 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TrafficSimulation.Scripts.TrafficSystem;
 using UnityEditor;
 using UnityEngine;
 
 namespace TrafficSimulation.Scripts.Editor
 {
-    [CustomEditor(typeof(TrafficSystem))]
-    public class TrafficEditor : UnityEditor.Editor
+    [CustomEditor(typeof(TrafficSystem.TrafficSystem))]
+    public class TrafficSystemEditor : UnityEditor.Editor
     {
         private Vector3 _lastPoint;
         private Waypoint _lastWaypoint;
 
         //References for moving a waypoint
         private Vector3 _startPosition;
-        private TrafficSystem _trafficSystem;
+        private TrafficSystem.TrafficSystem _trafficSystem;
 
         private void OnEnable()
         {
-            _trafficSystem = target as TrafficSystem;
+            _trafficSystem = target as TrafficSystem.TrafficSystem;
         }
 
         private void OnSceneGUI()
@@ -53,16 +54,6 @@ namespace TrafficSimulation.Scripts.Editor
                     //Close Undo Group
                     Undo.CollapseUndoOperations(Undo.GetCurrentGroup());
                 }
-
-                //Create an intersection type
-                else if (e.alt)
-                {
-                    EditorHelper.BeginUndoGroup("Add Intersection", _trafficSystem);
-                    AddIntersection(hit.point);
-
-                    //Close Undo Group
-                    Undo.CollapseUndoOperations(Undo.GetCurrentGroup());
-                }
             }
 
             //Set waypoint system as the selected gameobject in hierarchy
@@ -72,7 +63,7 @@ namespace TrafficSimulation.Scripts.Editor
             if (_lastWaypoint != null)
             {
                 //Uses a endless plain for the ray to hit
-                var plane = new Plane(Vector3.up.normalized, _lastWaypoint.GetVisualPos());
+                var plane = new Plane(Vector3.up.normalized, _lastWaypoint.transform.position);
                 plane.Raycast(ray, out var dst);
                 var hitPoint = ray.GetPoint(dst);
 
@@ -102,7 +93,7 @@ namespace TrafficSimulation.Scripts.Editor
                 }
 
                 //Draw a Sphere
-                Handles.SphereHandleCap(0, _lastWaypoint.GetVisualPos(), Quaternion.identity,
+                Handles.SphereHandleCap(0, _lastWaypoint.transform.position, Quaternion.identity,
                     _trafficSystem.WaypointSize * 2f,
                     EventType.Repaint);
                 HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
@@ -111,12 +102,12 @@ namespace TrafficSimulation.Scripts.Editor
 
             //Set the current hovering waypoint
             if (_lastWaypoint == null)
-                _lastWaypoint = _trafficSystem.GetAllWaypoints().FirstOrDefault(i =>
-                    EditorHelper.SphereHit(i.GetVisualPos(), _trafficSystem.WaypointSize, ray));
+                _lastWaypoint = _trafficSystem.Waypoints.FirstOrDefault(i =>
+                    EditorHelper.SphereHit(i.transform.position, _trafficSystem.WaypointSize, ray));
 
             //Update the current segment to the currently interacting one
             if (_lastWaypoint != null && e.type == EventType.MouseDown)
-                _trafficSystem.CurSegment = _lastWaypoint.segment;
+                _trafficSystem.CurSegment = _lastWaypoint.Segment;
 
             //Reset current waypoint
             else if (_lastWaypoint != null && e.type == EventType.MouseMove) _lastWaypoint = null;
@@ -129,7 +120,7 @@ namespace TrafficSimulation.Scripts.Editor
 
             var systemGameObject = EditorHelper.CreateGameObject("Traffic System");
             systemGameObject.transform.position = Vector3.zero;
-            EditorHelper.AddComponent<TrafficSystem>(systemGameObject);
+            EditorHelper.AddComponent<TrafficSystem.TrafficSystem>(systemGameObject);
 
             var segmentsGameObject = EditorHelper.CreateGameObject("Segments", systemGameObject.transform);
             segmentsGameObject.transform.position = Vector3.zero;
@@ -148,7 +139,7 @@ namespace TrafficSimulation.Scripts.Editor
             Undo.RecordObject(_trafficSystem, "Traffic Inspector Edit");
 
             //Draw the Inspector
-            TrafficEditorInspector.DrawInspector(_trafficSystem, serializedObject, out var restructureSystem);
+            TrafficSystemInspector.DrawInspector(_trafficSystem, serializedObject, out var restructureSystem);
 
             //Rename waypoints if some have been deleted
             if (restructureSystem)
@@ -193,22 +184,6 @@ namespace TrafficSimulation.Scripts.Editor
             _trafficSystem.Segments.Add(_trafficSystem.CurSegment);
         }
 
-        private void AddIntersection(Vector3 position)
-        {
-            var intId = _trafficSystem.Intersections.Count;
-            var intGo =
-                EditorHelper.CreateGameObject("Intersection-" + intId, _trafficSystem.transform.GetChild(1).transform);
-            intGo.transform.position = position;
-
-            var bc = EditorHelper.AddComponent<BoxCollider>(intGo);
-            bc.isTrigger = true;
-            var intersection = EditorHelper.AddComponent<Intersection>(intGo);
-            intersection._id = intId;
-
-            //Record changes to the TrafficSystem (string not relevant here)
-            Undo.RecordObject(_trafficSystem, "");
-            _trafficSystem.Intersections.Add(intersection);
-        }
 
         private void RestructureSystem()
         {
@@ -257,25 +232,10 @@ namespace TrafficSimulation.Scripts.Editor
 
             _trafficSystem.Segments = nSegments;
 
-            //Check intersections
-            var nIntersections = new List<Intersection>();
-            var itInter = 0;
-            foreach (Transform tI in _trafficSystem.transform.GetChild(1).transform)
-            {
-                var intersection = tI.GetComponent<Intersection>();
-                if (intersection != null)
-                {
-                    intersection._id = itInter;
-                    intersection.gameObject.name = "Intersection-" + itInter;
-                    nIntersections.Add(intersection);
-                    itInter++;
-                }
-            }
-
-            _trafficSystem.Intersections = nIntersections;
 
             //Tell Unity that something changed and the scene has to be saved
-            if (!EditorUtility.IsDirty(target)) EditorUtility.SetDirty(target);
+            if (!EditorUtility.IsDirty(target))
+                EditorUtility.SetDirty(target);
 
             Debug.Log("[Traffic Simulation] Successfully rebuilt the traffic system.");
         }
