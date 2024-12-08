@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,26 +10,30 @@ namespace TrafficSimulation
         [SerializeField] private InfoTextUI _collisionsInfo;
         [SerializeField] private InfoTextUI _carCountInfo;
         [SerializeField] private InfoTextUI _averageSpeedInfo;
+        [SerializeField] private InfoTextUI _averageOffsetInfo;
 
         private int _collisionCount;
+        
+        List<CarControllerAI> _carControllers = new List<CarControllerAI>();
 
         private void Start()
         {
+            _carControllers = FindObjectsByType<CarControllerAI>(FindObjectsSortMode.None).ToList();
+            
             _timeScaleInfo.SetTypeText("Time Scale");
             _collisionsInfo.SetTypeText("Collisions");
             _carCountInfo.SetTypeText("Car Count");
             _averageSpeedInfo.SetTypeText("Avr Speed");
-
+            _averageOffsetInfo.SetTypeText("Avr Offset");
             //Reserve message from CarControllerAI.OnVehicleCollision
             // Use unity messages from   BroadcastMessage("OnCarCollision", SendMessageOptions.DontRequireReceiver);
             
-            
-            
+            _carControllers.ForEach(carController => carController.OnCarCollision += IncrementCollisionCount);
         }
 
         private void Update()
         {
-            _timeScaleInfo.SetInfoText(Time.timeScale.ToString("F2"));
+            _timeScaleInfo.SetInfoText(Time.timeScale.ToString("F2") + "x");
             _collisionsInfo.SetInfoText(_collisionCount.ToString());
 
             var carCount = FindObjectsByType<CarBehaviour>(FindObjectsSortMode.None).Length;
@@ -40,6 +45,10 @@ namespace TrafficSimulation
                 var averageSpeed = vehicles.Average(vehicle => vehicle.ForwardSpeedKPH);
                 _averageSpeedInfo.SetInfoText(averageSpeed.ToString("F0") + "km/h");
             }
+            
+            
+            float averageDistanceFromPath = _carControllers.Count > 0 ? _carControllers.Average(carController => carController.DistanceFromPath) : 0;
+            _averageOffsetInfo.SetInfoText(averageDistanceFromPath.ToString("F2") + "m");
         }
 
         private void IncrementCollisionCount()

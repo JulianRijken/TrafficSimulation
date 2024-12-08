@@ -45,7 +45,9 @@ namespace TrafficSimulation
         
         private float _slowdownDistance = 0.0f;
         private float _targetSpeed = 0.0f;
-
+        
+        public event Action OnCarCollision;
+        
         private struct Target
         {
             public Vector3 Position;
@@ -54,7 +56,13 @@ namespace TrafficSimulation
         
         public Vector3 CarForwardPlaner => new Vector3(_carBehaviour.transform.forward.x, 0, _carBehaviour.transform.forward.z).normalized;
         public Vector3 CarPosition => _carBehaviour.transform.position;
+        public float DistanceFromPath => Vector3.Distance(new Vector3(CarPosition.x,0,CarPosition.z), new Vector3(_target.Position.x,0,_target.Position.z));
 
+        private void Awake()
+        {
+            if (_trafficSystem == null)
+                _trafficSystem = FindFirstObjectByType<TrafficSystem>();
+        }
 
         private void Start()
         {
@@ -75,8 +83,8 @@ namespace TrafficSimulation
 
         private void OnCollisionEnter(Collision other)
         {
-            // Send message
-            BroadcastMessage("OnCarCollision", SendMessageOptions.DontRequireReceiver);
+            if(other.gameObject.GetComponent<CarBehaviour>() != null)
+                OnCarCollision?.Invoke();
         }
 
         private void OnDrawGizmos()
