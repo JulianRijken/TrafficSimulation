@@ -19,7 +19,7 @@ public class CarWheel : MonoBehaviour
     [Header("Grip")] [SerializeField] private float _wheelMass = 15.0f;
 
     [SerializeField] private float _wheelGrip = 1.0f;
-    [SerializeField] private float _wheelBreakingGrip = 0.15f;
+    [SerializeField] private float _handbrakeGrip = 0.15f;
     [SerializeField] private float _defaultForwardGrip = 0.1f;
 
 
@@ -162,7 +162,7 @@ public class CarWheel : MonoBehaviour
         // Forward grip break
         var wheelForwardsVelocity = Vector3.Dot(WheelForward, wheelVelocity);
         var wheelForwardsGripResistanceAcceleration =
-            -wheelForwardsVelocity * (_breaking ? _wheelBreakingGrip : 0.0f) / Time.fixedDeltaTime;
+            -wheelForwardsVelocity * (_breaking ? _handbrakeGrip : 0.0f) / Time.fixedDeltaTime;
         _connectedRigidbody.AddForceAtPosition(WheelForward * (_wheelMass * wheelForwardsGripResistanceAcceleration),
             _wheelVisual.position);
 

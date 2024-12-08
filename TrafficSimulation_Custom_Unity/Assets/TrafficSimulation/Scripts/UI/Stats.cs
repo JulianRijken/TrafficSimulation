@@ -20,6 +20,8 @@ namespace TrafficSimulation
             _averageSpeedInfo.SetTypeText("Average Speed");
 
             //Reserve message from CarControllerAI.OnVehicleCollision
+            // Use unity messages from   BroadcastMessage("OnCarCollision", SendMessageOptions.DontRequireReceiver);
+            
             
             
         }

@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -33.5
+      value: -51.619545
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.y
@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.5
+      value: 13.517928
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalRotation.w
@@ -58,7 +58,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1598603097554462743, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 57962940686290933}
+      addedObject: {fileID: 8709726505767862291}
   m_SourcePrefab: {fileID: 100100000, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
 --- !u!114 &745372997804457197 stripped
 MonoBehaviour:
@@ -76,7 +76,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1598603097554462743, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
   m_PrefabInstance: {fileID: 6160123907389945963}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &57962940686290933
+--- !u!114 &8709726505767862291
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -90,9 +90,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _carBehaviour: {fileID: 745372997804457197}
   _trafficSystem: {fileID: 0}
+  _streetMaxSpeed: 120
   _waypointDetectionThreshold: 2
-  _maxDistanceFromPath: 2.5
-  _steerOverAngle: 75
-  _steerSpeed: 1
-  _slowdownDistance: 7
-  _slowdownSpeed: 20
+  _directionLerpDistance: 3
+  _steerOverAngle: 50
+  _steerSmoothingSpeed: 6
+  _minSpeed: 10
+  _slowdownDistanceMultiplier: 0.8
+  _upcomingTurnDangerScale: 1
+  _alignmentDangerScale: 1
+  _elevationDangerScale: 0.15
+  _dangerLevelReductionSpeed: 1

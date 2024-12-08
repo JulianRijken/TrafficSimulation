@@ -38,4 +38,20 @@ public class MathExtensions : MonoBehaviour
         Gizmos.DrawLine(from + forward, from + left);
         Gizmos.DrawLine(from + forward, from + right);
     }
+    
+    public static void DrawCircle(Vector3 center, float radius)
+    {
+        int segments = 32;
+        float angle = 0;
+        Vector3 lastPos = center + new Vector3(radius, 0, 0);
+        for (int i = 0; i < segments + 1; i++)
+        {
+            float x = center.x + radius * Mathf.Cos(angle);
+            float z = center.z + radius * Mathf.Sin(angle);
+            Vector3 newPos = new Vector3(x, center.y, z);
+            Gizmos.DrawLine(lastPos, newPos);
+            lastPos = newPos;
+            angle += 2 * Mathf.PI / segments;
+        }
+    }
 }
