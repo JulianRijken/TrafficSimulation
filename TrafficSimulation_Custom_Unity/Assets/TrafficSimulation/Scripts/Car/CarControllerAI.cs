@@ -38,7 +38,9 @@ namespace TrafficSimulation
         }
         
         public Vector3 CarForwardPlaner => new Vector3(_carBehaviour.transform.forward.x, 0, _carBehaviour.transform.forward.z).normalized;
-        
+        public Vector3 CarPosition => _carBehaviour.transform.position;
+
+
         private void Start()
         {
             SetWaypointToClosest();
@@ -51,7 +53,7 @@ namespace TrafficSimulation
 
             
             // Get steer direction
-            var directionToTarget = _target.Position - _carBehaviour.transform.position;
+            var directionToTarget = _target.Position - CarPosition;
             var distanceToTarget = directionToTarget.magnitude;
             _steerDirection = Vector3.Lerp(_target.Direction, directionToTarget, distanceToTarget / _directionLerpDistance);
             _steerDirection.y = 0.0f;
@@ -63,15 +65,56 @@ namespace TrafficSimulation
             _carBehaviour.SteerWheelInput = Mathf.MoveTowards(_carBehaviour.SteerWheelInput, steerInputOverAngle, Time.deltaTime * _steerSmoothingSpeed);
             
             
-            // UpdateMaxSpeed();
-            UpdateThrottleAndBreak();
+            //     _maxSpeed = _streetMaxSpeed;
+            //
+            //     var distanceToWaypoint = Vector3.Distance(CarPosition, _currentWaypoint.transform.position);
+            //
+            //     if (distanceToWaypoint < _slowdownDistance)
+            //     {
+            //         if (_currentWaypoint.NextWaypoint == null)
+            //         {
+            //             _maxSpeed = _slowdownSpeed;
+            //             return;
+            //         }
+            //
+            //         var directionFromCurrentToNextCheckpoint = _currentWaypoint.NextWaypoint.transform.position - _currentWaypoint.transform.position;
+            //         var directionFromCarToCurrentWaypoint = _currentWaypoint.transform.position - CarPosition;
+            //         var angleToNextWaypoint = Vector3.Angle(directionFromCurrentToNextCheckpoint,directionFromCarToCurrentWaypoint);
+            //         
+            //         if(angleToNextWaypoint > 45.0f)
+            //         {
+            //             _maxSpeed = _slowdownSpeed;
+            //             return;
+            //         }
+            //         
+            //         if(_distanceFromPath > _maxDistanceFromPath)
+            //         {
+            //             _maxSpeed = _slowdownSpeed;
+            //             return;
+            //         }
+            //     }
+            
+            
+            
+            UpdatePower();
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            // Send message
+            BroadcastMessage("OnCarCollision", SendMessageOptions.DontRequireReceiver);
         }
 
         private void OnDrawGizmos()
         {
+            // Only when the game is running
+            if (!Application.isPlaying)
+                return;
+            
             Gizmos.color = Color.cyan;
             Vector3 from = _target.Position + Vector3.up;
             MathExtensions.DrawArrow(from, _target.Direction, 1.0f);
+            Gizmos.DrawLine(CarPosition + Vector3.up, from);
             
             Gizmos.color = Color.red;
             MathExtensions.DrawArrow(from,_steerDirection, 1.0f);
@@ -81,8 +124,16 @@ namespace TrafficSimulation
         }
 
 
-        private void UpdateThrottleAndBreak()
+        private void UpdatePower()
         {
+            if (_currentWaypoint == null)
+            {
+                _carBehaviour.ThrottleInput = 0.0f;
+                _carBehaviour.BreakInput = 0.0f;
+                _carBehaviour.IsHandBrakeEngaged = true;
+                return;
+            }
+            
             // Set car power
             if (_carBehaviour.ForwardSpeedKPH < _maxSpeed)
             {
@@ -98,6 +149,14 @@ namespace TrafficSimulation
         
         private void UpdateTargetPosition()
         {
+            // No checkpoint found
+            if (_currentWaypoint == null)
+            {
+                _target.Position = CarPosition;
+                _target.Direction = CarForwardPlaner;
+                return;
+            }
+            
             if (_lastWaypoint == null)
             {
                 _target.Position = _currentWaypoint.transform.position;
@@ -110,7 +169,7 @@ namespace TrafficSimulation
             else
             {            
                 // Project car position on the line between the last and current waypoint
-                var carPosition = _carBehaviour.transform.position;
+                var carPosition = CarPosition;
                 var lastWaypointPosition = _lastWaypoint.transform.position;
                 var currentWaypointPosition = _currentWaypoint.transform.position;
                 
@@ -128,13 +187,9 @@ namespace TrafficSimulation
 
         private void UpdateWaypoint()
         {
-            // Update waypoint
             if (_currentWaypoint == null)
-            {
-                SetWaypointToClosest();
-                Debug.LogWarning("No waypoints found for car " + _carBehaviour.name);
-            }
-
+                return;
+            
             if (IsOnWaypoint(_currentWaypoint))
             {
                 _lastWaypoint = _currentWaypoint;
@@ -145,46 +200,14 @@ namespace TrafficSimulation
         private void SetWaypointToClosest()
         {
             _currentWaypoint = _trafficSystem.Waypoints
-                .OrderBy(waypoint => Vector3.Distance(_carBehaviour.transform.position, waypoint.transform.position))
+                .OrderBy(waypoint => Vector3.Distance(CarPosition, waypoint.transform.position))
                 .FirstOrDefault();
         }
 
         private bool IsOnWaypoint(Waypoint waypoint)
         {
-            var distance = Vector3.Distance(_carBehaviour.transform.position, waypoint.transform.position);
+            var distance = Vector3.Distance(CarPosition, waypoint.transform.position);
             return distance < _waypointDetectionThreshold;
         }
-
-        // private void UpdateMaxSpeed()
-        // {
-        //     _maxSpeed = _streetMaxSpeed;
-        //
-        //     var distanceToWaypoint = Vector3.Distance(_carBehaviour.transform.position, _currentWaypoint.transform.position);
-        //
-        //     if (distanceToWaypoint < _slowdownDistance)
-        //     {
-        //         if (_currentWaypoint.NextWaypoint == null)
-        //         {
-        //             _maxSpeed = _slowdownSpeed;
-        //             return;
-        //         }
-        //
-        //         var directionFromCurrentToNextCheckpoint = _currentWaypoint.NextWaypoint.transform.position - _currentWaypoint.transform.position;
-        //         var directionFromCarToCurrentWaypoint = _currentWaypoint.transform.position - _carBehaviour.transform.position;
-        //         var angleToNextWaypoint = Vector3.Angle(directionFromCurrentToNextCheckpoint,directionFromCarToCurrentWaypoint);
-        //         
-        //         if(angleToNextWaypoint > 45.0f)
-        //         {
-        //             _maxSpeed = _slowdownSpeed;
-        //             return;
-        //         }
-        //         
-        //         if(_distanceFromPath > _maxDistanceFromPath)
-        //         {
-        //             _maxSpeed = _slowdownSpeed;
-        //             return;
-        //         }
-        //     }
-        // }
     }
 }

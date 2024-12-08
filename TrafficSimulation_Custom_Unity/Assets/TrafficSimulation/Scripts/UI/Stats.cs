@@ -19,7 +19,9 @@ namespace TrafficSimulation
             _carCountInfo.SetTypeText("Car Count");
             _averageSpeedInfo.SetTypeText("Average Speed");
 
-            // VehicleAI.OnVehicleCollision += IncrementCollisionCount;
+            //Reserve message from CarControllerAI.OnVehicleCollision
+            
+            
         }
 
         private void Update()
