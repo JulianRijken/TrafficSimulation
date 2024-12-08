@@ -19,6 +19,8 @@ namespace TrafficSimulation
         {
             public Connection Connection;
             public List<Connection> CrossingConnections;
+            float _angle;
+            private float _distance;
         }
         
         [Serializable]
@@ -52,6 +54,16 @@ namespace TrafficSimulation
             {
                 if(turn.Connection.From == null || turn.Connection.To == null)
                     continue;
+
+                foreach (var movingCar in CarsMoving)
+                {
+                    if(turn.Equals(movingCar.Turn))
+                    {
+                        Gizmos.color = Color.red;
+                        break;
+                    }
+                }
+                
                 
                 Vector3 fromPosition = turn.Connection.From.Waypoints.Last().transform.position;
                 Vector3 toPosition = turn.Connection.To.Waypoints.First().transform.position;
@@ -83,21 +95,33 @@ namespace TrafficSimulation
             // Simple, no cars in intersection
             if(_carsInIntersection.Count == 0)
                 return;
-            
-            // Only one car in intersection, just move it
-            if(_carsInIntersection.Count == 1)
-            {
-                _carsInIntersection[0].Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
-                return;
-            }
 
             foreach (var waitingCar in CarsWaiting)
             {
+                if(CarsMoving.Count == 0)
+                {
+                    waitingCar.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
+                    return;
+                }
+                
                 foreach (var movingCar in CarsMoving)
                 {
+                    if(waitingCar.Turn.CrossingConnections == null)
+                        throw new Exception("Crossing connections is null, intersection probably does not cover all connections");
+                    
                     // Wait for moving car to pass
                     if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
+                    {
+                        float heightOffset = 2.0f;
+                        // Draw line from moving car to waiting car
+                        Vector3 fromPosition = movingCar.Car.transform.position;
+                        Vector3 toPosition = waitingCar.Car.transform.position;
+                        fromPosition.y += heightOffset;
+                        toPosition.y +=heightOffset;
+                        Debug.DrawLine(fromPosition, toPosition, Color.red, 1.0f);
+                        
                         continue;
+                    }
                     
                     waitingCar.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
                     return;
@@ -118,7 +142,7 @@ namespace TrafficSimulation
             });
             car.IntersectionState = CarControllerAI.IntersectionStateType.Waiting;
             
-            TryMoveCars();
+            Invoke(nameof(TryMoveCars), 1.0f);
         }
         
         private void OnCarExitIntersection(CarControllerAI car)

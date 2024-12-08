@@ -10,7 +10,6 @@ namespace TrafficSimulation
         [SerializeField] private CarBehaviour _carBehaviour;
         [SerializeField] private TrafficSystem _trafficSystem;
 
-
         [Header("Custom")] 
         [SerializeField] private float _streetMaxSpeed = 60.0f;
 
@@ -29,14 +28,22 @@ namespace TrafficSimulation
         [SerializeField] private float _alignmentDangerScale = 1.0f;
         [SerializeField] private float _elevationDangerScale = 1.0f;
 
+        [Header("Collision Detection")]
+        [SerializeField] private float _secondsFromCarInFront = 2.0f;
+        [SerializeField] private float _minDistanceCheck = 1.0f;
+        [SerializeField] private Sensor _frontSensor;
+        
         [Header("Advanced")]
         [SerializeField] private float _dangerLevelReductionSpeed = 1.0f;
+        
         
         private Segment _nextSegment;
         private Waypoint _currentWaypoint;
         private Waypoint _lastWaypoint;
         private Vector3 _steerDirection;
         private Target _target;
+        
+        private CarControllerAI _carInFront;
         
         private float _upcomingTurnDanger = 0.0f;
         private float _alignmentDanger = 0.0f;
@@ -72,6 +79,10 @@ namespace TrafficSimulation
         public Segment NextSegment => _nextSegment;
         public Segment CurrentSegment => _currentWaypoint.Segment;
         
+        public float TargetSpeed => _targetSpeed;
+        public float CurrentSpeed => _carBehaviour.ForwardSpeed;
+        public Vector3 Velocity => _carBehaviour.Velocity;
+        
         private void Awake()
         {
             if (_trafficSystem == null)
@@ -89,10 +100,11 @@ namespace TrafficSimulation
             UpdateTargetPosition();
             UpdateSteering();
             UpdateDanger();
+            UpdateCollisionDetection();
             UpdateTargetSpeed();
             UpdatePower();
         }
-
+        
 
 
         private void OnCollisionEnter(Collision other)
@@ -120,6 +132,22 @@ namespace TrafficSimulation
             
             Gizmos.color = Color.Lerp(Color.white, Color.black, _dangerLevel);
             MathExtensions.DrawCircle(CarPosition + Vector3.up, _slowdownDistance);
+
+            Gizmos.color = IntersectionState switch
+            {
+                IntersectionStateType.Waiting => Color.red,
+                IntersectionStateType.Moving => Color.yellow,
+                _ => Color.green
+            };
+
+            Gizmos.DrawSphere(CarPosition + Vector3.up * 2, 0.4f);
+            
+            // Draw car in front line
+            if (_carInFront != null)
+            {
+                Gizmos.color = Color.black;
+                Gizmos.DrawLine(CarPosition + Vector3.up, _carInFront.CarPosition + Vector3.up);
+            }
         }
 
         
@@ -229,8 +257,31 @@ namespace TrafficSimulation
             else
                 _dangerLevel = Mathf.MoveTowards(_dangerLevel, targetDangerLevel, Time.deltaTime * _dangerLevelReductionSpeed);
         }
-
         
+        private void UpdateCollisionDetection()
+        {
+            // TODO: This whole method is very basic
+            _carInFront = null;
+            
+            if(_currentWaypoint == null)
+                return;
+
+            
+            float checkDistance = _carBehaviour.ForwardSpeed * _secondsFromCarInFront;
+            checkDistance = Mathf.Max(checkDistance, _minDistanceCheck);
+            
+            // Rotate sensor to match target rotation
+            _frontSensor.transform.rotation = Quaternion.LookRotation(_target.Direction, Vector3.up);
+            
+            if (_frontSensor.Sense(checkDistance, out var hit))
+            {
+                
+                if (!hit.collider.tag.Equals("AutonomousVehicle"))
+                    return;
+                
+                _carInFront = hit.collider.GetComponentInParent<CarControllerAI>();
+            }
+        }
         
         private void UpdateTargetSpeed()
         {
@@ -243,6 +294,13 @@ namespace TrafficSimulation
             if (IntersectionState == IntersectionStateType.Waiting)
             {
                 _targetSpeed = 0.0f;
+                return;
+            }
+            
+            if(_carInFront != null)
+            {
+                float relativeSpeed = Vector3.Dot(_carInFront.Velocity, CarForwardPlaner);
+                _targetSpeed = relativeSpeed;
                 return;
             }
             
@@ -300,6 +358,12 @@ namespace TrafficSimulation
                 }
                 else
                 {
+                    if (_nextSegment == null)
+                    {
+                        Debug.LogWarning("Car has no next segment");
+                        return;
+                    }
+                    
                     // Move to next segment
                     _currentWaypoint = _nextSegment.Waypoints.First();
                     _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentWaypoint.Segment);

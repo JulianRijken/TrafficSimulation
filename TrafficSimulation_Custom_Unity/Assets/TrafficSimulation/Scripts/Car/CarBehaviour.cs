@@ -35,8 +35,10 @@ namespace TrafficSimulation
         private float _throttleInput; // 0 to 1 - Less to More
 
 
-        public float Velocity => _rigidbody.linearVelocity.magnitude;
+        public float LinearVelocity => _rigidbody.linearVelocity.magnitude;
 
+        public Vector3 Velocity => _rigidbody.linearVelocity;
+        
         public float NormalizedSpeed => Mathf.Abs(Vector3.Dot(_rigidbody.linearVelocity, transform.forward)) /
                                         (_topForwardsKPH / 3.6f);
 
