@@ -3172,7 +3172,7 @@ GameObject:
   - component: {fileID: 778685871}
   - component: {fileID: 778685872}
   m_Layer: 0
-  m_Name: Segment-1
+  m_Name: seg-1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7394,7 +7394,7 @@ GameObject:
   - component: {fileID: 1977852148}
   - component: {fileID: 1977852149}
   m_Layer: 0
-  m_Name: Segment-0
+  m_Name: seg-0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

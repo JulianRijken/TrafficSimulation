@@ -39,6 +39,16 @@ public class MathExtensions : MonoBehaviour
         Gizmos.DrawLine(from + forward, from + right);
     }
     
+    public static void DrawArrowTip(Vector3 point, Vector3 forward)
+    {
+        forward = forward.normalized * -0.5f;
+        var left = Quaternion.Euler(0, 45, 0) * forward;
+        var right = Quaternion.Euler(0, -45, 0) * forward;
+
+        Gizmos.DrawLine(point, point + left);
+        Gizmos.DrawLine(point, point + right);
+    }
+    
     public static void DrawCircle(Vector3 center, float radius)
     {
         int segments = 32;
@@ -53,5 +63,41 @@ public class MathExtensions : MonoBehaviour
             lastPos = newPos;
             angle += 2 * Mathf.PI / segments;
         }
+    }
+    
+    public static bool LineIntersect2D(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
+    {
+        // Helper to find orientation of the triplet (p, q, r)
+        int Orientation(Vector2 p, Vector2 q, Vector2 r)
+        {
+            float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+            if (Mathf.Abs(val) < Mathf.Epsilon) return 0; // Collinear
+            return (val > 0) ? 1 : 2; // Clockwise or Counterclockwise
+        }
+
+        // Check if point q lies on segment pr
+        bool OnSegment(Vector2 p, Vector2 q, Vector2 r)
+        {
+            return q.x <= Mathf.Max(p.x, r.x) && q.x >= Mathf.Min(p.x, r.x) &&
+                   q.y <= Mathf.Max(p.y, r.y) && q.y >= Mathf.Min(p.y, r.y);
+        }
+
+        // Find orientations
+        int o1 = Orientation(p1, q1, p2);
+        int o2 = Orientation(p1, q1, q2);
+        int o3 = Orientation(p2, q2, p1);
+        int o4 = Orientation(p2, q2, q1);
+
+        // General case
+        if (o1 != o2 && o3 != o4)
+            return true;
+
+        // Special cases
+        if (o1 == 0 && OnSegment(p1, p2, q1)) return true;
+        if (o2 == 0 && OnSegment(p1, q2, q1)) return true;
+        if (o3 == 0 && OnSegment(p2, p1, q2)) return true;
+        if (o4 == 0 && OnSegment(p2, q1, q2)) return true;
+
+        return false; // No intersection
     }
 }

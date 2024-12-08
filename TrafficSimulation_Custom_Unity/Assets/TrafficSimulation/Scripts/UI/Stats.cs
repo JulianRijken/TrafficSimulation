@@ -30,7 +30,14 @@ namespace TrafficSimulation
             
             _carControllers.ForEach(carController => carController.OnCarCollision += IncrementCollisionCount);
         }
+        
+        [DebugGUIGraph(min: 0, max: 5, r: 0, g: 0, b: 0, autoScale: false, group: 0)]
+        private float _averageDistanceFromPath;
+        
+        [DebugGUIGraph(min: 0, max: 100, r: 0, g: 0, b: 0, autoScale: false, group: 1)]
+        private float _averageSpeed;
 
+        
         private void Update()
         {
             _timeScaleInfo.SetInfoText(Time.timeScale.ToString("F2") + "x");
@@ -42,13 +49,13 @@ namespace TrafficSimulation
             var vehicles = FindObjectsByType<CarBehaviour>(FindObjectsSortMode.None);
             if (vehicles.Length > 0)
             {
-                var averageSpeed = vehicles.Average(vehicle => vehicle.ForwardSpeedKPH);
-                _averageSpeedInfo.SetInfoText(averageSpeed.ToString("F0") + "km/h");
+                _averageSpeed = vehicles.Average(vehicle => vehicle.ForwardSpeedKPH);
+                _averageSpeedInfo.SetInfoText(_averageSpeed.ToString("F0") + "km/h");
             }
             
             
-            float averageDistanceFromPath = _carControllers.Count > 0 ? _carControllers.Average(carController => carController.DistanceFromPath) : 0;
-            _averageOffsetInfo.SetInfoText(averageDistanceFromPath.ToString("F2") + "m");
+            _averageDistanceFromPath = _carControllers.Count > 0 ? _carControllers.Average(carController => carController.DistanceFromPath) : 0;
+            _averageOffsetInfo.SetInfoText(_averageDistanceFromPath.ToString("F2") + "m");
         }
 
         private void IncrementCollisionCount()

@@ -110,14 +110,14 @@ public class CarWheel : MonoBehaviour
 
         var hitDistance = hit.distance;
 
-        // Check if not inside ground
-        if (isOnGround == false &&
-            Physics.OverlapSphere(SpringStartPoint, _wheelRadius, _connectedRigidbody.gameObject.layer).Length >
-            0)
-        {
-            isOnGround = true;
-            hitDistance = 0.0f;
-        }
+        // // Check if not inside ground
+        // if (isOnGround == false &&
+        //     Physics.OverlapSphere(SpringStartPoint, _wheelRadius, _connectedRigidbody.gameObject.layer).Length >
+        //     0)
+        // {
+        //     isOnGround = true;
+        //     hitDistance = 0.0f;
+        // }
 
         _groundCheckStatus = new GroundCheckResult(isOnGround, hitDistance);
     }

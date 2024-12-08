@@ -18,18 +18,25 @@ namespace TrafficSimulation
             foreach (var segment in script.Segments)
             {
                 //Draw segment names
-                var style = new GUIStyle { normal = { textColor = new Color(0, 0, 0) }, fontSize = 15 };
-                Handles.Label(segment.transform.position, segment.name, style);
+                //Custom font
+                var font = (Font)Resources.Load("JetBrainsMono-Bold");
+                var styleFirst = new GUIStyle { normal = { textColor = new Color(0, 0, 0,1.0f) }, fontSize = 15, font = font };
+                var styleSecond = new GUIStyle { normal = { textColor = new Color(1,1,1,1.0f) }, fontSize = 15, font = font };
 
+                Vector3 firstWaypoint = segment.Waypoints.First().transform.position;
+                Vector3 lastWaypoint = segment.Waypoints.Last().transform.position;
+                Handles.Label(firstWaypoint + Vector3.up, segment.name, styleFirst);
+                Handles.Label(lastWaypoint + Vector3.up, segment.name, styleSecond);
+                
                 //Draw waypoint
                 for (var j = 0; j < segment.Waypoints.Count; j++)
                 {
                     //Get current waypoint position
                     var p = segment.Waypoints[j].transform.position;
 
-                    //Draw sphere, increase color to show the direction
-                    Gizmos.color = new Color(1f, 1f, 1f, (j + 1) / (float)segment.Waypoints.Count);
-                    Gizmos.DrawSphere(p, script.WaypointSize);
+                    // //Draw sphere, increase color to show the direction
+                    // Gizmos.color = new Color(1f, 1f, 1f, (j + 1) / (float)segment.Waypoints.Count);
+                    // Gizmos.DrawSphere(p, script.WaypointSize);
 
                     //Get next waypoint position
                     var pNext = Vector3.zero;

@@ -198,7 +198,7 @@ namespace TrafficSimulation.Scripts.Editor
                 {
                     var waypoints = new List<Waypoint>();
                     segment.Id = segmentIndex;
-                    segment.gameObject.name = "Segment-" + segmentIndex;
+                    segment.gameObject.name = "seg-" + segmentIndex;
 
                     var itWp = 0;
                     foreach (Transform child in segment.gameObject.transform)

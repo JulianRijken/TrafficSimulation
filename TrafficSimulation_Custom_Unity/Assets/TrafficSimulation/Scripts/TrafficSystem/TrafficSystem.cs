@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -21,7 +22,7 @@ namespace TrafficSimulation
         [HideInInspector] public List<Waypoint> Waypoints = new();
 
 
-        public Waypoint GetNextWaypoint(Waypoint currentWaypoint)
+        public Waypoint GetNextWaypointRandom(Waypoint currentWaypoint)
         {
             if (currentWaypoint.NextWaypoint != null)
                 return currentWaypoint.NextWaypoint;
@@ -30,6 +31,14 @@ namespace TrafficSimulation
             if (connectedSegments.Count > 0)
                 return connectedSegments[Random.Range(0, connectedSegments.Count)].Waypoints[0];
 
+            return null;
+        }
+        
+        public Segment GetNextSegmentRandom(Segment currentSegment)
+        {
+            if (currentSegment.ConnectedSegments.Count > 0)
+                return currentSegment.ConnectedSegments[Random.Range(0, currentSegment.ConnectedSegments.Count)];
+            
             return null;
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TrafficSimulation
 {
-    
+
     public class CarControllerAI : MonoBehaviour
     {
         [SerializeField] private CarBehaviour _carBehaviour;
@@ -32,6 +32,7 @@ namespace TrafficSimulation
         [Header("Advanced")]
         [SerializeField] private float _dangerLevelReductionSpeed = 1.0f;
         
+        private Segment _nextSegment;
         private Waypoint _currentWaypoint;
         private Waypoint _lastWaypoint;
         private Vector3 _steerDirection;
@@ -46,6 +47,8 @@ namespace TrafficSimulation
         private float _slowdownDistance = 0.0f;
         private float _targetSpeed = 0.0f;
         
+        public IntersectionStateType IntersectionState = IntersectionStateType.None;
+        
         public event Action OnCarCollision;
         
         private struct Target
@@ -54,10 +57,21 @@ namespace TrafficSimulation
             public Vector3 Direction;
         }
         
+        public enum IntersectionStateType
+        {
+            None,
+            Waiting,
+            Moving
+        }
+
+        
         public Vector3 CarForwardPlaner => new Vector3(_carBehaviour.transform.forward.x, 0, _carBehaviour.transform.forward.z).normalized;
         public Vector3 CarPosition => _carBehaviour.transform.position;
         public float DistanceFromPath => Vector3.Distance(new Vector3(CarPosition.x,0,CarPosition.z), new Vector3(_target.Position.x,0,_target.Position.z));
-
+        
+        public Segment NextSegment => _nextSegment;
+        public Segment CurrentSegment => _currentWaypoint.Segment;
+        
         private void Awake()
         {
             if (_trafficSystem == null)
@@ -66,7 +80,7 @@ namespace TrafficSimulation
 
         private void Start()
         {
-            SetWaypointToClosest();
+            ForceSetWaypointToClosest();
         }
 
         private void Update()
@@ -110,17 +124,6 @@ namespace TrafficSimulation
 
         
 
-        private void UpdateWaypoint()
-        {
-            if (_currentWaypoint == null)
-                return;
-            
-            if (IsOnWaypoint(_currentWaypoint))
-            {
-                _lastWaypoint = _currentWaypoint;
-                _currentWaypoint = _trafficSystem.GetNextWaypoint(_currentWaypoint);
-            }
-        }
 
         private void UpdateTargetPosition()
         {
@@ -236,6 +239,12 @@ namespace TrafficSimulation
                 _targetSpeed = 0.0f;
                 return;
             }
+
+            if (IntersectionState == IntersectionStateType.Waiting)
+            {
+                _targetSpeed = 0.0f;
+                return;
+            }
             
             _targetSpeed = Mathf.Lerp(_streetMaxSpeed,_minSpeed, _dangerLevel);
         }
@@ -264,14 +273,40 @@ namespace TrafficSimulation
         }
         
         
-        
-        private void SetWaypointToClosest()
+        private void ForceSetWaypointToClosest()
         {
             _currentWaypoint = _trafficSystem.Waypoints
                 .OrderBy(waypoint => Vector3.Distance(CarPosition, waypoint.transform.position))
                 .FirstOrDefault();
+            
+            _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentWaypoint.Segment);
         }
-
+        
+        
+        private void UpdateWaypoint()
+        {
+            if (_currentWaypoint == null)
+                return;
+            
+            // When on checkpoint
+            if (IsOnWaypoint(_currentWaypoint))
+            {
+                _lastWaypoint = _currentWaypoint;
+             
+                // If there is no next waypoint, get a random one
+                if (_currentWaypoint.NextWaypoint != null)
+                {
+                    _currentWaypoint = _currentWaypoint.NextWaypoint;
+                }
+                else
+                {
+                    // Move to next segment
+                    _currentWaypoint = _nextSegment.Waypoints.First();
+                    _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentWaypoint.Segment);
+                }
+            }
+        }
+        
         private bool IsOnWaypoint(Waypoint waypoint)
         {
             var distance = Vector3.Distance(CarPosition, waypoint.transform.position);

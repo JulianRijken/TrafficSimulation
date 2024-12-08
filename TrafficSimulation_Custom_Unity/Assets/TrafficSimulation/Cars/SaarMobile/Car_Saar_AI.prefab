@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Car_Saar_AI
       objectReference: {fileID: 0}
+    - target: {fileID: 1598603097554462743, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+      propertyPath: m_TagString
+      value: AutonomousVehicle
+      objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.x
       value: -51.619545
