@@ -17,7 +17,7 @@ namespace TrafficSimulation
             _timeScaleInfo.SetTypeText("Time Scale");
             _collisionsInfo.SetTypeText("Collisions");
             _carCountInfo.SetTypeText("Car Count");
-            _averageSpeedInfo.SetTypeText("Average Speed");
+            _averageSpeedInfo.SetTypeText("Avr Speed");
 
             //Reserve message from CarControllerAI.OnVehicleCollision
             // Use unity messages from   BroadcastMessage("OnCarCollision", SendMessageOptions.DontRequireReceiver);
@@ -38,7 +38,7 @@ namespace TrafficSimulation
             if (vehicles.Length > 0)
             {
                 var averageSpeed = vehicles.Average(vehicle => vehicle.ForwardSpeedKPH);
-                _averageSpeedInfo.SetInfoText(averageSpeed.ToString("F2") + " km/h");
+                _averageSpeedInfo.SetInfoText(averageSpeed.ToString("F0") + "km/h");
             }
         }
 

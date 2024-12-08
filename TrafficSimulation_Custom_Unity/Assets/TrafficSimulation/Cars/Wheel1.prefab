@@ -142,7 +142,7 @@ MonoBehaviour:
   _wheelVisual: {fileID: 1844589153576997685}
   _wheelMass: 20
   _wheelGrip: 10
-  _handbrakeGrip: 0.25
+  _handbrakeGrip: 0.3
   _defaultForwardGrip: 0.1
   _steerCurve:
     serializedVersion: 2

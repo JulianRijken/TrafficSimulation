@@ -2216,7 +2216,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -40.000004, y: -40.000004}
+  m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &519497006
 PrefabInstance:
@@ -2466,10 +2466,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2003610063830239400, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _trafficSystem
-      value: 
-      objectReference: {fileID: 1121679849}
     - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_Name
       value: Car_Saar_AI
@@ -2743,7 +2739,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 73.69165, y: -82.065674}
-  m_SizeDelta: {x: 353.25, y: 331.5}
+  m_SizeDelta: {x: 243.25, y: 331.5}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &598006591
 MonoBehaviour:
@@ -4011,7 +4007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.9372549}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6588,7 +6584,7 @@ Transform:
   m_GameObject: {fileID: 1555187696}
   serializedVersion: 2
   m_LocalRotation: {x: 0.70117617, y: 0.4235759, z: -0.48517156, w: 0.3058497}
-  m_LocalPosition: {x: 0, y: 26, z: 0}
+  m_LocalPosition: {x: 0, y: 1000, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7558,7 +7554,7 @@ Transform:
   m_GameObject: {fileID: 1878409196}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.13439178, y: -0.027515411, z: -0.03494382}
+  m_LocalPosition: {x: 0, y: 1000, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8714,7 +8710,7 @@ Transform:
   m_GameObject: {fileID: 2062241684}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1000, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
