@@ -10,25 +10,25 @@ namespace TrafficSimulation
         [SerializeField] private CarBehaviour _carBehaviour;
         [SerializeField] private TrafficSystem _trafficSystem;
 
-        [SerializeField] private float _waypointDetectionThreshold = 0.5f;
-        [SerializeField] private float _maxDistanceFromPath = 1.5f;
 
         [Header("Steering")] 
+        [SerializeField] private float _waypointDetectionThreshold = 2.0f;
+        [SerializeField] private float _directionLerpDistance = 3.0f;
         [SerializeField] private float _steerOverAngle = 45.0f;
-        [SerializeField] private float _steerSpeed = 10.0f;
+        [SerializeField] private float _steerSmoothingSpeed = 10.0f;
 
         
         [Header("Power")] 
         [SerializeField] private float _slowdownDistance = 5.0f;
         [SerializeField] private float _slowdownSpeed = 5.0f;
 
+        
         private float _streetMaxSpeed = 60.0f;
-        private float _maxSpeed = 20.0f;
+        private float _maxSpeed = 30.0f;
+        
         private Waypoint _currentWaypoint;
         private Waypoint _lastWaypoint;
-        private float _distanceFromPath;
-
-        
+        private Vector3 _steerDirection;
         private Target _target;
         
         private struct Target
@@ -37,6 +37,7 @@ namespace TrafficSimulation
             public Vector3 Direction;
         }
         
+        public Vector3 CarForwardPlaner => new Vector3(_carBehaviour.transform.forward.x, 0, _carBehaviour.transform.forward.z).normalized;
         
         private void Start()
         {
@@ -48,34 +49,37 @@ namespace TrafficSimulation
             UpdateWaypoint();
             UpdateTargetPosition();
 
-            _carBehaviour.SteerWheelInput = 0.1f;
             
-            // UpdateSteering();
+            // Get steer direction
+            var directionToTarget = _target.Position - _carBehaviour.transform.position;
+            var distanceToTarget = directionToTarget.magnitude;
+            _steerDirection = Vector3.Lerp(_target.Direction, directionToTarget, distanceToTarget / _directionLerpDistance);
+            _steerDirection.y = 0.0f;
+            _steerDirection.Normalize();
+            
+            // Steer to direction
+            var angleToTarget = Vector3.SignedAngle(CarForwardPlaner, _steerDirection, Vector3.up);
+            float steerInputOverAngle = angleToTarget / _steerOverAngle;
+            _carBehaviour.SteerWheelInput = Mathf.MoveTowards(_carBehaviour.SteerWheelInput, steerInputOverAngle, Time.deltaTime * _steerSmoothingSpeed);
+            
+            
             // UpdateMaxSpeed();
             UpdateThrottleAndBreak();
         }
 
         private void OnDrawGizmos()
         {
-            // Draw target rect 
             Gizmos.color = Color.cyan;
-            Gizmos.DrawSphere(_target.Position, 0.5f);
+            Vector3 from = _target.Position + Vector3.up;
+            MathExtensions.DrawArrow(from, _target.Direction, 1.0f);
+            
+            Gizmos.color = Color.red;
+            MathExtensions.DrawArrow(from,_steerDirection, 1.0f);
+            
+            Gizmos.color = Color.green;
+            MathExtensions.DrawArrow(from,CarForwardPlaner, 1.0f);
         }
 
-        private void UpdateSteering()
-        {
-            // Steer car 
-            var directionToTarget = _target.Position - _carBehaviour.transform.position;
-            var angleToWaypoint = Vector3.SignedAngle(_carBehaviour.transform.forward, directionToTarget, Vector3.up);
-            float steerInputOverAngle = Mathf.Abs(angleToWaypoint) / _steerOverAngle;
-            
-            float steerSign = angleToWaypoint > 0 ? 1.0f : -1.0f;
-            float targetSteerWheelInput = steerSign * steerInputOverAngle;
-            float smoothSteerWheelInput = MathExtensions.LerpSmooth(_carBehaviour.SteerWheelInput, targetSteerWheelInput, Time.deltaTime,_steerSpeed);
-            
-            _carBehaviour.SteerWheelInput = smoothSteerWheelInput;
-
-        }
 
         private void UpdateThrottleAndBreak()
         {
@@ -97,16 +101,28 @@ namespace TrafficSimulation
             if (_lastWaypoint == null)
             {
                 _target.Position = _currentWaypoint.transform.position;
-                _target.Direction = _currentWaypoint.transform.forward;
+                
+                if(_currentWaypoint.NextWaypoint != null)
+                    _target.Direction = _currentWaypoint.NextWaypoint.transform.position - _currentWaypoint.transform.position;
+                else
+                    throw new Exception("No next or previous waypoint found");
             }
             else
             {            
-                // Interpolate between waypoints
-                var distanceToLastWaypoint = Vector3.Distance(_carBehaviour.transform.position, _lastWaypoint.transform.position);
-                var distanceBetweenWaypoints = Vector3.Distance(_lastWaypoint.transform.position, _currentWaypoint.transform.position);
-                var interpolationFactor = distanceToLastWaypoint / distanceBetweenWaypoints;
-                _target.Position = Vector3.Lerp(_lastWaypoint.transform.position, _currentWaypoint.transform.position, interpolationFactor);
+                // Project car position on the line between the last and current waypoint
+                var carPosition = _carBehaviour.transform.position;
+                var lastWaypointPosition = _lastWaypoint.transform.position;
+                var currentWaypointPosition = _currentWaypoint.transform.position;
+                
+                var direction = currentWaypointPosition - lastWaypointPosition;
+                var distance = Vector3.Distance(lastWaypointPosition, currentWaypointPosition);
+                var time = Mathf.Clamp01(Vector3.Dot(carPosition - lastWaypointPosition, direction.normalized) / distance);
+                _target.Position = lastWaypointPosition + time * direction;
+                _target.Direction = direction;
             }
+
+            _target.Direction.y = 0;
+            _target.Direction.Normalize();
         }
 
 
