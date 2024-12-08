@@ -1109,8 +1109,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1121679849}
     - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _slowdownDistance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _maxDistanceFromPath
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_LocalPosition.x

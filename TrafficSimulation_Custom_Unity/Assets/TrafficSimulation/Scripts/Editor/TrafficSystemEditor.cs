@@ -235,7 +235,7 @@ namespace TrafficSimulation.Scripts.Editor
             // Update waypoint next waypoints
             foreach (var segment in allSegments)
             {
-                for (var waypointIndex = segment.Waypoints.Count - 2; waypointIndex >= 0; waypointIndex--)
+                for (var waypointIndex = segment.Waypoints.Count - 1; waypointIndex >= 0; waypointIndex--)
                     segment.Waypoints[waypointIndex].NextWaypoint = segment.Waypoints[waypointIndex + 1];
             }
 

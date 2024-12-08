@@ -5,7 +5,7 @@ using UnityEngine;
 using math = Unity.Mathematics.math;
 
 
-public class MathExtentions : MonoBehaviour
+public class MathExtensions : MonoBehaviour
 {
     public static float LerpSmooth(float a, float b, float deltaTime, float duration)
     {
@@ -26,5 +26,16 @@ public class MathExtentions : MonoBehaviour
         // half life (2)
         float h = -duration / math.log2(1.0f / 1000.0f) ;
         return math.slerp(a, b, math.exp2(-deltaTime / h));
+    }
+
+    public static void DrawArrow(Vector3 from, Vector3 forward, float size)
+    {
+        forward = forward.normalized * size;
+        var left = Quaternion.Euler(0, 45, 0) * forward;
+        var right = Quaternion.Euler(0, -45, 0) * forward;
+
+        Gizmos.DrawLine(from, from + forward);
+        Gizmos.DrawLine(from + forward, from + left);
+        Gizmos.DrawLine(from + forward, from + right);
     }
 }
