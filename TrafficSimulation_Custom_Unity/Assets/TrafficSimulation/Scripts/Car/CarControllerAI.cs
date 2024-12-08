@@ -361,6 +361,7 @@ namespace TrafficSimulation
                     if (_nextSegment == null)
                     {
                         Debug.LogWarning("Car has no next segment");
+                        _currentWaypoint = null;
                         return;
                     }
                     

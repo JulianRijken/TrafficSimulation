@@ -19,8 +19,8 @@ namespace TrafficSimulation
         {
             public Connection Connection;
             public List<Connection> CrossingConnections;
-            float _angle;
-            private float _distance;
+            public float Angle;
+            public float Distance;
         }
         
         [Serializable]
@@ -111,25 +111,64 @@ namespace TrafficSimulation
                     
                     // Wait for moving car to pass
                     if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
-                    {
-                        float heightOffset = 2.0f;
-                        // Draw line from moving car to waiting car
-                        Vector3 fromPosition = movingCar.Car.transform.position;
-                        Vector3 toPosition = waitingCar.Car.transform.position;
-                        fromPosition.y += heightOffset;
-                        toPosition.y +=heightOffset;
-                        Debug.DrawLine(fromPosition, toPosition, Color.red, 1.0f);
-                        
                         continue;
-                    }
                     
                     waitingCar.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
                     return;
                 }
             }
             
+            
+            
+            
+            
+            
+            // TODO: This all is wrong because we have to sort
+            // but also care about the cars that blocked (which GetCarsToMove() does not do)
+            // Because the blocked car might have priority
+            
+            // var carsToMove = GetCarsToMove();
+            //
+            // if(carsToMove.Count == 0)
+            //     return;
+            //
+            // IntersectionCar best = carsToMove.First();
+            // foreach (var car in carsToMove)
+            // {
+            //     if (car.Turn.Angle < best.Turn.Angle)
+            //         best = car;
+            // }
+            //
+            // best.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
         }
-        
+
+        // private List<IntersectionCar> GetCarsToMove()
+        // {
+        //     List<IntersectionCar> carsToMove = new();
+        //     foreach (var waitingCar in CarsWaiting)
+        //     {
+        //         if(CarsMoving.Count == 0)
+        //         {
+        //             carsToMove.Add(waitingCar);
+        //             continue;
+        //         }
+        //         
+        //         foreach (var movingCar in CarsMoving)
+        //         {
+        //             if(waitingCar.Turn.CrossingConnections == null)
+        //                 throw new Exception("Crossing connections is null, intersection probably does not cover all connections");
+        //             
+        //             // Wait for moving car to pass
+        //             if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
+        //                 continue;
+        //             
+        //             carsToMove.Add(waitingCar);
+        //             break;
+        //         }
+        //     }
+        //
+        //     return carsToMove;
+        // }
         
         private void OnCarEnterIntersection(CarControllerAI car)
         {
@@ -141,8 +180,8 @@ namespace TrafficSimulation
                 Turn = _turns.FirstOrDefault(t => IsCarMakingTurn(t, car))
             });
             car.IntersectionState = CarControllerAI.IntersectionStateType.Waiting;
-            
-            Invoke(nameof(TryMoveCars), 1.0f);
+
+            TryMoveCars();
         }
         
         private void OnCarExitIntersection(CarControllerAI car)
@@ -165,24 +204,31 @@ namespace TrafficSimulation
             var boxCollider = GetComponent<BoxCollider>();
 
             // Create turns
-            foreach (var segment in _trafficSystem.Segments)
+            foreach (var fromSegment in _trafficSystem.Segments)
             {
-                foreach (var connectedSegment in segment.ConnectedSegments)
+                foreach (var connectedSegment in fromSegment.ConnectedSegments)
                 {
                     if (!boxCollider.bounds.Contains(connectedSegment.Waypoints.First().transform.position))
                         continue;
                     
-                    if (!boxCollider.bounds.Contains(segment.Waypoints.Last().transform.position))
+                    if (!boxCollider.bounds.Contains(fromSegment.Waypoints.Last().transform.position))
                         continue;
+                    
+                    // TODO: Assumes segments are at least 2 waypoints long
+                    Vector3 fromSegmentDirection = fromSegment.Waypoints[^1].transform.position - fromSegment.Waypoints[^2].transform.position;
+                    Vector3 connectedSegmentDirection = connectedSegment.Waypoints[1].transform.position - connectedSegment.Waypoints[0].transform.position;
+                    float angle = Vector3.Angle(fromSegmentDirection, connectedSegmentDirection);
                     
                     var turn = new Turn
                     {
                         Connection = new Connection
                         {
-                            From = segment,
+                            From = fromSegment,
                             To = connectedSegment
                         },
-                        CrossingConnections = new List<Connection>()
+                        CrossingConnections = new List<Connection>(),
+                        Angle = angle,
+                        Distance = Vector3.Distance(fromSegment.Waypoints.Last().transform.position, connectedSegment.Waypoints.First().transform.position)
                     };
                     
                     _turns.Add(turn);
