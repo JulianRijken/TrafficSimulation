@@ -64,6 +64,25 @@ public class MathExtensions : MonoBehaviour
             angle += 2 * Mathf.PI / segments;
         }
     }
+
+    public static void DrawCircle(Vector3 center, Vector3 up, float radius)
+    {
+        int segments = 32;
+        float angle = 0;
+        Vector3 perpendicular = Vector3.Cross(up, Vector3.right).magnitude > 0.001f 
+            ? Vector3.Cross(up, Vector3.right).normalized 
+            : Vector3.Cross(up, Vector3.forward).normalized;
+        Vector3 lastPos = center + perpendicular * radius;
+
+        for (int i = 0; i <= segments; i++)
+        {
+            Quaternion rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, up);
+            Vector3 newPos = center + rotation * (perpendicular * radius);
+            Gizmos.DrawLine(lastPos, newPos);
+            lastPos = newPos;
+            angle += 2 * Mathf.PI / segments;
+        }
+    }
     
     public static bool LineIntersect2D(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
     {

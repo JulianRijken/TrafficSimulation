@@ -80,6 +80,9 @@ public class CarWheel : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawRay(transform.position, WheelForward * (axisLength + _wheelRadius));
             Handles.Label(transform.position + WheelForward * (axisLength + _wheelRadius), "Forward");
+
+            Gizmos.color = Color.white;
+            MathExtensions.DrawCircle(transform.position,WheelOutwards, _wheelRadius);
         }
     }
 #endif

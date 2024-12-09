@@ -3426,6 +3426,79 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 999244679}
   NextWaypoint: {fileID: 184044276}
+--- !u!1001 &1743529815
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _trafficSystem
+      value: 
+      objectReference: {fileID: 1121679849}
+    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _slowdownDistance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _maxDistanceFromPath
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Name
+      value: Car_Saar_AI (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_TagString
+      value: AutonomousVehicle
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!1 &1786526982
 GameObject:
   m_ObjectHideFlags: 0
@@ -3518,79 +3591,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 538870981}
   NextWaypoint: {fileID: 450880653}
---- !u!1001 &1829835686
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _trafficSystem
-      value: 
-      objectReference: {fileID: 1121679849}
-    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _slowdownDistance
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 57962940686290933, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _maxDistanceFromPath
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -8.499996
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.70710677
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_Name
-      value: Car_Saar_AI (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_TagString
-      value: AutonomousVehicle
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!1 &1937136589 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
@@ -3978,8 +3978,8 @@ SceneRoots:
   - {fileID: 1668227973}
   - {fileID: 1545805820}
   - {fileID: 854917384}
-  - {fileID: 1829835686}
   - {fileID: 212475915}
+  - {fileID: 1743529815}
   - {fileID: 1712870940}
   - {fileID: 1053014044}
   - {fileID: 9187456}
