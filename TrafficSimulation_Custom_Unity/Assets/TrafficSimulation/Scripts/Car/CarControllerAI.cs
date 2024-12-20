@@ -27,6 +27,7 @@ namespace TrafficSimulation
         [SerializeField] private float _upcomingTurnDangerScale = 1.0f;
         [SerializeField] private float _alignmentDangerScale = 1.0f;
         [SerializeField] private float _elevationDangerScale = 1.0f;
+        [SerializeField] private float _intersectionDangerScale = 1.0f;
 
         [Header("Collision Detection")]
         [SerializeField] private float _secondsFromCarInFront = 2.0f;
@@ -133,6 +134,10 @@ namespace TrafficSimulation
             Gizmos.color = Color.Lerp(Color.white, Color.black, _dangerLevel);
             MathExtensions.DrawCircle(CarPosition + Vector3.up, _slowdownDistance);
 
+            Gizmos.color = new Color(1.0f, 0.3f, 0.3f, 0.3f);
+            Gizmos.DrawSphere(CarPosition + Vector3.up, _slowdownDistance);
+            
+            
             Gizmos.color = IntersectionState switch
             {
                 IntersectionStateType.Waiting => Color.red,
@@ -229,7 +234,7 @@ namespace TrafficSimulation
                     if (_currentWaypoint.NextWaypoint == null)
                     {
                         // Calculate intersection danger
-                        _intersectionDanger = 1.0f;
+                        _intersectionDanger = _intersectionDangerScale;
                     }
                     else
                     {
