@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Waypoint
   - AutonomousVehicle
+  - ScreenCamera
   layers:
   - Default
   - TransparentFX

@@ -134,8 +134,8 @@ namespace TrafficSimulation
             Gizmos.color = Color.Lerp(Color.white, Color.black, _dangerLevel);
             MathExtensions.DrawCircle(CarPosition + Vector3.up, _slowdownDistance);
 
-            Gizmos.color = new Color(1.0f, 0.3f, 0.3f, 0.3f);
-            Gizmos.DrawSphere(CarPosition + Vector3.up, _slowdownDistance);
+            // Gizmos.color = new Color(1.0f, 0.3f, 0.3f, 0.3f);
+            // Gizmos.DrawSphere(CarPosition + Vector3.up, _slowdownDistance);
             
             
             Gizmos.color = IntersectionState switch

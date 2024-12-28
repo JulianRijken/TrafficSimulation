@@ -20,8 +20,8 @@ namespace TrafficSimulation
                 //Draw segment names
                 //Custom font
                 var font = (Font)Resources.Load("JetBrainsMono-Bold");
-                var styleFirst = new GUIStyle { normal = { textColor = new Color(0, 0, 0,1.0f) }, fontSize = 15, font = font };
-                var styleSecond = new GUIStyle { normal = { textColor = new Color(1,1,1,1.0f) }, fontSize = 15, font = font };
+                var styleFirst = new GUIStyle { normal = { textColor = new Color(0, 0, 0,1.0f)}, fontSize = 22, font = font };
+                var styleSecond = new GUIStyle { normal = { textColor = new Color(1,1,1,1.0f) }, fontSize = 22, font = font };
 
                 Vector3 firstWaypoint = segment.Waypoints.First().transform.position;
                 Vector3 lastWaypoint = segment.Waypoints.Last().transform.position;
@@ -34,9 +34,9 @@ namespace TrafficSimulation
                     //Get current waypoint position
                     var p = segment.Waypoints[j].transform.position;
 
-                    // //Draw sphere, increase color to show the direction
-                    // Gizmos.color = new Color(1f, 1f, 1f, (j + 1) / (float)segment.Waypoints.Count);
-                    // Gizmos.DrawSphere(p, script.WaypointSize);
+                    //Draw sphere, increase color to show the direction
+                    Gizmos.color = new Color(1f, 1f, 1f, (j + 1) / (float)segment.Waypoints.Count);
+                    Gizmos.DrawSphere(p, script.WaypointSize);
 
                     //Get next waypoint position
                     var pNext = Vector3.zero;
@@ -46,8 +46,11 @@ namespace TrafficSimulation
 
                     if (pNext != Vector3.zero)
                     {
-                        Gizmos.color = segment == script.CurSegment ? new Color(1f, .3f, .1f) : new Color(1f, 0f, 0f);
+                        // Gizmos.color = segment == script.CurSegment ? new Color(1f, .3f, .1f) : new Color(1f, 0f, 0f);
 
+                        Gizmos.color = new Color(40.0f/ 255.0f, 40.0f / 255.0f, 201.0f / 255.0f);
+
+                        
                         //Draw connection line of the two waypoints
                         Gizmos.DrawLine(p, pNext);
 
@@ -71,7 +74,7 @@ namespace TrafficSimulation
                         var p1 = segment.Waypoints.Last().transform.position;
                         var p2 = nextSegment.Waypoints.First().transform.position;
 
-                        Gizmos.color = new Color(1f, 1f, 0f);
+                        Gizmos.color = new Color(0.9f, 0.8f, 0.2f);
                         Gizmos.DrawLine(p1, p2);
 
                         if (script.ArrowDrawType != ArrowDrawType.Off)
