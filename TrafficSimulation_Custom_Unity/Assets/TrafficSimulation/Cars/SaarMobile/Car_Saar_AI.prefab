@@ -63,7 +63,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1598603097554462743, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_TagString
-      value: AutonomousVehicle
+      value: Agent
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.x
@@ -161,6 +161,7 @@ MonoBehaviour:
   _upcomingTurnDangerScale: 1
   _alignmentDangerScale: 1
   _elevationDangerScale: 0.15
+  _intersectionDangerScale: 1
   _secondsFromCarInFront: 1
   _minDistanceCheck: 1
   _frontSensor: {fileID: 9056655636872195053}

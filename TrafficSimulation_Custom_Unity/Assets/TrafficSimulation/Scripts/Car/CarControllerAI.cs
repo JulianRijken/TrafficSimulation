@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -14,7 +15,7 @@ namespace TrafficSimulation
         [SerializeField] private float _streetMaxSpeed = 60.0f;
 
         [Header("Steering")] 
-        [SerializeField] private float _waypointDetectionThreshold = 2.0f;
+        [SerializeField] private Vector2 _waypointDetectionThreshold = new Vector2(1.0f,3.0f);
         [SerializeField] private float _directionLerpDistance = 3.0f;
         [SerializeField] private float _steerOverAngle = 45.0f;
         [SerializeField] private float _steerSmoothingSpeed = 10.0f;
@@ -37,6 +38,8 @@ namespace TrafficSimulation
         [Header("Advanced")]
         [SerializeField] private float _dangerLevelReductionSpeed = 1.0f;
         
+        [Header("Gizmos")]
+        [SerializeField] private bool _drawGizmos = true;
         
         private Segment _nextSegment;
         private Waypoint _currentWaypoint;
@@ -55,6 +58,7 @@ namespace TrafficSimulation
         private float _slowdownDistance = 0.0f;
         private float _targetSpeed = 0.0f;
         
+        [HideInInspector]
         public IntersectionStateType IntersectionState = IntersectionStateType.None;
         
         public event Action OnCarCollision;
@@ -75,10 +79,26 @@ namespace TrafficSimulation
         
         public Vector3 CarForwardPlaner => new Vector3(_carBehaviour.transform.forward.x, 0, _carBehaviour.transform.forward.z).normalized;
         public Vector3 CarPosition => _carBehaviour.transform.position;
-        public float DistanceFromPath => Vector3.Distance(new Vector3(CarPosition.x,0,CarPosition.z), new Vector3(_target.Position.x,0,_target.Position.z));
+        public float DistanceFromPathPlanner => Vector3.Distance(new Vector3(CarPosition.x,0,CarPosition.z), new Vector3(_target.Position.x,0,_target.Position.z));
+        
+        public CarBehaviour CarBehaviour => _carBehaviour;
+        
+        public float AlphaAlongSegment
+        {
+            get
+            {
+                if (_currentWaypoint == null)
+                    return 0.0f;
+                
+                var direction = _currentWaypoint.NextWaypoint.transform.position - _currentWaypoint.transform.position;
+                var distance = Vector3.Distance(_currentWaypoint.transform.position, _currentWaypoint.NextWaypoint.transform.position);
+                var time = Vector3.Dot(CarPosition - _currentWaypoint.transform.position, direction.normalized) / distance;
+                return time;
+            }
+        }
         
         public Segment NextSegment => _nextSegment;
-        public Segment CurrentSegment => _currentWaypoint.Segment;
+        public Segment CurrentSegment => _currentWaypoint == null ? null : _currentWaypoint.Segment;
         
         public float TargetSpeed => _targetSpeed;
         public float CurrentSpeed => _carBehaviour.ForwardSpeed;
@@ -99,9 +119,12 @@ namespace TrafficSimulation
         {
             UpdateWaypoint();
             UpdateTargetPosition();
+            
             UpdateSteering();
             UpdateDanger();
+            
             UpdateCollisionDetection();
+            
             UpdateTargetSpeed();
             UpdatePower();
         }
@@ -116,6 +139,9 @@ namespace TrafficSimulation
 
         private void OnDrawGizmos()
         {
+            if(_drawGizmos == false)
+                return;
+            
             // Only when the game is running
             if (!Application.isPlaying)
                 return;
@@ -186,7 +212,7 @@ namespace TrafficSimulation
                 
                 var direction = currentWaypointPosition - lastWaypointPosition;
                 var distance = Vector3.Distance(lastWaypointPosition, currentWaypointPosition);
-                var time = Mathf.Clamp01(Vector3.Dot(carPosition - lastWaypointPosition, direction.normalized) / distance);
+                var time = Vector3.Dot(carPosition - lastWaypointPosition, direction.normalized) / distance;
                 _target.Position = lastWaypointPosition + time * direction;
                 _target.Direction = direction;
             }
@@ -379,8 +405,11 @@ namespace TrafficSimulation
         
         private bool IsOnWaypoint(Waypoint waypoint)
         {
-            var distance = Vector3.Distance(CarPosition, waypoint.transform.position);
-            return distance < _waypointDetectionThreshold;
+            var carPositionFlat = new Vector2(CarPosition.x, CarPosition.z);
+            var waypointPositionFlat = new Vector2(waypoint.transform.position.x, waypoint.transform.position.z);
+            var distanceFlat = Vector2.Distance(carPositionFlat, waypointPositionFlat);
+            var distanceVertical = Mathf.Abs(CarPosition.y - waypoint.transform.position.y);
+            return distanceFlat < _waypointDetectionThreshold.x && distanceVertical < _waypointDetectionThreshold.y;
         }
     }
 }

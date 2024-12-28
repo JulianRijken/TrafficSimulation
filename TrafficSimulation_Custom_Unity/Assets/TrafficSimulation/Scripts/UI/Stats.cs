@@ -36,7 +36,6 @@ namespace TrafficSimulation
         
         [DebugGUIGraph(min: 0, max: 100, r: 0, g: 0, b: 0, autoScale: false, group: 1)]
         private float _averageSpeed;
-
         
         private void Update()
         {
@@ -54,7 +53,7 @@ namespace TrafficSimulation
             }
             
             
-            _averageDistanceFromPath = _carControllers.Count > 0 ? _carControllers.Average(carController => carController.DistanceFromPath) : 0;
+            _averageDistanceFromPath = _carControllers.Count > 0 ? _carControllers.Average(carController => carController.DistanceFromPathPlanner) : 0;
             _averageOffsetInfo.SetInfoText(_averageDistanceFromPath.ToString("F2") + "m");
         }
 

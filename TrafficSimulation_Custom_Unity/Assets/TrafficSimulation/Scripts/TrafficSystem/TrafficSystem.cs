@@ -14,8 +14,10 @@ namespace TrafficSimulation
         public float ArrowSizeWaypoint = 1;
         public float ArrowSizeIntersection = 0.5f;
         public float WaypointSize = 0.5f;
-        public string[] CollisionLayers;
-
+        public float WaypointHeight = 0.5f;
+        public LayerMask WaypointGroundSnapIgnoreLayerMask;
+        
+        
         public Segment CurSegment;
 
         [HideInInspector] public List<Segment> Segments = new();
