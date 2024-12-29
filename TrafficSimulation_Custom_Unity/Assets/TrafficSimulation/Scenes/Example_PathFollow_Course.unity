@@ -2295,6 +2295,10 @@ PrefabInstance:
       value: Car_Saar_AI
       objectReference: {fileID: 0}
     - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _drawGizmos
       value: 1
       objectReference: {fileID: 0}
@@ -2317,23 +2321,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 526634544}
+    - targetCorrespondingSourceObject: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 526634546}
   m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!4 &526634540 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
   m_PrefabInstance: {fileID: 526634539}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &526634542 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-  m_PrefabInstance: {fileID: 526634539}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 25553776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea6acc057f7387e45ba1d9d60f55a9b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &526634544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2346,8 +2342,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a73fc457a16164fa2a85a235558fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _carControllerAI: {fileID: 526634542}
+  segment: {fileID: 0}
+  agent: {fileID: 0}
   _sampleRate: 0.1
+--- !u!114 &526634546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25553776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e84ec2693fb3d945b7121a6ca63ff01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _segment: {fileID: 1977852149}
+  _agent: {fileID: 526634547}
+  _settings: {fileID: 11400000, guid: eb621324797059a4888c8afa774bcc75, type: 2}
+--- !u!114 &526634547 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 745372997804457197, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+  m_PrefabInstance: {fileID: 526634539}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 25553776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 199601b320587c849b469b14d7ae54ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &571720760
 GameObject:
   m_ObjectHideFlags: 0
@@ -4223,6 +4246,7 @@ MonoBehaviour:
   ArrowSizeIntersection: 0.5
   WaypointSize: 0
   WaypointHeight: 0.5
+  FontSize: 22
   WaypointGroundSnapIgnoreLayerMask:
     serializedVersion: 2
     m_Bits: 64

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PID
   m_EditorClassIdentifier: 
   MaxSpeed: 10
-  Proportional_Gain: 1
-  Derivative_Gain: 0
-  Integral_Gain: 0
+  Proportional_Gain: 0.7
+  Derivative_Gain: 0.3
+  Integral_Gain: 0.9
   Integral_Limit: 1

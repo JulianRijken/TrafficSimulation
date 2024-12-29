@@ -48,20 +48,19 @@ public class PathEvaluation : MonoBehaviour
     private void OnDestroy()
     {
         tw.Close();
-        
     }
 
     private void Update()
     {
-        if (!moveSegment)
-            return;
-        
-        var sample = segment.GetSampleFromPosition(agent.Position);
-        if (sample.AlphaAlongSegment > 0.5f)
-        {
-            moveSegment = false;
-            segment.transform.position += Vector3.forward * 5.0f;
-        }
+        // if (!moveSegment)
+        //     return;
+        //
+        // var sample = segment.GetSampleFromPosition(agent.Position);
+        // if (sample.AlphaAlongSegment > 0.5f)
+        // {
+        //     moveSegment = false;
+        //     segment.transform.position += Vector3.forward * 5.0f;
+        // }
     }
 
 
@@ -124,7 +123,6 @@ public class PathEvaluation : MonoBehaviour
             
             //pause the editor
             EditorApplication.isPaused = true;
-            segment.transform.position = new Vector3(0, 0, 1000);
             return;
         }
         

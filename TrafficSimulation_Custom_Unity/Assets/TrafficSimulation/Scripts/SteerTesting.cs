@@ -13,7 +13,7 @@ namespace TrafficSimulation
         [SerializeField] private CarBehaviour _agent;
         [SerializeField] private AgentSettings _settings;
 
-        private float integrationStored = 0.0f;
+        private float accumulatedError = 0.0f;
         
         private void Update()
         {
@@ -32,9 +32,9 @@ namespace TrafficSimulation
             float d = _settings.Derivative_Gain * errorRate;
             
             // I - Integral acts as a memory, reducing the steady state error
-            integrationStored += error * Time.deltaTime;
-            integrationStored = Mathf.Clamp(integrationStored, -_settings.Integral_Limit,_settings.Integral_Limit);
-            float i = _settings.Integral_Gain * integrationStored;
+            accumulatedError += error * Time.deltaTime;
+            accumulatedError = Mathf.Clamp(accumulatedError, -_settings.Integral_Limit,_settings.Integral_Limit);
+            float i = _settings.Integral_Gain * accumulatedError;
             
 
             float scale = 10.0f;
