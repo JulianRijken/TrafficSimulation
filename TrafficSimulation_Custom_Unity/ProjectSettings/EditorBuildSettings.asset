@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/TrafficSimulation/Scenes/Example_T.unity
+    path: Assets/TrafficSimulation/Scenes/OLD/Example_T.unity
     guid: bb016cb0ccaa14341b92d7b33955d6d1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 600a87cfd408c4e45b43f3e2d379b85c, type: 3}

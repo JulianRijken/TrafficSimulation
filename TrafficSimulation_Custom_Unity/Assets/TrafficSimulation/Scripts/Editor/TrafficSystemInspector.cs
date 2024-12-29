@@ -15,6 +15,7 @@ namespace TrafficSimulation.Scripts.Editor
                 //Arrow config
                 EditorHelper.DrawArrowTypeSelection(trafficSystem);
                 EditorHelper.FloatField("Waypoint Size", ref trafficSystem.WaypointSize);
+                EditorHelper.IntField("Font Size", ref trafficSystem.FontSize);
                 EditorGUILayout.Space();
 
                 //-- System config

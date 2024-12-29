@@ -91,20 +91,22 @@ namespace TrafficSimulation
             return SampleAlphaFromPosition(position) * TotalLength;
         }
         
-        public struct SegmentSample
+        public struct Sample
         {
-            public float DistanceAlongPath;
-            public float Alpha;
+            public float DistanceAlongSegment;
+            public float AlphaAlongSegment;
             public Vector3 Position;
-            public Vector3 DirectionBetweenWaypoints;
-            public bool OnLeftSideOfSegment;
+            public Vector3 Direction;
+            public Vector3 DirectionRight;
+            public Vector3 DirectionToSampledPosition;
+            public float SignedDistanceFromPath;
         }
         
         
-        public SegmentSample GetSampleFromPosition(Vector3 position)
+        public Sample GetSampleFromPosition(Vector3 originalPosition)
         {
-            float closestDistance = float.MaxValue;
-            SegmentSample closestSample = new SegmentSample();
+            var closestDistance = float.MaxValue;
+            var closestSample = new Sample();
 
             for (int i = 0; i < Waypoints.Count - 1; i++)
             {
@@ -112,19 +114,21 @@ namespace TrafficSimulation
                 var toWaypointPosition = Waypoints[i + 1].Position;
                 var directionBetweenWaypoints = (toWaypointPosition - fromWaypointPosition).normalized;
                 var distanceBetweenWaypoints = Vector3.Distance(fromWaypointPosition, toWaypointPosition);
-                var alphaBetweenWaypoints = Vector3.Dot(position - fromWaypointPosition, directionBetweenWaypoints) / distanceBetweenWaypoints;
-                var positionBetweenWaypoints = Vector3.Lerp(fromWaypointPosition, toWaypointPosition, alphaBetweenWaypoints);
-                var distanceToClosestPosition = Vector3.Distance(position, positionBetweenWaypoints);
-                    
-                if(distanceToClosestPosition < closestDistance)
-                {
-                    closestDistance = distanceToClosestPosition;
-                    closestSample.Alpha  = (cumulativeLengths[i] + alphaBetweenWaypoints * distanceBetweenWaypoints) / TotalLength;
-                    closestSample.DistanceAlongPath = closestSample.Alpha * TotalLength;
-                    closestSample.Position = positionBetweenWaypoints;
-                    closestSample.DirectionBetweenWaypoints = directionBetweenWaypoints;
-                    closestSample.OnLeftSideOfSegment = Vector3.Dot(position - fromWaypointPosition, Vector3.Cross(directionBetweenWaypoints, Vector3.up)) > 0;
-                }
+                var alphaBetweenWaypoints = Mathf.Clamp01(Vector3.Dot(originalPosition - fromWaypointPosition, directionBetweenWaypoints) / distanceBetweenWaypoints);
+                var sampledPosition = Vector3.Lerp(fromWaypointPosition, toWaypointPosition, alphaBetweenWaypoints);
+                var distanceToSampledPosition = Vector3.Distance(originalPosition, sampledPosition);
+
+                if (distanceToSampledPosition >= closestDistance) 
+                    continue;
+                
+                closestDistance = distanceToSampledPosition;
+                closestSample.AlphaAlongSegment  = (cumulativeLengths[i] + alphaBetweenWaypoints * distanceBetweenWaypoints) / TotalLength;
+                closestSample.DistanceAlongSegment =  closestSample.AlphaAlongSegment * TotalLength;
+                closestSample.Position = sampledPosition;
+                closestSample.Direction = directionBetweenWaypoints;
+                closestSample.DirectionRight = Vector3.Cross(directionBetweenWaypoints, Vector3.up);
+                closestSample.DirectionToSampledPosition = (originalPosition - sampledPosition).normalized;
+                closestSample.SignedDistanceFromPath = Vector3.Dot( closestSample.DirectionToSampledPosition ,   closestSample.DirectionRight) * distanceToSampledPosition;
             }
 
             return closestSample;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
@@ -15,6 +16,7 @@ namespace TrafficSimulation
         public float ArrowSizeIntersection = 0.5f;
         public float WaypointSize = 0.5f;
         public float WaypointHeight = 0.5f;
+        [FormerlySerializedAs("TextSize")] public int FontSize = 22;
         public LayerMask WaypointGroundSnapIgnoreLayerMask;
         
         

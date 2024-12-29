@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -10,9 +11,13 @@ public class ScreenshotWithGizmos : MonoBehaviour
 
     private Camera screenshotCamera;
 
-    void Start()
+
+    private void Update()
     {
-        Invoke(nameof(TakeScreenshotWithGizmos), 0.01f);
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            TakeScreenshotWithGizmos();
+        }
     }
 
     public void TakeScreenshotWithGizmos()

@@ -42,10 +42,18 @@ namespace TrafficSimulation
         public float NormalizedSpeed => Mathf.Abs(Vector3.Dot(_rigidbody.linearVelocity, transform.forward)) /
                                         (_topForwardsKPH / 3.6f);
 
+        // Can be changed in the future to allow for custom position, like might be needed for bigger vehicles
+        public Vector3 Position => transform.position;
+        
         public float ForwardSpeed => Vector3.Dot(_rigidbody.linearVelocity, transform.forward);
 
         public float ForwardSpeedKPH => Vector3.Dot(_rigidbody.linearVelocity, transform.forward) * 3.6f;
 
+        
+        public Vector3 Forward => transform.forward;
+
+        public Vector3 ForwardPlanner => new Vector3(Forward.x, 0, Forward.z).normalized;
+        
         public float NormalizedForwardSpeed =>
             Mathf.Clamp01(ForwardSpeed / (_topForwardsKPH / 3.6f));
 
