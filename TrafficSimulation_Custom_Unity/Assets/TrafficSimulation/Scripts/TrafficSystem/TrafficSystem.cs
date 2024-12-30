@@ -45,6 +45,28 @@ namespace TrafficSimulation
             
             return null;
         }
+        
+        public Segment GetClosestSegment(Vector3 position)
+        {
+            float closestDistance = float.MaxValue;
+            Segment closestSegment = null;
+            
+            foreach (var segment in Segments)
+            {
+                var sample = segment.GetSampleFromPosition(position);
+                
+                if (sample.DistanceFromPath > closestDistance) 
+                    continue;
+                
+                if(sample.IsAtEndOfSegment)
+                    continue;
+                
+                closestDistance = sample.DistanceFromPath;
+                closestSegment = segment;
+            }
+
+            return closestSegment;
+        }
     }
 
     public enum ArrowDrawType

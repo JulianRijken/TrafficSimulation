@@ -261,11 +261,6 @@ Transform:
   - {fileID: 526634540}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &25553776 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-  m_PrefabInstance: {fileID: 526634539}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &28386827
 GameObject:
   m_ObjectHideFlags: 0
@@ -2252,7 +2247,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -51.42
+      value: -49.5
       objectReference: {fileID: 0}
     - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2260,7 +2255,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.43
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2294,83 +2289,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Car_Saar_AI
       objectReference: {fileID: 0}
-    - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _drawGizmos
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+    - target: {fileID: 5978275530997923532, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _trafficSystem
       value: 
       objectReference: {fileID: 1121679849}
-    - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _waypointDetectionThreshold.x
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8709726505767862291, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _waypointDetectionThreshold.y
-      value: 2
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 526634544}
-    - targetCorrespondingSourceObject: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 526634546}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!4 &526634540 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
   m_PrefabInstance: {fileID: 526634539}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &526634544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 25553776}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8a73fc457a16164fa2a85a235558fcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  segment: {fileID: 0}
-  agent: {fileID: 0}
-  _sampleRate: 0.1
---- !u!114 &526634546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 25553776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e84ec2693fb3d945b7121a6ca63ff01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _segment: {fileID: 1977852149}
-  _agent: {fileID: 526634547}
-  _settings: {fileID: 11400000, guid: eb621324797059a4888c8afa774bcc75, type: 2}
---- !u!114 &526634547 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 745372997804457197, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-  m_PrefabInstance: {fileID: 526634539}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 25553776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 199601b320587c849b469b14d7ae54ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &571720760
 GameObject:
   m_ObjectHideFlags: 0

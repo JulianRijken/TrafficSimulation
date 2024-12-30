@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -91,6 +92,7 @@ namespace TrafficSimulation
             return SampleAlphaFromPosition(position) * TotalLength;
         }
         
+        [Serializable]
         public struct Sample
         {
             public float DistanceAlongSegment;
@@ -99,7 +101,11 @@ namespace TrafficSimulation
             public Vector3 Direction;
             public Vector3 DirectionRight;
             public Vector3 DirectionToSampledPosition;
+            public float DistanceFromPath;
             public float SignedDistanceFromPath;
+            public int WaypointIndex;
+            public bool IsAtEndOfSegment;
+            public bool IsAtStartOfSegment;
         }
         
         
@@ -118,7 +124,7 @@ namespace TrafficSimulation
                 var sampledPosition = Vector3.Lerp(fromWaypointPosition, toWaypointPosition, alphaBetweenWaypoints);
                 var distanceToSampledPosition = Vector3.Distance(originalPosition, sampledPosition);
 
-                if (distanceToSampledPosition >= closestDistance) 
+                if (distanceToSampledPosition > closestDistance) 
                     continue;
                 
                 closestDistance = distanceToSampledPosition;
@@ -127,8 +133,14 @@ namespace TrafficSimulation
                 closestSample.Position = sampledPosition;
                 closestSample.Direction = directionBetweenWaypoints;
                 closestSample.DirectionRight = Vector3.Cross(directionBetweenWaypoints, Vector3.up);
-                closestSample.DirectionToSampledPosition = (originalPosition - sampledPosition).normalized;
+                closestSample.DirectionToSampledPosition = (sampledPosition - originalPosition).normalized;
                 closestSample.SignedDistanceFromPath = Vector3.Dot( closestSample.DirectionToSampledPosition ,   closestSample.DirectionRight) * distanceToSampledPosition;
+                closestSample.DistanceFromPath = Mathf.Abs(closestSample.SignedDistanceFromPath);
+                closestSample.WaypointIndex = i;
+
+                const float epsilon = 1e-6f; // Small tolerance value
+                closestSample.IsAtEndOfSegment =  closestSample.AlphaAlongSegment >= 1.0f - epsilon;
+                closestSample.IsAtStartOfSegment =  closestSample.AlphaAlongSegment <= 0.0f + epsilon;
             }
 
             return closestSample;

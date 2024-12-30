@@ -119,7 +119,7 @@ namespace TrafficSimulation
             UpdateWaypoint();
             UpdateTargetPosition();
             
-            UpdateSteering();
+            // UpdateSteering();
             UpdateDanger();
             
             UpdateCollisionDetection();

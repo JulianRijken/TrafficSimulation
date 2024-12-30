@@ -51,7 +51,8 @@ namespace TrafficSimulation
 
         
         public Vector3 Forward => transform.forward;
-
+        public Vector3 Right => transform.right;
+        
         public Vector3 ForwardPlanner => new Vector3(Forward.x, 0, Forward.z).normalized;
         
         public float NormalizedForwardSpeed =>

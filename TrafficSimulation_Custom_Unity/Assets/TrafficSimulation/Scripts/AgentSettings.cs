@@ -17,7 +17,11 @@ public class AgentSettings : ScriptableObject
     [Tooltip("Integral acts as a memory, reducing the steady state error")]
     public float Integral_Gain = 1.0f;
     [FormerlySerializedAs("Integral_Saturation")]
-    [Space]
     [Tooltip("Integral saturation limit, to prevent windup")]
     public float Integral_Limit = 1.0f;
+    [Space]
+    public float DirectionError_Gain = 1.0f;
+    public float DirectionError_Distance = 3.0f;
+
+    // public AnimationCurve SteeringDirectionErrorStrengthOverDistanceCurve;
 }
