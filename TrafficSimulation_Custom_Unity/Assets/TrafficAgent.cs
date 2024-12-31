@@ -41,7 +41,7 @@ public class TrafficAgent : MonoBehaviour
         if(_currentSegment == null)
             return;
         
-        CurrentSample = _currentSegment.GetSampleFromPosition(_carBehaviour.Position);
+        CurrentSample = _currentSegment.SampleFromPosition(_carBehaviour.Position);
         if(CurrentSample.IsAtEndOfSegment)
             UpdateSegment();
     }

@@ -47,6 +47,10 @@ public class CarWheel : MonoBehaviour
 
     private float SpringVelocity => Vector3.Dot(-SpringDirection, WheelVelocity);
 
+    
+    public float SteerAngle => (_steerAlpha > 0.0f ? 1.0f : -1.0f) * _maxSteerAngle *
+                               _steerCurve.Evaluate(Mathf.Abs(_steerAlpha));
+    
     private void Awake()
     {
         _startYAngle = transform.localEulerAngles.y;
@@ -180,9 +184,7 @@ public class CarWheel : MonoBehaviour
 
     private void HandleSteering()
     {
-        var targetSteerAngle = (_steerAlpha > 0.0f ? 1.0f : -1.0f) * _maxSteerAngle *
-                               _steerCurve.Evaluate(Mathf.Abs(_steerAlpha));
-        transform.localRotation = Quaternion.Euler(0, _startYAngle + targetSteerAngle, 0);
+        transform.localRotation = Quaternion.Euler(0, _startYAngle + SteerAngle, 0);
     }
 
     private void HandleWheelVisual()

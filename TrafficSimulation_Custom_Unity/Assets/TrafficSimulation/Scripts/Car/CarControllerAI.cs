@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
@@ -38,7 +39,7 @@ namespace TrafficSimulation
         [SerializeField] private float _dangerLevelReductionSpeed = 1.0f;
         
         [Header("Gizmos")]
-        [SerializeField] private bool _drawGizmos = true;
+        [SerializeField] private bool _debug = true;
         
         private Segment _nextSegment;
         private Waypoint _currentWaypoint;
@@ -138,7 +139,7 @@ namespace TrafficSimulation
 
         private void OnDrawGizmos()
         {
-            if(_drawGizmos == false)
+            if(_debug == false)
                 return;
             
             // Only when the game is running

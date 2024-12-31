@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TrafficSimulation;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,9 +20,6 @@ namespace TrafficSimulation
         private bool finished = false;
         private TextWriter tw;
 
-        [DebugGUIGraph(min: 0, max: 5, r: 0, g: 0, b: 0, autoScale: true, group: 0)]
-        private float _deviationFromPath;
-        
         private struct PathPoint
         {
             public Vector3 Position;
@@ -33,6 +29,7 @@ namespace TrafficSimulation
             public float ThrottleInput;
             public float BreakInput;
             public float SteeringSteerWheelInput;
+            public float DistanceFromPath;
             public Segment.Sample PathSample;
         }
 
@@ -40,25 +37,7 @@ namespace TrafficSimulation
 
         private void OnEnable()
         {
-            if (_writeToFile)
-            {
-                string path = "Data/PathEvaluation.csv";
-                if (File.Exists(path))
-                    File.Delete(path);
-
-                tw = new StreamWriter(path);
-                tw.WriteLine(
-                    "Distance Along Path,Time,Speed,Throttle Input,Break Input,Steering Steer Wheel Input,Deviation From Path");
-                Debug.Log("Writing to " + path);
-            }
-
             InvokeRepeating(nameof(WritePoint), 0.0f, _sampleRate);
-        }
-
-        private void OnDisable()
-        {
-            if (_writeToFile)
-                tw.Close();
         }
 
 
@@ -78,25 +57,11 @@ namespace TrafficSimulation
                     Gizmos.DrawSphere(point.Position, 0.2f);
                 }
             }
-
-            if (_agent.CurrentSegment == null)
-                return;
-
-            var sample = _agent.CurrentSegment.GetSampleFromPosition(_agent.CarBehaviour.Position);
-            Gizmos.color = Color.magenta;
-            Gizmos.DrawSphere(sample.Position, 0.2f);
-            Gizmos.DrawLine(_agent.CarBehaviour.Position, sample.Position);
         }
 
         private void OnFinish()
         {
             finished = true;
-
-            if (_writeToFile)
-            {
-                tw.Close();
-                Debug.Log("Finished writing to file");
-            }
 
             if (_pauseOnFinish)
             {
@@ -108,7 +73,7 @@ namespace TrafficSimulation
             float averageThrottle = _pastPoints.Sum(point => point.ThrottleInput) / _pastPoints.Count;
             float averageBreak = _pastPoints.Sum(point => point.BreakInput) / _pastPoints.Count;
             float averageSteering = _pastPoints.Sum(point => point.SteeringSteerWheelInput) / _pastPoints.Count;
-            float averageDeviation = _pastPoints.Sum(point => point.PathSample.DistanceFromPath) / _pastPoints.Count;
+            float averageDeviation = _pastPoints.Sum(point => point.DistanceFromPath) / _pastPoints.Count;
             
             Debug.Log($"Finished path evaluation");
             Debug.Log($"Average speed: {averageSpeed}");
@@ -116,8 +81,36 @@ namespace TrafficSimulation
             Debug.Log($"Average break: {averageBreak}");
             Debug.Log($"Average steering: {averageSteering}");
             Debug.Log($"Average deviation: {averageDeviation}");
+
             
-            // tw.WriteLine($"{_distanceAlongPath},{Time.time},{agent.ForwardSpeed},{agent.ThrottleInput},{agent.BreakInput},{agent.SteerWheelInput},{_distanceFromPath}");
+            if (_writeToFile)
+            {
+                string path = $"Data/PathEvaluation_{0}.csv";
+                int i = 0;
+                while (File.Exists(path))
+                {
+                    i++;
+                    path = $"Data/PathEvaluation_{i}.csv";
+                }
+
+                tw = new StreamWriter(path);
+                Debug.Log("Writing to " + path);
+                
+                tw.WriteLine("Average Speed,Average Throttle,Average Break,Average Steering,Average Deviation, , ");
+                tw.WriteLine($"{averageSpeed},{averageThrottle},{averageBreak},{averageSteering},{averageDeviation}");
+                tw.WriteLine("");
+            
+                tw.WriteLine(
+                    "Distance Along Path,Time,Speed,Throttle Input,Break Input,Steering Steer Wheel Input,Deviation From Path");
+                foreach (var point in _pastPoints)
+                {
+                    tw.WriteLine(
+                        $"{point.PathSample.DistanceAlongSegment},{point.Time},{point.ForwardSpeed},{point.ThrottleInput},{point.BreakInput},{point.SteeringSteerWheelInput},{point.DistanceFromPath}");
+                }
+                tw.Close();
+                Debug.Log("Finished writing to file");
+            }
+
         }
         
         private void WritePoint()
@@ -148,11 +141,9 @@ namespace TrafficSimulation
                 ThrottleInput = _agent.CarBehaviour.ThrottleInput,
                 BreakInput = _agent.CarBehaviour.BreakInput,
                 SteeringSteerWheelInput = _agent.CarBehaviour.SteerWheelInput,
-                PathSample = _agent.CurrentSample
+                PathSample = _agent.CurrentSample,
+                DistanceFromPath = _agent.CurrentSample.GetDistanceFromPath(_agent.CarBehaviour.Position)
             });
-
-            _deviationFromPath = _agent.CurrentSample.DistanceFromPath;
-
         }
     }
 }

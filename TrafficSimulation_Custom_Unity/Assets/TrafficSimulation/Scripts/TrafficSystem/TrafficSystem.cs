@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -53,15 +52,16 @@ namespace TrafficSimulation
             
             foreach (var segment in Segments)
             {
-                var sample = segment.GetSampleFromPosition(position);
-                
-                if (sample.DistanceFromPath > closestDistance) 
+                var sample = segment.SampleFromPosition(position);
+
+                float distanceFromPath = sample.GetDistanceFromPath(position);
+                if (distanceFromPath > closestDistance) 
                     continue;
                 
                 if(sample.IsAtEndOfSegment)
                     continue;
                 
-                closestDistance = sample.DistanceFromPath;
+                closestDistance = distanceFromPath;
                 closestSegment = segment;
             }
 
