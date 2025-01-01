@@ -2285,14 +2285,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2234912061600202843, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _writeToFile
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2234912061600202843, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _pauseOnFinish
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2720620452706575241, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: _targetSpeed
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_Name
       value: Car_Saar_AI
       objectReference: {fileID: 0}
-    - target: {fileID: 5978275530997923532, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _trafficSystem
-      value: 
-      objectReference: {fileID: 1121679849}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

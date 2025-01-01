@@ -67,7 +67,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -30
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.y
@@ -75,7 +75,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalRotation.w
@@ -178,10 +178,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _agent: {fileID: 5978275530997923532}
-  useDistanceCorrection: 1
-  useBackwardsCorrection: 1
-  debug: 0
-  debugBallRadius: 1
+  _useDistanceCorrection: 1
+  _useBackwardsCorrection: 1
+  _debugLAT: 1
+  _debugPID: 0
+  _debugLOTBallRadius: 0.5
 --- !u!114 &2720620452706575241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,6 +212,7 @@ MonoBehaviour:
   _agent: {fileID: 5978275530997923532}
   _agentSteering: {fileID: 3882626552597570987}
   _sampleRate: 0.1
-  _writeToFile: 0
-  _pauseOnFinish: 0
+  _writeToFile: 1
+  _pauseOnFinish: 1
   _visualizePath: 1
+  _fileSuffix: Cutting2

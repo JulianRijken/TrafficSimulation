@@ -15,5 +15,5 @@ public class AgentSettings : ScriptableObject
     
     [Header("Lookahead")]
     public float LookaheadDistance = 5.0f;
-    public float LookaheadSpeedDistance_Gain = 0.5f;
+    public float LookaheadDistanceOverTime = 0.5f;
 }
