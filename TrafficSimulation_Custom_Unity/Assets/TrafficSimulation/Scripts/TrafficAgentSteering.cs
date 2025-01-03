@@ -56,8 +56,8 @@ namespace TrafficSimulation
                 // Interpolate
                 _interpolatedSample.Position =
                     Vector3.Lerp(_agent.CurrentSample.Position, _futureSample.Position, 0.5f);
-                _interpolatedSample.Direction = (_futureSample.Position - _agent.CurrentSample.Position).normalized;
-                _interpolatedSample.DirectionRight = Vector3.Cross(_interpolatedSample.Direction, Vector3.up);
+                _interpolatedSample.DirectionForward = (_futureSample.Position - _agent.CurrentSample.Position).normalized;
+                _interpolatedSample.DirectionRight = Vector3.Cross(_interpolatedSample.DirectionForward, Vector3.up);
                 _interpolatedSample.AlphaAlongSegment = Mathf.Lerp(_agent.CurrentSample.AlphaAlongSegment,
                     _futureSample.AlphaAlongSegment, 0.5f);
                 _interpolatedSample.DistanceAlongSegment = Mathf.Lerp(_agent.CurrentSample.DistanceAlongSegment,
@@ -69,8 +69,8 @@ namespace TrafficSimulation
             }
 
             // Decide agent steering mode
-            bool isDrivingBackwards = Vector3.Dot(_agent.CarBehaviour.Forward,_interpolatedSample.Direction) < 0;
-            bool isTooFarFromPath = _interpolatedSample.GetDistanceFromPath(_agent.CarBehaviour.Position) > _agent.Settings.DirectionErrorTriggerDistance;
+            bool isDrivingBackwards = Vector3.Dot(_agent.CarBehaviour.Forward,_interpolatedSample.DirectionForward) < 0;
+            bool isTooFarFromPath = _interpolatedSample.GetRightDistanceFromPath(_agent.CarBehaviour.Position) > _agent.Settings.DirectionErrorTriggerDistance;
             if (isTooFarFromPath && _useDistanceCorrection)
                 _steerMode = SteerModeType.DistanceCorrection;
             else if (isDrivingBackwards && _useBackwardsCorrection)
@@ -84,7 +84,7 @@ namespace TrafficSimulation
             {
                 case SteerModeType.PID:
                     
-                    float signedDistanceFromPath = _interpolatedSample.GetSignedDistanceFromPath(_agent.CarBehaviour.Position);
+                    float signedDistanceFromPath = _interpolatedSample.GetRightSignedDistanceFromPath(_agent.CarBehaviour.Position);
                     float error = -signedDistanceFromPath;
                     float errorRate = Vector3.Dot(_agent.CarBehaviour.Velocity, _interpolatedSample.DirectionRight);
                     
@@ -104,7 +104,7 @@ namespace TrafficSimulation
                     break;
                 
                 case SteerModeType.BackwardsCorrection:
-                    _agent.CarBehaviour.SteerWheelInput = GetSteerInputToDirection(_interpolatedSample.Direction);
+                    _agent.CarBehaviour.SteerWheelInput = GetSteerInputToDirection(_interpolatedSample.DirectionForward);
                     break;
                 
                 case SteerModeType.DistanceCorrection:
@@ -131,8 +131,8 @@ namespace TrafficSimulation
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireSphere(_interpolatedSample.Position, _debugLOTBallRadius);
                 float distance = Vector3.Distance(_agent.CurrentSample.Position, _futureSample.Position);
-                Gizmos.DrawLine(_interpolatedSample.Position - _interpolatedSample.Direction * distance * 0.5f,
-                    _interpolatedSample.Position + _interpolatedSample.Direction * distance * 0.5f);
+                Gizmos.DrawLine(_interpolatedSample.Position - _interpolatedSample.DirectionForward * distance * 0.5f,
+                    _interpolatedSample.Position + _interpolatedSample.DirectionForward * distance * 0.5f);
                 
                 
                 Gizmos.color = Color.cyan;

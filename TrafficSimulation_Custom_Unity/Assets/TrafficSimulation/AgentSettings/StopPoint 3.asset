@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22576aa36247ca041861e2c97048d95b, type: 3}
-  m_Name: Optimal
+  m_Name: StopPoint 3
   m_EditorClassIdentifier: 
   MaxSpeed: 10
   SteeringPIDSettings:
@@ -23,9 +23,9 @@ MonoBehaviour:
   LookaheadDistance: 2.5
   LookaheadDistanceOverTime: 0.15
   PositionSpeedPIDSettings:
-    ProportionalGain: 0.15
+    ProportionalGain: 0.6
     IntegralGain: 0
-    DerivativeGain: 0.2
+    DerivativeGain: 0.8
     Integral_Limit: 0
   SpeedLimitChangeDuration: 0
   SpeedLimitInputPoportionalGain: 0.5

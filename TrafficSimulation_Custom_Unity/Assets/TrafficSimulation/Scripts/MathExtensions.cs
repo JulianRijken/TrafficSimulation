@@ -84,6 +84,11 @@ public class MathExtensions : MonoBehaviour
         }
     }
     
+    public static Vector3 FlatVector(Vector3 vector)
+    {
+        return new Vector3(vector.x, 0.0f, vector.z);
+    }
+    
     public static bool LineIntersect2D(Vector2 p1, Vector2 q1, Vector2 p2, Vector2 q2)
     {
         // Helper to find orientation of the triplet (p, q, r)

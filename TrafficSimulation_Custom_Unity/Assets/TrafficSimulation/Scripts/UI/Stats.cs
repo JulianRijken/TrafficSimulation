@@ -34,7 +34,7 @@ namespace TrafficSimulation
         [DebugGUIGraph(min: 0, max: 5, r: 0, g: 0, b: 0, autoScale: false, group: 0)]
         private float _averageDistanceFromPath;
         
-        [DebugGUIGraph(min: 0, max: 100, r: 0, g: 0, b: 0, autoScale: false, group: 1)]
+        [DebugGUIGraph(min: 0, max: 80, r: 0, g: 0, b: 0, autoScale: false, group: 1)]
         private float _averageSpeed;
         
         private void Update()
@@ -49,7 +49,7 @@ namespace TrafficSimulation
             if (vehicles.Length > 0)
             {
                 _averageSpeed = vehicles.Average(vehicle => vehicle.ForwardSpeedKPH);
-                _averageSpeedInfo.SetInfoText(_averageSpeed.ToString("F0") + "km/h");
+                _averageSpeedInfo.SetInfoText(_averageSpeed.ToString("F0") + "kph");
             }
             
             

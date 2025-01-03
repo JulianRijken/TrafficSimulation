@@ -165,6 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1635188409}
+  SpeedLimitKph: 50
 --- !u!1001 &4515213
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -221,6 +222,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -259,6 +264,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 526634540}
+  - {fileID: 384021446}
+  - {fileID: 1589557853}
+  - {fileID: 1124335205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &28386827
@@ -307,6 +315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 779392238}
+  SpeedLimitKph: 50
 --- !u!1 &33133903
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,6 +362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1933714130}
+  SpeedLimitKph: 50
 --- !u!1 &66997911 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
@@ -495,6 +505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1231640891}
+  SpeedLimitKph: 50
 --- !u!1001 &106063342
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -551,6 +562,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -605,6 +620,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 334037240}
+  SpeedLimitKph: 50
 --- !u!1 &191975041 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
@@ -683,6 +699,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1580114405}
+  SpeedLimitKph: 50
 --- !u!1 &208621015
 GameObject:
   m_ObjectHideFlags: 0
@@ -695,7 +712,7 @@ GameObject:
   - component: {fileID: 208621018}
   - component: {fileID: 208621017}
   - component: {fileID: 208621016}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -837,6 +854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1273913965}
+  SpeedLimitKph: 50
 --- !u!1 &266821176
 GameObject:
   m_ObjectHideFlags: 0
@@ -883,6 +901,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1220250893}
+  SpeedLimitKph: 50
 --- !u!1 &268031372
 GameObject:
   m_ObjectHideFlags: 0
@@ -929,6 +948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 207283633}
+  SpeedLimitKph: 50
 --- !u!1 &275992777 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
@@ -1007,6 +1027,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 520451474}
+  SpeedLimitKph: 50
 --- !u!1001 &284434883
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1063,6 +1084,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_slantFlatCurve (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d2c3dd309ea7607488df1064f97ead03, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1117,6 +1142,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 817175555}
+  SpeedLimitKph: 50
 --- !u!1 &288819837 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
@@ -1205,6 +1231,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1259,6 +1289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1492294021}
+  SpeedLimitKph: 50
 --- !u!1 &340059287 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
@@ -1337,6 +1368,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 919288264}
+  SpeedLimitKph: 50
 --- !u!1 &369271470
 GameObject:
   m_ObjectHideFlags: 0
@@ -1383,6 +1415,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 111251369}
+  SpeedLimitKph: 50
+--- !u!4 &384021446 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+  m_PrefabInstance: {fileID: 892611921}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &386690894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1438,6 +1476,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: bd1851aef4e1f114f9458e775bd5cb89, type: 3}
       propertyPath: m_Name
       value: road_bend (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bd1851aef4e1f114f9458e775bd5cb89, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1554,6 +1596,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 734728436}
+  SpeedLimitKph: 50
 --- !u!1001 &388390012
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1610,6 +1653,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1659,7 +1706,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 411303830}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RoadAssets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1765,6 +1812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 687932889}
+  SpeedLimitKph: 50
 --- !u!1001 &428951624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1820,6 +1868,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
       propertyPath: m_Name
       value: road_straight (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1949,6 +2001,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2003,6 +2059,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 232406103}
+  SpeedLimitKph: 50
 --- !u!1 &490871314
 GameObject:
   m_ObjectHideFlags: 0
@@ -2049,6 +2106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1179349088}
+  SpeedLimitKph: 50
 --- !u!1 &491594615
 GameObject:
   m_ObjectHideFlags: 0
@@ -2095,6 +2153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 596780702}
+  SpeedLimitKph: 50
 --- !u!1001 &515473281
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2150,6 +2209,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d7cb58c4d40e6f64b80d6304cc7320f6, type: 3}
       propertyPath: m_Name
       value: road_end
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d7cb58c4d40e6f64b80d6304cc7320f6, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2237,6 +2300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 491594617}
+  SpeedLimitKph: 50
 --- !u!1001 &526634539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2284,18 +2348,6 @@ PrefabInstance:
     - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2234912061600202843, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _writeToFile
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2234912061600202843, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _pauseOnFinish
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2720620452706575241, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
-      propertyPath: _targetSpeed
-      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: m_Name
@@ -2357,6 +2409,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 369271472}
+  SpeedLimitKph: 50
 --- !u!1 &572316735
 GameObject:
   m_ObjectHideFlags: 0
@@ -2403,6 +2456,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1937440136}
+  SpeedLimitKph: 50
 --- !u!1 &596780700
 GameObject:
   m_ObjectHideFlags: 0
@@ -2449,6 +2503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 723146358}
+  SpeedLimitKph: 50
 --- !u!1 &610769364
 GameObject:
   m_ObjectHideFlags: 0
@@ -2495,6 +2550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 282208328}
+  SpeedLimitKph: 50
 --- !u!1 &624726656 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d2c3dd309ea7607488df1064f97ead03, type: 3}
@@ -2573,6 +2629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1669287630}
+  SpeedLimitKph: 50
 --- !u!1 &659221043
 GameObject:
   m_ObjectHideFlags: 0
@@ -2653,6 +2710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 689243266}
+  SpeedLimitKph: 50
 --- !u!1 &687932887
 GameObject:
   m_ObjectHideFlags: 0
@@ -2699,6 +2757,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1616177639}
+  SpeedLimitKph: 50
 --- !u!1 &689243264
 GameObject:
   m_ObjectHideFlags: 0
@@ -2745,6 +2804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1572328156}
+  SpeedLimitKph: 50
 --- !u!1 &704191840
 GameObject:
   m_ObjectHideFlags: 0
@@ -2791,6 +2851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1263526525}
+  SpeedLimitKph: 50
 --- !u!1 &704698292
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,6 +2945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 387216044}
+  SpeedLimitKph: 50
 --- !u!1001 &726124069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2939,6 +3001,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
       propertyPath: m_Name
       value: road_bendSquare
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3004,6 +3070,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_slantFlatCurve
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d2c3dd309ea7607488df1064f97ead03, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3058,6 +3128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 490871316}
+  SpeedLimitKph: 50
 --- !u!1001 &736099977
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3113,6 +3184,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
       propertyPath: m_Name
       value: road_straight (15)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3347,6 +3422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 2023837195}
+  SpeedLimitKph: 50
 --- !u!1001 &780552063
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3403,6 +3479,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3411,6 +3491,63 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 950949405}
   m_SourcePrefab: {fileID: 100100000, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+--- !u!1001 &788700780
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 14825723}
+    m_Modifications:
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Name
+      value: Car_Saar_AI (3)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!1 &817175553
 GameObject:
   m_ObjectHideFlags: 0
@@ -3457,6 +3594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 2024122258}
+  SpeedLimitKph: 50
 --- !u!1001 &846393352
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3513,6 +3651,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3553,6 +3695,63 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7008648107721451985, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
+--- !u!1001 &892611921
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 14825723}
+    m_Modifications:
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -45
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Name
+      value: Car_Saar_AI (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!1 &919288263
 GameObject:
   m_ObjectHideFlags: 0
@@ -3584,6 +3783,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 0}
+  SpeedLimitKph: 50
 --- !u!4 &919288265
 Transform:
   m_ObjectHideFlags: 0
@@ -3677,6 +3877,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 610769366}
+  SpeedLimitKph: 50
 --- !u!1 &987515191
 GameObject:
   m_ObjectHideFlags: 0
@@ -3860,6 +4061,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 28386829}
+  SpeedLimitKph: 50
 --- !u!1001 &997079636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3915,6 +4117,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: d7cb58c4d40e6f64b80d6304cc7320f6, type: 3}
       propertyPath: m_Name
       value: road_end (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d7cb58c4d40e6f64b80d6304cc7320f6, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3979,6 +4185,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
       propertyPath: m_Name
       value: bridge_pillar (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4107,6 +4317,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
       propertyPath: m_Name
       value: bridge_pillar
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4280,6 +4494,11 @@ Transform:
   - {fileID: 1174414724}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1124335205 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+  m_PrefabInstance: {fileID: 788700780}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1129205972
 GameObject:
   m_ObjectHideFlags: 0
@@ -4326,6 +4545,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 33133905}
+  SpeedLimitKph: 50
 --- !u!1001 &1138690508
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4382,6 +4602,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_curve (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4436,6 +4660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1228847967}
+  SpeedLimitKph: 50
 --- !u!1 &1174414723
 GameObject:
   m_ObjectHideFlags: 0
@@ -4515,6 +4740,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1714030947}
+  SpeedLimitKph: 50
 --- !u!1001 &1196723605
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4571,6 +4797,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_bendSquare (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4625,6 +4855,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 425080580}
+  SpeedLimitKph: 50
 --- !u!1 &1228847965
 GameObject:
   m_ObjectHideFlags: 0
@@ -4671,6 +4902,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 991787827}
+  SpeedLimitKph: 50
 --- !u!1 &1231640889
 GameObject:
   m_ObjectHideFlags: 0
@@ -4717,6 +4949,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 963475826}
+  SpeedLimitKph: 50
 --- !u!1 &1263526523
 GameObject:
   m_ObjectHideFlags: 0
@@ -4763,6 +4996,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1129205974}
+  SpeedLimitKph: 50
 --- !u!1 &1264427753 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
@@ -4873,6 +5107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1477876194}
+  SpeedLimitKph: 50
 --- !u!1001 &1279180798
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4928,6 +5163,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
       propertyPath: m_Name
       value: bridge_pillar (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4993,6 +5232,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5001,6 +5244,63 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1583151456}
   m_SourcePrefab: {fileID: 100100000, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+--- !u!1001 &1292405934
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 14825723}
+    m_Modifications:
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.70710677
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4851020023697559676, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Name
+      value: Car_Saar_AI (2)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
 --- !u!1 &1308023994
 GameObject:
   m_ObjectHideFlags: 0
@@ -5047,6 +5347,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 572316737}
+  SpeedLimitKph: 50
 --- !u!1001 &1333923400
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5102,6 +5403,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 7559f330dfe9d3345982a9c2809100dc, type: 3}
       propertyPath: m_Name
       value: road_bridge
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7559f330dfe9d3345982a9c2809100dc, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5167,6 +5472,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_curve
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5231,6 +5540,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5285,6 +5598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1668231426}
+  SpeedLimitKph: 50
 --- !u!1 &1408707023
 GameObject:
   m_ObjectHideFlags: 0
@@ -5331,6 +5645,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 286259340}
+  SpeedLimitKph: 50
 --- !u!1001 &1420626760
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5387,6 +5702,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_bendSquare (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5441,6 +5760,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1684518655}
+  SpeedLimitKph: 50
 --- !u!1 &1437453325 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
@@ -5529,6 +5849,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5592,6 +5916,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
       propertyPath: m_Name
       value: road_straight (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5721,6 +6049,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5775,6 +6107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 2030208148}
+  SpeedLimitKph: 50
 --- !u!1 &1477876192
 GameObject:
   m_ObjectHideFlags: 0
@@ -5821,6 +6154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1139250532}
+  SpeedLimitKph: 50
 --- !u!1 &1492294019
 GameObject:
   m_ObjectHideFlags: 0
@@ -5867,6 +6201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1308023996}
+  SpeedLimitKph: 50
 --- !u!1 &1502376775
 GameObject:
   m_ObjectHideFlags: 0
@@ -5913,6 +6248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 268031374}
+  SpeedLimitKph: 50
 --- !u!1 &1525594201 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
@@ -6023,6 +6359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1380386359}
+  SpeedLimitKph: 50
 --- !u!1 &1547615076 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
@@ -6254,6 +6591,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 94105368}
+  SpeedLimitKph: 50
 --- !u!1 &1580114403
 GameObject:
   m_ObjectHideFlags: 0
@@ -6300,6 +6638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 388582}
+  SpeedLimitKph: 50
 --- !u!1 &1583151452 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
@@ -6364,6 +6703,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 6440166555503141632, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+--- !u!4 &1589557853 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+  m_PrefabInstance: {fileID: 1292405934}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1606133312 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
@@ -6452,6 +6796,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6506,6 +6854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1477518776}
+  SpeedLimitKph: 50
 --- !u!1 &1616177637
 GameObject:
   m_ObjectHideFlags: 0
@@ -6552,6 +6901,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1953721121}
+  SpeedLimitKph: 50
 --- !u!1 &1635188407
 GameObject:
   m_ObjectHideFlags: 0
@@ -6598,6 +6948,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1428062807}
+  SpeedLimitKph: 50
 --- !u!1 &1666068359
 GameObject:
   m_ObjectHideFlags: 0
@@ -6689,6 +7040,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1408707025}
+  SpeedLimitKph: 50
 --- !u!1 &1669287628
 GameObject:
   m_ObjectHideFlags: 0
@@ -6735,6 +7087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 460999894}
+  SpeedLimitKph: 50
 --- !u!1 &1684518653
 GameObject:
   m_ObjectHideFlags: 0
@@ -6781,6 +7134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 704191842}
+  SpeedLimitKph: 50
 --- !u!1 &1689252095 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
@@ -6891,6 +7245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 1751720051}
+  SpeedLimitKph: 50
 --- !u!1 &1751720049
 GameObject:
   m_ObjectHideFlags: 0
@@ -6937,6 +7292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 571720762}
+  SpeedLimitKph: 50
 --- !u!1001 &1784765360
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6992,6 +7348,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
       propertyPath: m_Name
       value: bridge_pillar (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7056,6 +7416,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
       propertyPath: m_Name
       value: road_straight (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7170,6 +7534,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7266,6 +7634,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: bridge_pillar (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7352,6 +7724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 0}
+  SpeedLimitKph: 50
 --- !u!1 &1937414701 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
@@ -7430,6 +7803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 351010551}
+  SpeedLimitKph: 50
 --- !u!1001 &1951887391
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7486,6 +7860,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_bend
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bd1851aef4e1f114f9458e775bd5cb89, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7540,6 +7918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1615905270}
+  SpeedLimitKph: 50
 --- !u!1 &1977852147
 GameObject:
   m_ObjectHideFlags: 0
@@ -7713,6 +8092,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_bendSquare (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b46477cb43d3185489667ba90adaf7b3, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7776,6 +8159,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
       propertyPath: m_Name
       value: bridge_pillar (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ae8ca820f09f96f4184651442e14ec70, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7905,6 +8292,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: road_straight (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7959,6 +8350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 1502376777}
+  SpeedLimitKph: 50
 --- !u!1 &2024122256
 GameObject:
   m_ObjectHideFlags: 0
@@ -8005,6 +8397,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 1977852149}
   NextWaypoint: {fileID: 679774718}
+  SpeedLimitKph: 50
 --- !u!1 &2030208146
 GameObject:
   m_ObjectHideFlags: 0
@@ -8051,6 +8444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Segment: {fileID: 778685872}
   NextWaypoint: {fileID: 656599223}
+  SpeedLimitKph: 50
 --- !u!1001 &2034289026
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8106,6 +8500,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
       propertyPath: m_Name
       value: road_curve (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: bb86c75492179654b88e375e1fd055d7, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

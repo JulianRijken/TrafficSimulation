@@ -136,14 +136,13 @@ MonoBehaviour:
   _springStrength: 6500
   _springDamping: 800
   _restLength: 0.38
-  _breakingForce: 0.38
+  _springBreakingFoce: 0.38
   _flipForward: 1
   _wheelRadius: 0.26
   _wheelVisual: {fileID: 1844589153576997685}
   _wheelMass: 20
-  _wheelGrip: 10
-  _handbrakeGrip: 0.9
-  _defaultForwardGrip: 0.1
+  _sidewaysGrip: 5
+  _straightGrip: 0
   _steerCurve:
     serializedVersion: 2
     m_Curve:
@@ -169,3 +168,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _maxSteerAngle: 50
+  _maxBreakingForce: 20000

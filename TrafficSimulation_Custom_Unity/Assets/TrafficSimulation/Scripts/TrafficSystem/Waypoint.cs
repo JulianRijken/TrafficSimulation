@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
@@ -7,6 +8,8 @@ namespace TrafficSimulation
         [HideInInspector] public Segment Segment;
         [HideInInspector] public Waypoint NextWaypoint;
 
+        [SerializeField] public float SpeedLimitKph = 50.0f;
+        
         public Vector3 Position => transform.position;
         
         public void Refresh(int newId, Segment newSegment)

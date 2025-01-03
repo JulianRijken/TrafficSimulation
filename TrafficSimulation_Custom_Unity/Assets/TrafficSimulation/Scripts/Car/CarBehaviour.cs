@@ -20,6 +20,7 @@ namespace TrafficSimulation
         [SerializeField] [Range(0.0f, 30000.0f)] private float _torqueScale = 10000.0f;
         [SerializeField] private float _topForwardsKPH = 80.0f;
         [SerializeField] private float _topBackwardsKPH = 30.0f;
+        [SerializeField] private float _engineBreakingForce = 0.1f;
         [SerializeField] private AnimationCurve _torqueOverSpeed;
 
         [Header("Drag")]
@@ -63,6 +64,16 @@ namespace TrafficSimulation
             set => _steerWheelInput = Mathf.Clamp(value, -1.0f, 1.0f);
         }
 
+        public float CombinedInput
+        {
+            get => _throttleInput - _breakInput;
+            set
+            {
+                _throttleInput = Mathf.Clamp01(value);
+                _breakInput = Mathf.Clamp01(-value);
+            }
+        }
+        
         public float ThrottleInput
         {
             get => _throttleInput;
@@ -105,6 +116,11 @@ namespace TrafficSimulation
             Gizmos.DrawRay(SteerCenter, Quaternion.Euler(0, SteeringAngleDegrees, 0) * Forward * 3.0f);
         }
 
+        public void ForceSpeed(float speed)
+        {
+            _rigidbody.linearVelocity = transform.forward * speed;
+        }
+        
         private void HandleSteering()
         {
             foreach (var wheel in _steerWheels)
@@ -118,12 +134,13 @@ namespace TrafficSimulation
         {
             if (_powerWheels.Count <= 0)
                 return;
-
-            // Simple method no gears
-            var simpleInput = _throttleInput - _breakInput;
-            var availableTorque =
-                _torqueOverSpeed.Evaluate(simpleInput > 0.0f ? NormalizedForwardSpeed : NormalizedBackwardsSpeed) /
-                _powerWheels.Count * _torqueScale * simpleInput;
+            
+            // Need to add a reverse gear so that it can be controlled by a player agan
+            // maye add fake gears 
+            
+            var availableTorque = _torqueOverSpeed.Evaluate(NormalizedForwardSpeed) / _powerWheels.Count *
+                                  _torqueScale * _throttleInput;
+            
             foreach (var wheel in _powerWheels)
                 wheel.ApplyTorque(availableTorque);
         }
@@ -132,10 +149,10 @@ namespace TrafficSimulation
         {
             foreach (var wheel in _breakingWheels)
             {
-                var simpleInput = _throttleInput - _breakInput;
-                var autoBreak = (simpleInput < 0.0f && NormalizedForwardSpeed > 0.0f) ||
-                                (simpleInput > 0.0f && NormalizedBackwardsSpeed > 0.0f);
-                wheel.SetBreaking(IsHandBrakeEngaged || autoBreak);
+                // Again unrealistic model
+                float engineBreakingForce = _throttleInput <= 0 ? _engineBreakingForce : 0.0f;
+                float breakForce = engineBreakingForce + _breakInput;
+                wheel.BreakInput = breakForce;
             }
         }
 

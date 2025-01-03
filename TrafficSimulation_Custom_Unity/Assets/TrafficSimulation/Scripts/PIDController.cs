@@ -47,9 +47,9 @@ namespace TrafficSimulation
             float p = Settings.ProportionalGain * error;
             float d = Settings.DerivativeGain * errorRate;
             
-            _accumulatedError += error * deltaTime;
+            _accumulatedError += error * Settings.IntegralGain * deltaTime;
             _accumulatedError = Mathf.Clamp(_accumulatedError, -Settings.Integral_Limit, Settings.Integral_Limit);
-            float i = Settings.IntegralGain * _accumulatedError;
+            float i = _accumulatedError;
             
             return new PIDResult
             {

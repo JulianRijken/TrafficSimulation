@@ -54,7 +54,7 @@ namespace TrafficSimulation
             {
                 var sample = segment.SampleFromPosition(position);
 
-                float distanceFromPath = sample.GetDistanceFromPath(position);
+                float distanceFromPath = sample.GetRightDistanceFromPath(position);
                 if (distanceFromPath > closestDistance) 
                     continue;
                 

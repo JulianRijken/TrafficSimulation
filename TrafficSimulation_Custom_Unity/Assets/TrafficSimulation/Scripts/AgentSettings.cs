@@ -16,4 +16,11 @@ public class AgentSettings : ScriptableObject
     [Header("Lookahead")]
     public float LookaheadDistance = 5.0f;
     public float LookaheadDistanceOverTime = 0.5f;
+    
+    [Header("Power")]
+    public PIDController.PIDSettings PositionSpeedPIDSettings;
+    
+    public float SpeedLimitInputMaxCangeRate = 0.1f;
+    public float SpeedLimitThrottleProportionalGain = 0.15f;
+    public float SpeedLimitBrakeProportionalGain = 0.10f;
 }

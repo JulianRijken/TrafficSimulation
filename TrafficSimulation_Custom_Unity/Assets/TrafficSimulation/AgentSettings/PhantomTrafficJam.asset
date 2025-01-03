@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22576aa36247ca041861e2c97048d95b, type: 3}
-  m_Name: Optimal
+  m_Name: PhantomTrafficJam
   m_EditorClassIdentifier: 
   MaxSpeed: 10
   SteeringPIDSettings:
@@ -20,12 +20,13 @@ MonoBehaviour:
     Integral_Limit: 0.5
   DirectionError_Gain: 5
   DirectionErrorTriggerDistance: 5
-  LookaheadDistance: 2.5
+  LookaheadDistance: 10
   LookaheadDistanceOverTime: 0.15
   PositionSpeedPIDSettings:
     ProportionalGain: 0.15
     IntegralGain: 0
     DerivativeGain: 0.2
     Integral_Limit: 0
-  SpeedLimitChangeDuration: 0
-  SpeedLimitInputPoportionalGain: 0.5
+  SpeedLimitInputMaxCangeRate: 1.5
+  SpeedLimitThrottleProportionalGain: 0.2
+  SpeedLimitBrakeProportionalGain: 0.05
