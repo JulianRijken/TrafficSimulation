@@ -37,6 +37,16 @@ public class TrafficAgent : MonoBehaviour
 
     public Segment.Sample CurrentSample { get; private set; }
 
+    public IntersectionStateType IntersectionState = IntersectionStateType.None;
+
+    
+    public enum IntersectionStateType
+    {
+        None,
+        Waiting,
+        Moving
+    }
+
 
     private void Awake()
     {
@@ -110,8 +120,11 @@ public class TrafficAgent : MonoBehaviour
         {
             
             // Gizmos.color = Color.Lerp(Color.white, Color.black, _dangerLevel);
-            Gizmos.color = Color.red;
+            Gizmos.color = Color.black;
             MathExtensions.DrawCircle(_carBehaviour.Position + Vector3.up, _carBehaviour.ForwardSpeed);
+
+            Gizmos.color = new Color(1, 0.1f, 0.1f, 0.3f);
+            Gizmos.DrawSphere(_carBehaviour.Position + Vector3.up,  _carBehaviour.ForwardSpeed);
         }
     }
 

@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: eb621324797059a4888c8afa774bcc75, type: 2}
     - target: {fileID: 5809686950006448449, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: _debugSpeed
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5809686950006448449, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: _debugSample

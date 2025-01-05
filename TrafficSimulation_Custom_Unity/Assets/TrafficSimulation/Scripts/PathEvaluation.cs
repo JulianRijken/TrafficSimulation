@@ -193,7 +193,7 @@ namespace TrafficSimulation
                 Color = _agentSteering.SteerMode switch
                 {
                     TrafficAgentSteering.SteerModeType.PID => Color.red,
-                    TrafficAgentSteering.SteerModeType.BackwardsCorrection => Color.blue,
+                    TrafficAgentSteering.SteerModeType.DirectionCorrection => Color.blue,
                     TrafficAgentSteering.SteerModeType.DistanceCorrection => new Color(0, 0.8f, 0.5f, 1.0f),
                     _ => throw new ArgumentOutOfRangeException()
                 },

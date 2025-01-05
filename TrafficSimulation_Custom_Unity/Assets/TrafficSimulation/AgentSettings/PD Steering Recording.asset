@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22576aa36247ca041861e2c97048d95b, type: 3}
+  m_Name: PD Steering Recording
+  m_EditorClassIdentifier: 
+  MaxSpeed: 10
+  SteeringPIDSettings:
+    ProportionalGain: 0.7
+    IntegralGain: 0
+    DerivativeGain: 0.3
+    Integral_Limit: 0.5
+  DirectionError_Gain: 5
+  DirectionErrorTriggerDistance: 5
+  LookaheadDistance: 0
+  LookaheadDistanceOverTime: 0
+  PositionSpeedPIDSettings:
+    ProportionalGain: 0.15
+    IntegralGain: 0
+    DerivativeGain: 0.2
+    Integral_Limit: 0
+  SpeedLimitInputMaxCangeRate: 1.5
+  SpeedLimitThrottleProportionalGain: 0.15
+  SpeedLimitBrakeProportionalGain: 0.1
+  DefaultStoppingDistance: 1
+  StoppingDistanceVehicleLengthMultiplier: 0.5

@@ -72,6 +72,11 @@ namespace TrafficSimulation
             
             float segmentStopDistance = _agent.CurrentSample.DistanceToSegmentEnd - _agent.AgentSize.z * 0.5f;
             
+            // Igunore the segment stop distance if the agent is moving
+            if(_agent.IntersectionState != TrafficAgent.IntersectionStateType.Waiting)
+                segmentStopDistance = float.MaxValue;
+            
+            
             _stopPointDistance = Mathf.Min(sensorStopDistance, segmentStopDistance);
             
             // Calculate the error

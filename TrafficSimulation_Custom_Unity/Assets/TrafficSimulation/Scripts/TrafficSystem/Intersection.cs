@@ -26,7 +26,7 @@ namespace TrafficSimulation
         [Serializable]
         public struct IntersectionCar
         {
-            public CarControllerAI Car;
+            public TrafficAgent Car;
             public Turn Turn;
         }
         
@@ -37,8 +37,8 @@ namespace TrafficSimulation
         List<IntersectionCar> _carsInIntersection = new();
 
         // TODO: Could be optimized in to two lists, one for waiting and one for moving cars
-        public List<IntersectionCar> CarsWaiting => _carsInIntersection.Where(c => c.Car.IntersectionState == CarControllerAI.IntersectionStateType.Waiting).ToList();
-        public List<IntersectionCar> CarsMoving => _carsInIntersection.Where(c => c.Car.IntersectionState == CarControllerAI.IntersectionStateType.Moving).ToList();
+        public List<IntersectionCar> CarsWaiting => _carsInIntersection.Where(c => c.Car.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+        public List<IntersectionCar> CarsMoving => _carsInIntersection.Where(c => c.Car.IntersectionState == TrafficAgent.IntersectionStateType.Moving).ToList();
         
         private void Start()
         {
@@ -64,7 +64,6 @@ namespace TrafficSimulation
                     }
                 }
                 
-                
                 Vector3 fromPosition = turn.Connection.From.Waypoints.Last().transform.position;
                 Vector3 toPosition = turn.Connection.To.Waypoints.First().transform.position;
                 fromPosition.y += heightOffset;
@@ -77,14 +76,14 @@ namespace TrafficSimulation
 
         private void OnTriggerEnter(Collider other)
         {
-            CarControllerAI carController = other.gameObject.GetComponentInParent<CarControllerAI>();
+            TrafficAgent carController = other.gameObject.GetComponentInParent<TrafficAgent>();
             if (carController != null)
                 OnCarEnterIntersection(carController);
         }
         
         private void OnTriggerExit(Collider other)
         {
-            CarControllerAI carController = other.gameObject.GetComponentInParent<CarControllerAI>();
+            TrafficAgent carController = other.gameObject.GetComponentInParent<TrafficAgent>();
             if (carController != null)
                 OnCarExitIntersection(carController);
         }
@@ -100,7 +99,7 @@ namespace TrafficSimulation
             {
                 if(CarsMoving.Count == 0)
                 {
-                    waitingCar.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
+                    waitingCar.Car.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
                     return;
                 }
                 
@@ -113,64 +112,13 @@ namespace TrafficSimulation
                     if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
                         continue;
                     
-                    waitingCar.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
+                    waitingCar.Car.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
                     return;
                 }
             }
-            
-            
-            
-            
-            
-            
-            // TODO: This all is wrong because we have to sort
-            // but also care about the cars that blocked (which GetCarsToMove() does not do)
-            // Because the blocked car might have priority
-            
-            // var carsToMove = GetCarsToMove();
-            //
-            // if(carsToMove.Count == 0)
-            //     return;
-            //
-            // IntersectionCar best = carsToMove.First();
-            // foreach (var car in carsToMove)
-            // {
-            //     if (car.Turn.Angle < best.Turn.Angle)
-            //         best = car;
-            // }
-            //
-            // best.Car.IntersectionState = CarControllerAI.IntersectionStateType.Moving;
         }
-
-        // private List<IntersectionCar> GetCarsToMove()
-        // {
-        //     List<IntersectionCar> carsToMove = new();
-        //     foreach (var waitingCar in CarsWaiting)
-        //     {
-        //         if(CarsMoving.Count == 0)
-        //         {
-        //             carsToMove.Add(waitingCar);
-        //             continue;
-        //         }
-        //         
-        //         foreach (var movingCar in CarsMoving)
-        //         {
-        //             if(waitingCar.Turn.CrossingConnections == null)
-        //                 throw new Exception("Crossing connections is null, intersection probably does not cover all connections");
-        //             
-        //             // Wait for moving car to pass
-        //             if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
-        //                 continue;
-        //             
-        //             carsToMove.Add(waitingCar);
-        //             break;
-        //         }
-        //     }
-        //
-        //     return carsToMove;
-        // }
         
-        private void OnCarEnterIntersection(CarControllerAI car)
+        private void OnCarEnterIntersection(TrafficAgent car)
         {
             // Add car to the list of cars that entered the intersection
             // Debug.Log("Vehicle entered intersection");
@@ -179,22 +127,22 @@ namespace TrafficSimulation
                 Car = car,
                 Turn = _turns.FirstOrDefault(t => IsCarMakingTurn(t, car))
             });
-            car.IntersectionState = CarControllerAI.IntersectionStateType.Waiting;
+            car.IntersectionState = TrafficAgent.IntersectionStateType.Waiting;
 
             TryMoveCars();
         }
         
-        private void OnCarExitIntersection(CarControllerAI car)
+        private void OnCarExitIntersection(TrafficAgent car)
         {
             // Remove car to the list of cars that exited the intersection
             // Debug.Log("Vehicle exited intersection");
-            car.IntersectionState = CarControllerAI.IntersectionStateType.None;
+            car.IntersectionState = TrafficAgent.IntersectionStateType.None;
             _carsInIntersection.Remove(_carsInIntersection.First(c => c.Car.Equals(car)));
             
             TryMoveCars();
         }
 
-        private bool IsCarMakingTurn(Turn turn, CarControllerAI car)
+        private bool IsCarMakingTurn(Turn turn, TrafficAgent car)
         {
             return turn.Connection.From.Equals(car.CurrentSegment) && turn.Connection.To.Equals(car.NextSegment);
         }

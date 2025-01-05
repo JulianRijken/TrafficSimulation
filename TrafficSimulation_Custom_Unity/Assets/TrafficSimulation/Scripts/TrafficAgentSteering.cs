@@ -28,8 +28,8 @@ namespace TrafficSimulation
         public enum SteerModeType
         {
             PID,
-            BackwardsCorrection,
-            DistanceCorrection
+            DirectionCorrection,
+            DistanceCorrection,
         }
 
         private void Start()
@@ -74,11 +74,14 @@ namespace TrafficSimulation
             if (isTooFarFromPath && _useDistanceCorrection)
                 _steerMode = SteerModeType.DistanceCorrection;
             else if (isDrivingBackwards && _useBackwardsCorrection)
-                _steerMode = SteerModeType.BackwardsCorrection;
+                _steerMode = SteerModeType.DirectionCorrection;
             else
                 _steerMode = SteerModeType.PID;
 
-            
+            // TODO: This is temporary for the intersection
+            if (_agent.CurrentSample.IsAtStartOfSegment || _agent.CurrentSample.IsAtEndOfSegment)
+                _steerMode = SteerModeType.DirectionCorrection;
+
 
             switch (_steerMode)
             {
@@ -103,7 +106,7 @@ namespace TrafficSimulation
                     
                     break;
                 
-                case SteerModeType.BackwardsCorrection:
+                case SteerModeType.DirectionCorrection:
                     _agent.CarBehaviour.SteerWheelInput = GetSteerInputToDirection(_interpolatedSample.DirectionForward);
                     break;
                 
