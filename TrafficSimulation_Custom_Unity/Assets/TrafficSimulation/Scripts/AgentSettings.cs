@@ -19,8 +19,10 @@ public class AgentSettings : ScriptableObject
     
     [Header("Power")]
     public PIDController.PIDSettings PositionSpeedPIDSettings;
-    
     public float SpeedLimitInputMaxCangeRate = 0.1f;
     public float SpeedLimitThrottleProportionalGain = 0.15f;
     public float SpeedLimitBrakeProportionalGain = 0.10f;
+    public float DefaultStoppingDistance = 2.0f;
+    public float StoppingDistanceVehicleLengthMultiplier = 0.5f;
+
 }

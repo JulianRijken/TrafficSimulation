@@ -1,38 +1,35 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
-    [DefaultExecutionOrder(-1)]
+    [RequireComponent( typeof(TrafficAgent))]
     public class TrafficAgentPower : MonoBehaviour
     {
-        [SerializeField] private TrafficAgent _agent;
+        private TrafficAgent _agent;
         
-        [SerializeField] private float _lookAheadDistance = 10.0f;
-        [SerializeField] private bool _forceSpeedAtSpeedLimit = false;
-        
-        [FormerlySerializedAs("_defaultStoppingDIstance")] [SerializeField] private float _defaultStoppingDistance = 2.0f;
-        [SerializeField] private float _stoppingDistanceVehicleLengthMultiplier = 0.5f;
-        
+        [SerializeField] private bool _startAtSpeedLimitSpeed = false;
+        [SerializeField] private bool _debugStopPoint = false;
 
-        private Vector3 _stopPoint;
+        private float _stopPointDistance;
         private PIDController _stopPointPIDController;
 
-        private float _stopPointInput = 0.0f;
-        private float _speedLimitInput = 0.0f;
-
+        
         [DebugGUIGraph(min: -1, max: 1, r: 0, g: 0, b: 0, autoScale: false, group: 2)]
-        private float result;
-
+        private float _finalInput;
+        
+        [DebugGUIGraph(min: -1, max: 1, r: 0, g: 0, b: 0, autoScale: false, group: 3)]
+        private float _speedLimitInput = 0.0f;
+        
+        [DebugGUIGraph(min: -1, max: 1, r: 0, g: 0, b: 0, autoScale: false, group: 4)]
+        private float _stopPointInput = 0.0f;
+        
 
         private void Start()
         {
-            if(_agent == null)
-                _agent = GetComponent<TrafficAgent>();
+            _agent = GetComponent<TrafficAgent>();
 
             // Force speed limit
-            if (_forceSpeedAtSpeedLimit)
+            if (_startAtSpeedLimitSpeed)
                 _agent.CarBehaviour.ForceSpeed(_agent.CurrentSample.SpeedLimit);
             
             _stopPointPIDController = new PIDController(_agent.Settings.PositionSpeedPIDSettings);
@@ -40,6 +37,9 @@ namespace TrafficSimulation
         
         private void Update()
         {
+            if(_agent.CurrentSegment == null)
+                return;
+            
             UpdateStopPointInput();
             UpdateSpeedLimitInput();
             ApplyInput();
@@ -51,86 +51,32 @@ namespace TrafficSimulation
             // Always pick the lowest throttle input
             float combinedInput = Mathf.Clamp01(Mathf.Min(_speedLimitInput, _stopPointInput)) - Mathf.Clamp01(Mathf.Max(-_speedLimitInput, -_stopPointInput));
 
-            result = _agent.CarBehaviour.CombinedInput = combinedInput;
+            _agent.CarBehaviour.CombinedInput = combinedInput;
+            _finalInput = combinedInput;
         }
 
         private void UpdateSpeedLimitInput()
         {
             // Calculate the desire input to reach the target speedLimit
             float speedAlongDirection = Vector3.Dot(_agent.CarBehaviour.Velocity, _agent.CurrentSample.DirectionForward);
-            float gain = speedAlongDirection > _agent.CurrentSample.SpeedLimit ? _agent.Settings.SpeedLimitBrakeProportionalGain : _agent.Settings.SpeedLimitThrottleProportionalGain;
+            float gain = (speedAlongDirection > _agent.CurrentSample.SpeedLimit ? _agent.Settings.SpeedLimitBrakeProportionalGain : _agent.Settings.SpeedLimitThrottleProportionalGain);
             float targetSpeedLimitInput = (_agent.CurrentSample.SpeedLimit - speedAlongDirection) * gain;
             _speedLimitInput = Mathf.MoveTowards(_speedLimitInput, targetSpeedLimitInput, _agent.Settings.SpeedLimitInputMaxCangeRate * Time.deltaTime);
         }
-
-        float MoveTowards(float current, float target, float maxDelta) 
-        {
-            // Define the change
-            float change = target - current;
-            
-            // When under maxDelta, return target
-            if (Mathf.Abs(change) - maxDelta < 0) 
-                return target;
-            
-            // Otherwise, move towards target clamped by maxDelta
-            return current + Mathf.Sign(change) * maxDelta;
-        }
+        
         
         private void UpdateStopPointInput()
         {
-            // float stopPosition = _lookAheadDistance + _agent.CurrentSample.DistanceAlongSegment;
-            // Segment.Sample stopPointSample = _agent.CurrentSegment.SampleFromDistance(stopPosition);
-            // _stopPoint = stopPointSample.Position;
+            float sensorStoppingDistanceOffset = _agent.AgentSize.z * _agent.Settings.StoppingDistanceVehicleLengthMultiplier + _agent.Settings.DefaultStoppingDistance;
+            float sensorStopDistance = _agent.FrontSensorHit.distance - sensorStoppingDistanceOffset;
             
+            float segmentStopDistance = _agent.CurrentSample.DistanceToSegmentEnd - _agent.AgentSize.z * 0.5f;
             
-            // _stopPoint = _agent.transform.position + _agent.transform.forward * _lookAheadDistance;
-
-
-            if (_agent.FrontSensorHit.collider == null)
-            {
-                // We want full throttle when there is nothing to stop for
-                _stopPointInput = 1.0f;
-                return;
-            }
-
-
-  
-            
-            float stoppingDistanceOffset = _agent.AgentSize.z * _stoppingDistanceVehicleLengthMultiplier + _defaultStoppingDistance;
-            
-            // // Move stopping distance based on hit agent speed
-            // if (_agent.FrontSensorHit.collider != null)
-            // {
-            //     Rigidbody hitRigidbody = _agent.FrontSensorHit.collider.attachedRigidbody;
-            //     if (hitRigidbody != null)
-            //         stoppingDistanceOffset -= Vector3.Dot(hitRigidbody.linearVelocity, _agent.CarBehaviour.ForwardPlanner);
-            // }
-            
-            _stopPoint = _agent.CarBehaviour.Position + _agent.CarBehaviour.ForwardPlanner * (_agent.FrontSensorHit.distance - stoppingDistanceOffset);
-            
-            // Calculate the input to reach the stop point
-            Vector3 fromPosition = new Vector3(_agent.CarBehaviour.Position.x, 0.0f, _agent.CarBehaviour.Position.z);
-            Vector3 toPosition = new Vector3(_stopPoint.x, 0.0f, _stopPoint.z);
-            Vector3 directionToStopPoint = (toPosition - fromPosition).normalized;
+            _stopPointDistance = Mathf.Min(sensorStopDistance, segmentStopDistance);
             
             // Calculate the error
-            float directionRelativeToAgentForward = Vector3.Dot(_agent.CarBehaviour.ForwardPlanner, directionToStopPoint);
-            float distanceToStopPoint = Vector3.Distance(MathExtensions.FlatVector(_agent.CarBehaviour.Position), MathExtensions.FlatVector(_stopPoint));
-            float signedDistanceToStopPoint = distanceToStopPoint * Mathf.Sign(directionRelativeToAgentForward);
-            float error = signedDistanceToStopPoint;
-
-
-            /// TEMP SOLUTION 
-            if (error < 0.0f && _agent.CarBehaviour.ForwardSpeed > 0.0f)
-            {
-                _stopPointInput = -1.0f;
-                return;
-            }
-            
-            // Calculate the error rate
-            float velocityAlongDirectionToStopPoint = Vector3.Dot(_agent.CarBehaviour.Velocity, directionToStopPoint);
-            float errorRate = -velocityAlongDirectionToStopPoint;
-            
+            float error = _stopPointDistance;
+            float errorRate = -_agent.CarBehaviour.ForwardSpeed;
             
             // Evaluate the PID controller
             _stopPointInput = _stopPointPIDController.Evaluate(error, errorRate, Time.deltaTime).Total;
@@ -138,12 +84,16 @@ namespace TrafficSimulation
 
         private void OnDrawGizmos()
         {
-            if(_agent.FrontSensorHit.collider == null)
+            if(Application.isPlaying == false)
                 return;
             
+            if(_debugStopPoint == false)
+                return;
+
+            Vector3 stopPoint = _agent.CarBehaviour.Position + _agent.CarBehaviour.Forward * _stopPointDistance;
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(_stopPoint, 1.0f);
-            Gizmos.DrawLine(_agent.CarBehaviour.Position, _stopPoint);
+            Gizmos.DrawSphere(stopPoint, 1.0f);
+            Gizmos.DrawLine(_agent.CarBehaviour.Position, stopPoint);
         }
     }
 }

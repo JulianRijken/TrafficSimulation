@@ -7,11 +7,10 @@ using UnityEngine;
 
 namespace TrafficSimulation
 {
-
-    [DefaultExecutionOrder(-1)]
+    [RequireComponent(typeof(TrafficAgent))]
     public class PathEvaluation : MonoBehaviour
     {
-        [SerializeField] private TrafficAgent _agent;
+        private TrafficAgent _agent;
         [SerializeField] private TrafficAgentSteering _agentSteering;
         [SerializeField] private TrafficAgentPower _agentPower;
         [SerializeField] private float _sampleRate = 0.1f;
@@ -40,6 +39,11 @@ namespace TrafficSimulation
         }
 
         private List<PathPoint> _pastPoints = new List<PathPoint>();
+
+        private void Start()
+        {
+            _agent = GetComponent<TrafficAgent>();
+        }
 
         private void OnEnable()
         {
@@ -190,7 +194,8 @@ namespace TrafficSimulation
                 {
                     TrafficAgentSteering.SteerModeType.PID => Color.red,
                     TrafficAgentSteering.SteerModeType.BackwardsCorrection => Color.blue,
-                    TrafficAgentSteering.SteerModeType.DistanceCorrection => new Color(0, 0.8f, 0.5f, 1.0f)
+                    TrafficAgentSteering.SteerModeType.DistanceCorrection => new Color(0, 0.8f, 0.5f, 1.0f),
+                    _ => throw new ArgumentOutOfRangeException()
                 },
                 Time = Time.time,
                 Speed = _agent.CarBehaviour.ForwardSpeed,
@@ -198,8 +203,8 @@ namespace TrafficSimulation
                 BreakInput = _agent.CarBehaviour.BreakInput,
                 SteeringSteerWheelInput = _agent.CarBehaviour.SteerWheelInput,
                 PathSample = _agent.CurrentSample,
-                DeviationFromPath = _agent.CurrentSample.GetRightDistanceFromPath(_agent.CarBehaviour.Position),
-                SignedDeviationFromPath = _agent.CurrentSample.GetRightSignedDistanceFromPath(_agent.CarBehaviour.Position),
+                DeviationFromPath = _agent.CurrentSample.GetSidewaysDistanceFromPath(_agent.CarBehaviour.Position),
+                SignedDeviationFromPath = _agent.CurrentSample.GetSidewaysSignedDistanceFromPath(_agent.CarBehaviour.Position),
                 SpeedLimit = _agent.CurrentSample.SpeedLimit
             });
         }

@@ -1,13 +1,12 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
     
-    [DefaultExecutionOrder(-1)]
+    [RequireComponent( typeof(TrafficAgent))]
     public class TrafficAgentSteering : MonoBehaviour
     {
-        [SerializeField] private TrafficAgent _agent;
+        private TrafficAgent _agent;
         
         [Header("Debug")]
         [SerializeField] private bool _useDistanceCorrection = true;
@@ -35,6 +34,7 @@ namespace TrafficSimulation
 
         private void Start()
         {
+            _agent = GetComponent<TrafficAgent>();
             _steeringPID = new PIDController(_agent.Settings.SteeringPIDSettings);
         }
 
@@ -70,7 +70,7 @@ namespace TrafficSimulation
 
             // Decide agent steering mode
             bool isDrivingBackwards = Vector3.Dot(_agent.CarBehaviour.Forward,_interpolatedSample.DirectionForward) < 0;
-            bool isTooFarFromPath = _interpolatedSample.GetRightDistanceFromPath(_agent.CarBehaviour.Position) > _agent.Settings.DirectionErrorTriggerDistance;
+            bool isTooFarFromPath = _interpolatedSample.GetSidewaysDistanceFromPath(_agent.CarBehaviour.Position) > _agent.Settings.DirectionErrorTriggerDistance;
             if (isTooFarFromPath && _useDistanceCorrection)
                 _steerMode = SteerModeType.DistanceCorrection;
             else if (isDrivingBackwards && _useBackwardsCorrection)
@@ -84,7 +84,7 @@ namespace TrafficSimulation
             {
                 case SteerModeType.PID:
                     
-                    float signedDistanceFromPath = _interpolatedSample.GetRightSignedDistanceFromPath(_agent.CarBehaviour.Position);
+                    float signedDistanceFromPath = _interpolatedSample.GetSidewaysSignedDistanceFromPath(_agent.CarBehaviour.Position);
                     float error = -signedDistanceFromPath;
                     float errorRate = Vector3.Dot(_agent.CarBehaviour.Velocity, _interpolatedSample.DirectionRight);
                     

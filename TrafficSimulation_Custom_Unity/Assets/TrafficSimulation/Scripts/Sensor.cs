@@ -9,7 +9,12 @@ namespace TrafficSimulation
         
         public bool Sense(float distance, out RaycastHit hit)
         {
-            return Physics.BoxCast(transform.position, _size, transform.forward, out hit, transform.rotation, distance,_layerMask );
+            bool didHit = Physics.BoxCast(transform.position, _size, transform.forward, out hit, transform.rotation, distance,_layerMask );
+
+            if (didHit == false)
+                hit.distance = float.MaxValue;
+            
+            return didHit;
         }
     }
 }

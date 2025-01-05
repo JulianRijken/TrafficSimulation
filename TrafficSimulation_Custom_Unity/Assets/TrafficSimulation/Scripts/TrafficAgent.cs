@@ -13,6 +13,12 @@ public class TrafficAgent : MonoBehaviour
     [SerializeField] private float _frontSensorDistance = 5f;
     [SerializeField] private float _frontSensorAnglePositionOffset = 0.025f;
     
+    [Header("Debug")]
+    [SerializeField] private bool _debugAgentSize = false;
+    [SerializeField] private bool _debugCurrentSample = false;
+    [SerializeField] private bool _debugAllSamples = false;
+    [SerializeField] private bool _debugSpeed = false;
+    
     private Segment _currentSegment;
     private Segment _nextSegment;
     private RaycastHit _frontSensorHit;
@@ -31,43 +37,100 @@ public class TrafficAgent : MonoBehaviour
 
     public Segment.Sample CurrentSample { get; private set; }
 
-    
-    
-    private void Start()
+
+    private void Awake()
     {
         if(_trafficSystem == null)
-            _trafficSystem = FindObjectOfType<TrafficSystem>();
+            _trafficSystem = FindAnyObjectByType<TrafficSystem>();
         
         if(_carBehaviour == null)
             _carBehaviour = GetComponent<CarBehaviour>();
-        
-        
+    }
+
+    private void Start()
+    {
         _nextSegment = _trafficSystem.GetClosestSegment(_carBehaviour.Position);
+        
         if(_nextSegment == null)
             Debug.LogError("No segment found for agent.");
         
         UpdateSegment();
+        UpdateSample();
     }
-    
+
+
     private void OnDrawGizmos()
     {
-        Matrix4x4 originalMatrix = Gizmos.matrix;
-        Gizmos.matrix = Matrix4x4.TRS(transform.position + _agentCenter, transform.rotation, Vector3.one);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(Vector3.zero, _agentSize);
-        Gizmos.matrix = originalMatrix;
+        if(Application.isPlaying == false)
+            return;
+        
+        if(_carBehaviour == null)
+            return;
+        
+        if (_debugAgentSize)
+        {
+
+            Matrix4x4 originalMatrix = Gizmos.matrix;
+            Gizmos.matrix = Matrix4x4.TRS(transform.position + _agentCenter, transform.rotation, Vector3.one);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(Vector3.zero, _agentSize);
+            Gizmos.matrix = originalMatrix;
+        }
+
+
+        if (_debugCurrentSample || _debugAllSamples)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(CurrentSample.Position, 0.5f);
+            Gizmos.DrawLine(_carBehaviour.Position, CurrentSample.Position);
+        }
+        
+        if (_debugAllSamples)
+        {
+            _trafficSystem.Segments.ForEach(segment =>
+            {
+                var sample = segment.SampleFromPosition(_carBehaviour.Position);
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawSphere(sample.Position, 0.5f);
+                Gizmos.DrawLine(_carBehaviour.Position, sample.Position);
+
+            });
+            
+            var closestSegment = _trafficSystem.GetClosestSegment(_carBehaviour.Position);
+            if(closestSegment != null)
+            {
+                var sample = closestSegment.SampleFromPosition(_carBehaviour.Position);
+                Gizmos.color = Color.blue;
+                Gizmos.DrawSphere(sample.Position, 0.5f);
+                Gizmos.DrawLine(_carBehaviour.Position, sample.Position);
+            }
+        }
+
+        if (_debugSpeed)
+        {
+            
+            // Gizmos.color = Color.Lerp(Color.white, Color.black, _dangerLevel);
+            Gizmos.color = Color.red;
+            MathExtensions.DrawCircle(_carBehaviour.Position + Vector3.up, _carBehaviour.ForwardSpeed);
+        }
     }
 
     private void Update()
     {
         if(_currentSegment == null)
             return;
-        
-        CurrentSample = _currentSegment.SampleFromPosition(_carBehaviour.Position);
+
+        UpdateSample();
+
         if(CurrentSample.IsAtEndOfSegment)
             UpdateSegment();
 
         UpdateSensorInformation();
+    }
+
+    private void UpdateSample()
+    {
+        CurrentSample = _currentSegment.SampleFromPosition(_carBehaviour.Position);
     }
 
     private void UpdateSensorInformation()

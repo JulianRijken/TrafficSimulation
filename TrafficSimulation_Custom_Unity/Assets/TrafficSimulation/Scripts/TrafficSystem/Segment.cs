@@ -24,23 +24,24 @@ namespace TrafficSimulation
             public float SpeedLimitKph;
             public float DistanceAlongSegment;
             public float AlphaAlongSegment;
+            public float DistanceToSegmentEnd;
             public Vector3 Position;
             public Vector3 DirectionForward;
             public Vector3 DirectionRight;
-            
             public bool IsAtEndOfSegment => AlphaAlongSegment >= 1.0f - 1e-6f;
             public bool IsAtStartOfSegment => AlphaAlongSegment <= 0.0f + 1e-6f;
             
             // Meters / second
             public float SpeedLimit => SpeedLimitKph / 3.6f;
 
+     
             
             public Vector3 GetDirectionToSampledPosition(Vector3 originalPosition)
             {
                 return (Position - originalPosition).normalized;
             }
             
-            public float GetRightSignedDistanceFromPath(Vector3 originalPosition)
+            public float GetSidewaysSignedDistanceFromPath(Vector3 originalPosition)
             {
                 var directionToSampledPosition = GetDirectionToSampledPosition(originalPosition);
                 return Vector3.Dot(directionToSampledPosition, DirectionRight) * Vector3.Distance(originalPosition, Position);
@@ -51,9 +52,9 @@ namespace TrafficSimulation
                 return Vector3.Dot(directionToSampledPosition, DirectionForward) * Vector3.Distance(originalPosition, Position);
             }
             
-            public float GetRightDistanceFromPath(Vector3 originalPosition)
+            public float GetSidewaysDistanceFromPath(Vector3 originalPosition)
             {
-                return Mathf.Abs(GetRightSignedDistanceFromPath(originalPosition));
+                return Mathf.Abs(GetSidewaysSignedDistanceFromPath(originalPosition));
             }
             
             public float GetForwardDistanceFromPath(Vector3 originalPosition)
@@ -113,6 +114,7 @@ namespace TrafficSimulation
             sample.SpeedLimitKph = Waypoints[waypointIndex].SpeedLimitKph;
             sample.DistanceAlongSegment = Mathf.Clamp(distanceAlongPath, 0, TotalLength);
             sample.AlphaAlongSegment = Mathf.Clamp01(distanceAlongPath / TotalLength);
+            sample.DistanceToSegmentEnd = TotalLength - distanceAlongPath;
             sample.Position = Vector3.Lerp(fromWaypointPosition, toWaypointPosition, waypointAlpha);    
             sample.DirectionForward = (toWaypointPosition - fromWaypointPosition).normalized;
             sample.DirectionRight = Vector3.Cross(sample.DirectionForward, Vector3.up);
@@ -142,6 +144,7 @@ namespace TrafficSimulation
                 closestSample.SpeedLimitKph = Waypoints[i].SpeedLimitKph;
                 closestSample.AlphaAlongSegment  = (cumulativeLengths[i] + alphaBetweenWaypoints * distanceBetweenWaypoints) / TotalLength;
                 closestSample.DistanceAlongSegment = closestSample.AlphaAlongSegment * TotalLength;
+                closestSample.DistanceToSegmentEnd = TotalLength - closestSample.DistanceAlongSegment;
                 closestSample.Position = sampledPosition;
                 closestSample.DirectionForward = directionBetweenWaypoints;
                 closestSample.DirectionRight = Vector3.Cross(directionBetweenWaypoints, Vector3.up);
