@@ -2641,6 +2641,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 14825723}
     m_Modifications:
+    - target: {fileID: 133776999682588994, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 350583118686316292, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 350583118686316292, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _debugStopPoint
       value: 0
@@ -2653,6 +2661,10 @@ PrefabInstance:
       propertyPath: _settings
       value: 
       objectReference: {fileID: 11400000, guid: eb621324797059a4888c8afa774bcc75, type: 2}
+    - target: {fileID: 422510920850544938, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 422510920850544938, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _debugSample
       value: 1
@@ -2720,6 +2732,10 @@ PrefabInstance:
     - target: {fileID: 6845930730295693749, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _debugPID
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6845930730295693749, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6845930730295693749, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
       propertyPath: _useDistanceCorrection
