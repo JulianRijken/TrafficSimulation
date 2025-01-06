@@ -8,7 +8,6 @@ namespace TrafficSimulation
         private TrafficAgent _agent;
         
         [SerializeField] private bool _startAtSpeedLimitSpeed = false;
-        [SerializeField] private bool _debugStopPoint = false;
 
         private float _stopPointDistance;
         private PIDController _stopPointPIDController;
@@ -32,7 +31,7 @@ namespace TrafficSimulation
             if (_startAtSpeedLimitSpeed)
                 _agent.CarBehaviour.ForceSpeed(_agent.CurrentSample.SpeedLimit);
             
-            _stopPointPIDController = new PIDController(_agent.Settings.PositionSpeedPIDSettings);
+            _stopPointPIDController = new PIDController(_agent.Settings.StopPointPIDSettings);
         }
         
         private void Update()
@@ -68,7 +67,7 @@ namespace TrafficSimulation
         private void UpdateStopPointInput()
         {
             float sensorStoppingDistanceOffset = _agent.AgentSize.z * _agent.Settings.StoppingDistanceVehicleLengthMultiplier + _agent.Settings.DefaultStoppingDistance;
-            float sensorStopDistance = _agent.FrontSensorHit.distance - sensorStoppingDistanceOffset;
+            float sensorStopDistance = _agent.FrontSensorResult.Distance - sensorStoppingDistanceOffset;
             
             float segmentStopDistance = _agent.CurrentSample.DistanceToSegmentEnd - _agent.AgentSize.z * 0.5f;
             
@@ -91,14 +90,14 @@ namespace TrafficSimulation
         {
             if(Application.isPlaying == false)
                 return;
-            
-            if(_debugStopPoint == false)
-                return;
 
-            Vector3 stopPoint = _agent.CarBehaviour.Position + _agent.CarBehaviour.Forward * _stopPointDistance;
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(stopPoint, 1.0f);
-            Gizmos.DrawLine(_agent.CarBehaviour.Position, stopPoint);
+            if (_agent.Settings.DebugStopPoint)
+            {
+                Vector3 stopPoint = _agent.CarBehaviour.Position + _agent.CarBehaviour.Forward * _stopPointDistance;
+                Gizmos.color = _agent.Settings.DebugStopPointColor;
+                Gizmos.DrawSphere(stopPoint, 1.0f);
+                Gizmos.DrawLine(_agent.CarBehaviour.Position, stopPoint);
+            }
         }
     }
 }

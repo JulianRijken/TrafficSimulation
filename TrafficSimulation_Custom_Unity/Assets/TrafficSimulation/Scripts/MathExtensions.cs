@@ -28,15 +28,21 @@ public class MathExtensions : MonoBehaviour
         return math.slerp(a, b, math.exp2(-deltaTime / h));
     }
 
-    public static void DrawArrow(Vector3 from, Vector3 forward, float size)
+    public static void DrawArrow(Vector3 from, Vector3 to)
     {
-        forward = forward.normalized * size;
-        var left = Quaternion.Euler(0, 45, 0) * forward;
-        var right = Quaternion.Euler(0, -45, 0) * forward;
+        var direction = (to - from).normalized;
+        DrawArrow(from, direction, direction.magnitude);
+    }
+    
+    public static void DrawArrow(Vector3 from, Vector3 direction, float size)
+    {
+        direction = direction.normalized * size;
+        var left = Quaternion.Euler(0, 45, 0) * direction;
+        var right = Quaternion.Euler(0, -45, 0) * direction;
 
-        Gizmos.DrawLine(from, from + forward);
-        Gizmos.DrawLine(from + forward, from + left);
-        Gizmos.DrawLine(from + forward, from + right);
+        Gizmos.DrawLine(from, from + direction);
+        Gizmos.DrawLine(from + direction, from + left);
+        Gizmos.DrawLine(from + direction, from + right);
     }
     
     public static void DrawArrowTip(Vector3 point, Vector3 forward)

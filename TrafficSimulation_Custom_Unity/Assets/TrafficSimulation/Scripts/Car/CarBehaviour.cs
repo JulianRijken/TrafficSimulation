@@ -11,6 +11,7 @@ namespace TrafficSimulation
         [SerializeField] private List<CarWheel> _steerWheels = new();
         [SerializeField] private List<CarWheel> _powerWheels = new();
         [SerializeField] private List<CarWheel> _breakingWheels = new();
+        [SerializeField] private List<CarWheel> _backWheels = new();
 
         [Header("Steering")]
         [SerializeField] private float _steerSpeed = 10.0f;
@@ -41,6 +42,7 @@ namespace TrafficSimulation
         // Sums up the steering angle of all the wheels
         public float SteeringAngleDegrees => _steerWheels.Sum(wheel => wheel.SteerAngle) / _steerWheels.Count;
         public Vector3 SteerCenter => _steerWheels.Aggregate(Vector3.zero, (current, wheel) => current + wheel.transform.position) / _steerWheels.Count;
+        public Vector3 BackWheelCenter => _backWheels.Aggregate(Vector3.zero, (current, wheel) => current + wheel.transform.position) / _backWheels.Count;
         public float LinearVelocity => _rigidbody.linearVelocity.magnitude;
         public Vector3 Velocity => _rigidbody.linearVelocity;
         public float NormalizedSpeed => Mathf.Abs(Vector3.Dot(_rigidbody.linearVelocity, transform.forward)) /

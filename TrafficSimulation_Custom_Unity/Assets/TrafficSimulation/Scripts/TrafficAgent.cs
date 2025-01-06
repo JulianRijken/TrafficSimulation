@@ -10,18 +10,11 @@ public class TrafficAgent : MonoBehaviour
     [SerializeField] private Sensor _frontSensor;
     [SerializeField] private Vector3 _agentSize = new Vector3(1.0f, 1.0f,1.0f);
     [SerializeField] private Vector3 _agentCenter = new Vector3(0.0f, 0.5f, 0.0f);
-    [SerializeField] private float _frontSensorDistance = 5f;
-    [SerializeField] private float _frontSensorAnglePositionOffset = 0.025f;
-    
-    [Header("Debug")]
-    [SerializeField] private bool _debugAgentSize = false;
-    [SerializeField] private bool _debugCurrentSample = false;
-    [SerializeField] private bool _debugAllSamples = false;
-    [SerializeField] private bool _debugSpeed = false;
+
     
     private Segment _currentSegment;
     private Segment _nextSegment;
-    private RaycastHit _frontSensorHit;
+    private Sensor.Result _frontSensorResult;
     
     
     public Transform FrontSensorTransform => _frontSensor.transform;
@@ -29,7 +22,7 @@ public class TrafficAgent : MonoBehaviour
     public Vector3 AgentCenter => _agentCenter;
     public CarBehaviour CarBehaviour => _carBehaviour;
     
-    public RaycastHit FrontSensorHit => _frontSensorHit;
+    public Sensor.Result FrontSensorResult => _frontSensorResult;
     
     public Segment CurrentSegment => _currentSegment;
     public Segment NextSegment => _nextSegment;
@@ -77,57 +70,69 @@ public class TrafficAgent : MonoBehaviour
         if(_carBehaviour == null)
             return;
         
-        if (_debugAgentSize)
+        if (_settings.DebugAgentSize)
         {
-
-            Matrix4x4 originalMatrix = Gizmos.matrix;
+            var originalMatrix = Gizmos.matrix;
             Gizmos.matrix = Matrix4x4.TRS(transform.position + _agentCenter, transform.rotation, Vector3.one);
-            Gizmos.color = Color.red;
+            Gizmos.color = _settings.DebugAgentSizeWireColor;
             Gizmos.DrawWireCube(Vector3.zero, _agentSize);
+            Gizmos.color = _settings.DebugAgentSizeFillColor;
+            Gizmos.DrawCube(Vector3.zero, _agentSize);
             Gizmos.matrix = originalMatrix;
         }
 
 
-        if (_debugCurrentSample || _debugAllSamples)
+        if (_settings.DebugCurrentSample || _settings.DebugAllSamples)
         {
-            Gizmos.color = Color.green;
+            Gizmos.color = _settings.DebugCurrentSampleColor;
             Gizmos.DrawSphere(CurrentSample.Position, 0.5f);
-            Gizmos.DrawLine(_carBehaviour.Position, CurrentSample.Position);
+            MathExtensions.DrawArrow(_carBehaviour.Position, CurrentSample.Position);
         }
         
-        if (_debugAllSamples)
+        if (_settings.DebugClosestSample || _settings.DebugAllSamples)
+        {
+            var closestSegment = _trafficSystem.GetClosestSegment(_carBehaviour.Position);
+            if (closestSegment != null)
+            {
+                var sample = closestSegment.SampleFromPosition(_carBehaviour.Position);
+                Gizmos.color = _settings.DebugClosestSampleColor;
+                Gizmos.DrawSphere(sample.Position, 0.5f);
+                MathExtensions.DrawArrow(_carBehaviour.Position, sample.Position);
+            }
+        }
+        
+        if (_settings.DebugAllSamples)
         {
             _trafficSystem.Segments.ForEach(segment =>
             {
                 var sample = segment.SampleFromPosition(_carBehaviour.Position);
-                Gizmos.color = Color.magenta;
+                
+                // Random color seed based on segment index
+                int segmentIndex = _trafficSystem.Segments.IndexOf(segment);
+                Gizmos.color = new Color(
+                    Mathf.PerlinNoise(segmentIndex, 0.0f),
+                    Mathf.PerlinNoise(segmentIndex, 1.0f),
+                    Mathf.PerlinNoise(segmentIndex, 2.0f)
+                );
                 Gizmos.DrawSphere(sample.Position, 0.5f);
-                Gizmos.DrawLine(_carBehaviour.Position, sample.Position);
-
+                MathExtensions.DrawArrow(_carBehaviour.Position, sample.Position);
             });
-            
-            var closestSegment = _trafficSystem.GetClosestSegment(_carBehaviour.Position);
-            if(closestSegment != null)
-            {
-                var sample = closestSegment.SampleFromPosition(_carBehaviour.Position);
-                Gizmos.color = Color.blue;
-                Gizmos.DrawSphere(sample.Position, 0.5f);
-                Gizmos.DrawLine(_carBehaviour.Position, sample.Position);
-            }
         }
 
-        if (_debugSpeed)
+        if (_settings.DebugSpeed)
         {
             
             // Gizmos.color = Color.Lerp(Color.white, Color.black, _dangerLevel);
-            Gizmos.color = Color.black;
+            Gizmos.color = _settings.DebugSpeedCircleColor;
             MathExtensions.DrawCircle(_carBehaviour.Position + Vector3.up, _carBehaviour.ForwardSpeed);
 
-            Gizmos.color = new Color(1, 0.1f, 0.1f, 0.3f);
+            Gizmos.color = _settings.DebugSpeedSphereColor;
             Gizmos.DrawSphere(_carBehaviour.Position + Vector3.up,  _carBehaviour.ForwardSpeed);
         }
+        
     }
-
+    
+    
     private void Update()
     {
         if(_currentSegment == null)
@@ -138,62 +143,14 @@ public class TrafficAgent : MonoBehaviour
         if(CurrentSample.IsAtEndOfSegment)
             UpdateSegment();
 
-        UpdateSensorInformation();
+        _frontSensorResult = _frontSensor.Sense();
     }
 
     private void UpdateSample()
     {
         CurrentSample = _currentSegment.SampleFromPosition(_carBehaviour.Position);
     }
-
-    private void UpdateSensorInformation()
-    {
-        float steeringAngle = _carBehaviour.SteeringAngleDegrees;
-        _frontSensor.transform.localRotation = Quaternion.Euler(0.0f, steeringAngle, 0.0f);
-        
-        Vector3 target = _frontSensor.transform.localPosition;
-        target.x = steeringAngle * _frontSensorAnglePositionOffset;
-        _frontSensor.transform.localPosition = target;
-        
-        _frontSensor.Sense(_frontSensorDistance, out _frontSensorHit);
-        
-        // RaycastHit senseResultAngled = new RaycastHit();
-        // {
-        //     float steeringAngle = _carBehaviour.SteeringAngleDegrees;
-        //     _frontSensor.transform.localRotation = Quaternion.Euler(0.0f, steeringAngle, 0.0f);
-        //
-        //     Vector3 target = _frontSensor.transform.localPosition;
-        //     target.x = steeringAngle * _frontSensorAnglePositionOffset;
-        //     _frontSensor.transform.localPosition = target;
-        //
-        //     _frontSensor.Sense(_frontSensorDistance, out senseResultAngled);
-        // }
-        //
-        // RaycastHit senseResultStraight = new RaycastHit();
-        // {
-        //     _frontSensor.transform.localRotation = Quaternion.identity;
-        //     _frontSensor.transform.localPosition = new Vector3(0.0f, _frontSensor.transform.localPosition.y, _frontSensor.transform.localPosition.z);
-        //     
-        //     _frontSensor.Sense(_frontSensorDistance, out senseResultStraight);
-        // }
-        //
-        // if(senseResultAngled.collider == null && senseResultStraight.collider == null)
-        //     return;
-        //
-        // if(senseResultStraight.collider == null)
-        // {
-        //     _frontSensorHit = senseResultAngled;
-        //     return;
-        // }
-        //
-        // if(senseResultAngled.collider == null)
-        // {
-        //     _frontSensorHit = senseResultStraight;
-        //     return;
-        // }
-        //
-        // _frontSensorHit = (senseResultAngled.distance < senseResultStraight.distance ? senseResultAngled : senseResultStraight);
-    }
+    
 
 
     private void UpdateSegment()

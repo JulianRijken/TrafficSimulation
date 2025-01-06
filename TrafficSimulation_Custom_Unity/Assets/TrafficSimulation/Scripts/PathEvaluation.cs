@@ -79,6 +79,9 @@ namespace TrafficSimulation
 
         private void Finish()
         {
+            if (!isActiveAndEnabled)
+                return;
+            
             finished = true;
             
             if (_pauseOnFinish)

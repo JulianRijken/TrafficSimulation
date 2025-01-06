@@ -304,14 +304,14 @@ namespace TrafficSimulation
             // Rotate sensor to match target rotation
             _frontSensor.transform.rotation = Quaternion.LookRotation(_target.Direction, Vector3.up);
             
-            if (_frontSensor.Sense(checkDistance, out var hit))
-            {
-                
-                if (!hit.collider.tag.Equals("AutonomousVehicle"))
-                    return;
-                
-                _carInFront = hit.collider.GetComponentInParent<CarControllerAI>();
-            }
+            // if (_frontSensor.Sense(checkDistance, out var hit))
+            // {
+            //     
+            //     if (!hit.collider.tag.Equals("AutonomousVehicle"))
+            //         return;
+            //     
+            //     _carInFront = hit.collider.GetComponentInParent<CarControllerAI>();
+            // }
         }
         
         private void UpdateTargetSpeed()

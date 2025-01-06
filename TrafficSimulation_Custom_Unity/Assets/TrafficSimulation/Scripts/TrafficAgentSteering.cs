@@ -8,13 +8,6 @@ namespace TrafficSimulation
     {
         private TrafficAgent _agent;
         
-        [Header("Debug")]
-        [SerializeField] private bool _useDistanceCorrection = true;
-        [SerializeField] private bool _useBackwardsCorrection = true;
-        [SerializeField] private bool _debugLAT = false;
-        [SerializeField] private bool _debugPID = false;
-        [SerializeField] float _debugLOTBallRadius = 1.0f;
-        
         private SteerModeType _steerMode;
         private PIDController _steeringPID;
 
@@ -23,7 +16,7 @@ namespace TrafficSimulation
         
         public SteerModeType SteerMode => _steerMode;
 
-        public float Lookahead => _agent.Settings.LookaheadDistance + _agent.CarBehaviour.ForwardSpeed * _agent.Settings.LookaheadDistanceOverTime;
+        public float Lookahead => _agent.Settings.PathSmoothingDefaultDistance + _agent.CarBehaviour.ForwardSpeed * _agent.Settings.PathSmoothingDistanceOverSpeed;
         
         public enum SteerModeType
         {
@@ -70,10 +63,10 @@ namespace TrafficSimulation
 
             // Decide agent steering mode
             bool isDrivingBackwards = Vector3.Dot(_agent.CarBehaviour.Forward,_interpolatedSample.DirectionForward) < 0;
-            bool isTooFarFromPath = _interpolatedSample.GetSidewaysDistanceFromPath(_agent.CarBehaviour.Position) > _agent.Settings.DirectionErrorTriggerDistance;
-            if (isTooFarFromPath && _useDistanceCorrection)
+            bool isTooFarFromPath = _interpolatedSample.GetSidewaysDistanceFromPath(_agent.CarBehaviour.Position) > _agent.Settings.InstabilityTriggerDistance;
+            if (isTooFarFromPath && _agent.Settings.UseDistanceCorrection)
                 _steerMode = SteerModeType.DistanceCorrection;
-            else if (isDrivingBackwards && _useBackwardsCorrection)
+            else if (isDrivingBackwards && _agent.Settings.UseBackwardsCorrection)
                 _steerMode = SteerModeType.DirectionCorrection;
             else
                 _steerMode = SteerModeType.PID;
@@ -95,7 +88,7 @@ namespace TrafficSimulation
                     
                     _agent.CarBehaviour.SteerWheelInput = pidResult.Total;
                     
-                    if (_debugPID)
+                    if (_agent.Settings.DebugSteeringPID)
                     {
                         float scale = 10.0f;
                         Vector3 from = _agent.CarBehaviour.Position + Vector3.up;
@@ -103,7 +96,6 @@ namespace TrafficSimulation
                         Debug.DrawRay(from + _agent.CarBehaviour.Forward * -0.5f, _interpolatedSample.DirectionRight * (pidResult.Integral * scale), Color.blue);
                         Debug.DrawRay(from + _agent.CarBehaviour.Forward * 0.5f, _interpolatedSample.DirectionRight * (pidResult.Derivative * scale), Color.green);
                     }
-                    
                     break;
                 
                 case SteerModeType.DirectionCorrection:
@@ -123,23 +115,27 @@ namespace TrafficSimulation
 
         private void OnDrawGizmos()
         {
-            if(Application.isPlaying == false || _debugLAT == false)
+            if(Application.isPlaying == false)
                 return;
-            
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(_agent.CurrentSample.Position,_debugLOTBallRadius * 0.5f);
 
-            if (Lookahead > 0.0f)
+            if (_agent.Settings.DebugPathSmoothing)
             {
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(_interpolatedSample.Position, _debugLOTBallRadius);
-                float distance = Vector3.Distance(_agent.CurrentSample.Position, _futureSample.Position);
-                Gizmos.DrawLine(_interpolatedSample.Position - _interpolatedSample.DirectionForward * distance * 0.5f,
-                    _interpolatedSample.Position + _interpolatedSample.DirectionForward * distance * 0.5f);
-                
-                
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawWireSphere(_futureSample.Position, _debugLOTBallRadius);
+                Gizmos.color = _agent.Settings.DebugPathSmoothingFromColor;
+                Gizmos.DrawWireSphere(_agent.CurrentSample.Position, _agent.Settings.DebugPathSmoothingBallRadius * 0.5f);
+
+                if (Lookahead > 0.0f)
+                {
+                    Gizmos.color = _agent.Settings.DebugPathSmoothingInterpolatedColor;
+                    Gizmos.DrawWireSphere(_interpolatedSample.Position, _agent.Settings.DebugPathSmoothingBallRadius);
+                    float distance = Vector3.Distance(_agent.CurrentSample.Position, _futureSample.Position);
+                    Gizmos.DrawLine(
+                        _interpolatedSample.Position - _interpolatedSample.DirectionForward * distance * 0.5f,
+                        _interpolatedSample.Position + _interpolatedSample.DirectionForward * distance * 0.5f);
+
+
+                    Gizmos.color = _agent.Settings.DebugPathSmoothingToColor;
+                    Gizmos.DrawWireSphere(_futureSample.Position, _agent.Settings.DebugPathSmoothingBallRadius);
+                }
             }
         }
 
@@ -148,7 +144,7 @@ namespace TrafficSimulation
             Vector2 directionToPath = new Vector2(direction.x, direction.z).normalized;
             Vector2 agentDirection = new Vector2(_agent.CarBehaviour.Forward.x, _agent.CarBehaviour.Forward.z).normalized;
             float angleError =  Vector2.SignedAngle(directionToPath, agentDirection) / 360.0f;
-            return angleError * _agent.Settings.DirectionError_Gain;
+            return angleError * _agent.Settings.DirectionSteeringPoportionalGain;
         }
     }
 }
