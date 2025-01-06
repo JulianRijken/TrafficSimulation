@@ -2,31 +2,15 @@ using UnityEngine;
 
 namespace TrafficSimulation
 {
-    public class Sensor : MonoBehaviour
+    public class SensorSteer : Sensor
     {
-        private TrafficAgent _agent;
-        
-        [SerializeField] private Vector2 _size = new Vector2(1.0f, 1.0f);
-        [SerializeField] private LayerMask _layerMask = 0;
-
         [SerializeField] private float _steeringAngleSmoothing = 10.0f;
         [SerializeField] private float _lookaheadDistance = 10.0f;
-
         [SerializeField] private float _steeringAnglePointCount;
         
         private Vector3 _turningCenter = Vector3.zero;
         private float _turningRadius = 0.0f;
         private float _steeringAngle;
-
-        public struct Result
-        {
-            public float Distance;
-        }
-
-        private void Awake()
-        {
-            _agent = GetComponentInParent<TrafficAgent>();
-        }
 
         private Vector3 AngleToPoint(float angle)
         {
@@ -34,7 +18,7 @@ namespace TrafficSimulation
             float angleToAgent =  Mathf.Atan2(centerToAgent.z, centerToAgent.x);
             float angleOffset = angle * -Mathf.Sign(_turningRadius) + angleToAgent; 
             float radiusAbs = Mathf.Abs(_turningRadius);
-
+        
             return new Vector3(
                 _turningCenter.x + Mathf.Cos(angleOffset) * radiusAbs,
                 _agent.CarBehaviour.Position.y,
@@ -49,41 +33,27 @@ namespace TrafficSimulation
             Gizmos.color = new Color(0, 1, 0, 0.3f);
             MathExtensions.DrawCircle(_turningCenter, Vector3.up, _turningRadius);
             Gizmos.DrawSphere(_turningCenter, 0.5f);
-
-
-
-            // int pointCount = Mathf.RoundToInt(_smoothTurningRadius / Mathf.PI * _steeringAnglePointCount);
+            
             int pointCount = 10;
-            // Debug.Log(Mathf.Clamp01(Mathf.Abs(_turningRadius) / _steeringAnglePointCount));
-            
-            // Debug.Log(Mathf.Clamp01(Mathf.Abs(_steeringAngle) / _steeringAnglePointCount));
-
-            Debug.Log("====================================");
-            
-            
-            
             for (int i = 0; i < pointCount; i++)
             {
                 float pointAlpha = i / (float)pointCount;
                 float currentPointAngle = pointAlpha / Mathf.Abs(_turningRadius)  * _lookaheadDistance;
                 
                 Vector3 currentPoint = AngleToPoint(currentPointAngle);
-
+            
                 Gizmos.color = Color.Lerp(Color.red, new Color(1.0f,0.0f,0.0f,0.5f),pointAlpha);
                 Gizmos.DrawSphere(currentPoint, 1.0f);
             }
-            
         }
 
-
-        
-        public Result Sense()
+        public override Result Sense()
         {
             var result = new Result
             {
                 Distance = float.MaxValue
             };
-
+            
             float steeringAngleTarget = _agent.CarBehaviour.SteeringAngleDegrees * Mathf.Deg2Rad;
             _steeringAngle = MathExtensions.LerpSmooth(_steeringAngle, steeringAngleTarget, Time.deltaTime, _steeringAngleSmoothing);
             
@@ -91,25 +61,14 @@ namespace TrafficSimulation
             Vector3 backWheelCenter = _agent.CarBehaviour.BackWheelCenter;
             Vector3 backWheelSideways = -_agent.CarBehaviour.Right;
             float wheelbase = Vector3.Distance(frontWheelCenter, backWheelCenter);
-
-            // // Avoid division by zero for straight driving
-            // if (Mathf.Abs(_steeringAngle) < 0.001f)
-            // {
-            //     Debug.Log("Steering angle is too small, the vehicle is driving straight.");
-            //     return result;
-            // }
-
-            _turningRadius = wheelbase / Mathf.Tan(_steeringAngle);
-            // _smoothTurningRadius = MathExtensions.LerpSmooth(_smoothTurningRadius, turningRadius, Time.deltaTime, _smoothingDuration);   
-            // _smoothTurningRadius = Mathf.MoveTowards(_smoothTurningRadius, turningRadius, _smoothingMaxChange * Time.deltaTime);
             
+            
+            _turningRadius = wheelbase / Mathf.Tan(_steeringAngle);
             _turningCenter = backWheelCenter - _turningRadius * backWheelSideways;
-
-
-
+            
             return result;
 
-
+            
             // ///////////////////////
             //
             // bool didHit = Physics.BoxCast(transform.position, _size, transform.forward, out hit, transform.rotation, distance,_layerMask );

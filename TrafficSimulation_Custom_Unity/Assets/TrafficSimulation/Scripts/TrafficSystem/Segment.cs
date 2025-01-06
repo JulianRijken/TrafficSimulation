@@ -15,6 +15,8 @@ namespace TrafficSimulation
         private List<float> cumulativeLengths;
         
         public float TotalLength => cumulativeLengths[^1];
+        public Vector3 StartPosition => Waypoints[0].Position;
+        public Vector3 EndPosition => Waypoints[^1].Position;
         
         
         [Serializable]
@@ -34,7 +36,6 @@ namespace TrafficSimulation
             // Meters / second
             public float SpeedLimit => SpeedLimitKph / 3.6f;
 
-     
             
             public Vector3 GetDirectionToSampledPosition(Vector3 originalPosition)
             {
@@ -84,19 +85,19 @@ namespace TrafficSimulation
         }
 
 
-        public Sample SampleFromAlpha(float alphaAlongPath)
-        {
-            float targetLength = alphaAlongPath * TotalLength;
-            return SampleFromDistance(targetLength);
-        }
+        // public Sample SampleFromAlpha(float alphaAlongPath)
+        // {
+        //     float targetLength = alphaAlongPath * TotalLength;
+        //     return SampleFromDistance(targetLength);
+        // }
         
         public Sample SampleFromDistance(float distanceAlongPath)
         {
-            distanceAlongPath = Mathf.Clamp(distanceAlongPath, 0, TotalLength);
+            float clampedDistance = Mathf.Clamp(distanceAlongPath, 0, TotalLength);
             
             // Find the two waypoints that the target length falls between
             int waypointIndex = 0;
-            while (waypointIndex < cumulativeLengths.Count - 1 && cumulativeLengths[waypointIndex + 1] < distanceAlongPath)
+            while (waypointIndex < cumulativeLengths.Count - 1 && cumulativeLengths[waypointIndex + 1] < clampedDistance)
                 waypointIndex++;
 
             // Find the distance between the two waypoints
@@ -112,10 +113,10 @@ namespace TrafficSimulation
             var sample = new Sample();
             sample.WaypointIndex = waypointIndex;
             sample.SpeedLimitKph = Waypoints[waypointIndex].SpeedLimitKph;
-            sample.DistanceAlongSegment = Mathf.Clamp(distanceAlongPath, 0, TotalLength);
-            sample.AlphaAlongSegment = Mathf.Clamp01(distanceAlongPath / TotalLength);
+            sample.DistanceAlongSegment = distanceAlongPath; //Mathf.Clamp(distanceAlongPath, 0, TotalLength);
+            sample.AlphaAlongSegment = distanceAlongPath / TotalLength; //Mathf.Clamp01(distanceAlongPath / TotalLength);
             sample.DistanceToSegmentEnd = TotalLength - distanceAlongPath;
-            sample.Position = Vector3.Lerp(fromWaypointPosition, toWaypointPosition, waypointAlpha);    
+            sample.Position = Vector3.LerpUnclamped(fromWaypointPosition, toWaypointPosition, waypointAlpha);    
             sample.DirectionForward = (toWaypointPosition - fromWaypointPosition).normalized;
             sample.DirectionRight = Vector3.Cross(sample.DirectionForward, Vector3.up);
             return sample;

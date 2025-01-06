@@ -1,4 +1,3 @@
-using System;
 using TrafficSimulation;
 using UnityEngine;
 
@@ -158,5 +157,25 @@ public class TrafficAgent : MonoBehaviour
         _currentSegment = _nextSegment;
         if(_currentSegment != null)
             _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
+    }
+
+    
+    // Also cares about next segment
+    public Segment.Sample SampleFromDistance(float distanceAlongPath)
+    {
+        if (distanceAlongPath < _currentSegment.TotalLength)
+            return _currentSegment.SampleFromDistance(distanceAlongPath);
+        
+        float distanceToNextSegment = Vector3.Distance(_currentSegment.EndPosition, _nextSegment.StartPosition);
+
+        // Interpolate between current and next segment
+        if (distanceAlongPath < _currentSegment.TotalLength + distanceToNextSegment)
+        {
+            float alpha = (distanceAlongPath - _currentSegment.TotalLength) / distanceToNextSegment;
+            return Segment.Sample.Interpolate(_currentSegment.SampleFromDistance(_currentSegment.TotalLength), _nextSegment.SampleFromDistance(0.0f), alpha);
+        }
+        
+        return _nextSegment.SampleFromDistance(distanceAlongPath - _currentSegment.TotalLength);
+        
     }
 }

@@ -36,7 +36,7 @@ MonoBehaviour:
   FrontSensorDistance: 100
   FrontSensorAnglePositionOffset: 0
   DebugAgentSize: 0
-  DebugCurrentSample: 0
+  DebugCurrentSample: 1
   DebugClosestSample: 0
   DebugAllSamples: 0
   DebugSpeed: 0

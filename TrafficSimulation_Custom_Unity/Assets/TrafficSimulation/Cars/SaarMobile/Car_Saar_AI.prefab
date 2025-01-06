@@ -12,6 +12,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Car_Saar_AI
       objectReference: {fileID: 0}
+    - target: {fileID: 2707953989699094349, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+      propertyPath: _size.x
+      value: 3991.2756
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707953989699094349, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+      propertyPath: _size.y
+      value: 7.315358e+34
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707953989699094349, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+      propertyPath: _layerMask.m_Bits
+      value: 1632465509
+      objectReference: {fileID: 0}
     - target: {fileID: 5141284589344598521, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: m_LocalPosition.x
       value: -24.5
@@ -72,6 +84,10 @@ PrefabInstance:
       propertyPath: _debugSample
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5809686950006448449, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+      propertyPath: _frontSensor
+      value: 
+      objectReference: {fileID: 6735460435272377537}
     - target: {fileID: 6855939628513559686, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       propertyPath: _backWheels.Array.size
       value: 2
@@ -86,12 +102,16 @@ PrefabInstance:
       objectReference: {fileID: 5480228982848525836}
     m_RemovedComponents:
     - {fileID: 1984549529432209406, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+    - {fileID: 2707953989699094349, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1598603097554462743, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
       insertIndex: -1
       addedObject: {fileID: 133776999682588994}
+    - targetCorrespondingSourceObject: {fileID: 1758163244030200483, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6735460435272377537}
   m_SourcePrefab: {fileID: 100100000, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
 --- !u!114 &350583118686316292 stripped
 MonoBehaviour:
@@ -150,6 +170,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6316ed3186aece444bf1cbe86b7f901a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &5556149093175128776 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1758163244030200483, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
+  m_PrefabInstance: {fileID: 6160123907389945963}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6735460435272377537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5556149093175128776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62af75bd5f200c24f8e1906b65c31b9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _size: {x: 0.7, y: 0.3}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 0
+  _lookaheadDistance: 10
 --- !u!114 &6845930730295693749 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 755630243685525982, guid: 1e64733a27550ed42990389eeedd2590, type: 3}
