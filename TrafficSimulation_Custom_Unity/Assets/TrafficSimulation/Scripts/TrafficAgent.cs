@@ -131,8 +131,11 @@ public class TrafficAgent : MonoBehaviour
     private void UpdateSegment()
     {
         _currentSegment = _nextSegment;
+
         if (_currentSegment != null)
+        {
             _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
+        }
     }
 
 
