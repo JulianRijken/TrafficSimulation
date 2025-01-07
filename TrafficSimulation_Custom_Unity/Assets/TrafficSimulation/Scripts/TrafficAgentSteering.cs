@@ -44,21 +44,21 @@ namespace TrafficSimulation
             {
                 // Set future
                 _futureSample =
-                    _agent.CurrentSegment.SampleFromDistance(_agent.CurrentSample.DistanceAlongSegment + Lookahead);
+                    _agent.SampleFromDistanceExtended(_agent.CurrentExtendedSample.DistanceAlongSegment + Lookahead);
                 
                 // Interpolate
                 _interpolatedSample.Position =
-                    Vector3.Lerp(_agent.CurrentSample.Position, _futureSample.Position, 0.5f);
-                _interpolatedSample.DirectionForward = (_futureSample.Position - _agent.CurrentSample.Position).normalized;
+                    Vector3.Lerp(_agent.CurrentExtendedSample.Position, _futureSample.Position, 0.5f);
+                _interpolatedSample.DirectionForward = (_futureSample.Position - _agent.CurrentExtendedSample.Position).normalized;
                 _interpolatedSample.DirectionRight = Vector3.Cross(_interpolatedSample.DirectionForward, Vector3.up);
-                _interpolatedSample.AlphaAlongSegment = Mathf.Lerp(_agent.CurrentSample.AlphaAlongSegment,
+                _interpolatedSample.AlphaAlongSegment = Mathf.Lerp(_agent.CurrentExtendedSample.AlphaAlongSegment,
                     _futureSample.AlphaAlongSegment, 0.5f);
-                _interpolatedSample.DistanceAlongSegment = Mathf.Lerp(_agent.CurrentSample.DistanceAlongSegment,
+                _interpolatedSample.DistanceAlongSegment = Mathf.Lerp(_agent.CurrentExtendedSample.DistanceAlongSegment,
                     _futureSample.DistanceAlongSegment, 0.5f);
             }
             else
             {
-                _interpolatedSample = _agent.CurrentSample;
+                _interpolatedSample = _agent.CurrentExtendedSample;
             }
 
             // Decide agent steering mode
@@ -72,7 +72,7 @@ namespace TrafficSimulation
                 _steerMode = SteerModeType.PID;
 
             // TODO: This is temporary for the intersection
-            if (_agent.CurrentSample.IsAtStartOfSegment || _agent.CurrentSample.IsAtEndOfSegment)
+            if (_agent.CurrentExtendedSample.IsAtStartOfSegment || _agent.CurrentExtendedSample.IsAtEndOfSegment)
                 _steerMode = SteerModeType.DirectionCorrection;
 
 
@@ -121,13 +121,13 @@ namespace TrafficSimulation
             if (_agent.Settings.DebugPathSmoothing)
             {
                 Gizmos.color = _agent.Settings.DebugPathSmoothingFromColor;
-                Gizmos.DrawWireSphere(_agent.CurrentSample.Position, _agent.Settings.DebugPathSmoothingBallRadius * 0.5f);
+                Gizmos.DrawWireSphere(_agent.CurrentExtendedSample.Position, _agent.Settings.DebugPathSmoothingBallRadius * 0.5f);
 
                 if (Lookahead > 0.0f)
                 {
                     Gizmos.color = _agent.Settings.DebugPathSmoothingInterpolatedColor;
                     Gizmos.DrawWireSphere(_interpolatedSample.Position, _agent.Settings.DebugPathSmoothingBallRadius);
-                    float distance = Vector3.Distance(_agent.CurrentSample.Position, _futureSample.Position);
+                    float distance = Vector3.Distance(_agent.CurrentExtendedSample.Position, _futureSample.Position);
                     Gizmos.DrawLine(
                         _interpolatedSample.Position - _interpolatedSample.DirectionForward * distance * 0.5f,
                         _interpolatedSample.Position + _interpolatedSample.DirectionForward * distance * 0.5f);
@@ -144,7 +144,7 @@ namespace TrafficSimulation
             Vector2 directionToPath = new Vector2(direction.x, direction.z).normalized;
             Vector2 agentDirection = new Vector2(_agent.CarBehaviour.Forward.x, _agent.CarBehaviour.Forward.z).normalized;
             float angleError =  Vector2.SignedAngle(directionToPath, agentDirection) / 360.0f;
-            return angleError * _agent.Settings.DirectionSteeringPoportionalGain;
+            return angleError * _agent.Settings.DirectionSteeringProportionalGain;
         }
     }
 }

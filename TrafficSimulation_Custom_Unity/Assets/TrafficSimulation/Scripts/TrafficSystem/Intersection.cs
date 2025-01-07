@@ -15,10 +15,11 @@ namespace TrafficSimulation
         }
         
         [Serializable]
-        public struct Turn
+        public class Turn
         {
+            public TurnState State = TurnState.Clear;
             public Connection Connection;
-            public List<Connection> CrossingConnections;
+            public List<Connection> CrossingConnections = new();
             public float Angle;
             public float Distance;
         }
@@ -28,6 +29,13 @@ namespace TrafficSimulation
         {
             public TrafficAgent Car;
             public Turn Turn;
+        }
+
+        public enum TurnState
+        {
+            Clear,
+            Occupied,
+            Blocked
         }
         
 
@@ -48,22 +56,19 @@ namespace TrafficSimulation
         private void OnDrawGizmos()
         {
             float heightOffset = 0.5f;
-            Gizmos.color = Color.blue;
+
+            UpdateTurnStates();
             
             foreach (var turn in _turns)
             {
-                if(turn.Connection.From == null || turn.Connection.To == null)
-                    continue;
-
-                foreach (var movingCar in CarsMoving)
+                Gizmos.color = turn.State switch
                 {
-                    if(turn.Equals(movingCar.Turn))
-                    {
-                        Gizmos.color = Color.red;
-                        break;
-                    }
-                }
-                
+                    TurnState.Clear => Color.green,
+                    TurnState.Occupied => Color.blue,
+                    TurnState.Blocked => Color.red,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
                 Vector3 fromPosition = turn.Connection.From.Waypoints.Last().transform.position;
                 Vector3 toPosition = turn.Connection.To.Waypoints.First().transform.position;
                 fromPosition.y += heightOffset;
@@ -74,73 +79,97 @@ namespace TrafficSimulation
             }
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            TrafficAgent carController = other.gameObject.GetComponentInParent<TrafficAgent>();
-            if (carController != null)
-                OnCarEnterIntersection(carController);
-        }
         
-        private void OnTriggerExit(Collider other)
-        {
-            TrafficAgent carController = other.gameObject.GetComponentInParent<TrafficAgent>();
-            if (carController != null)
-                OnCarExitIntersection(carController);
-        }
-
-
-        private void TryMoveCars()
-        {
-            // Simple, no cars in intersection
-            if(_carsInIntersection.Count == 0)
-                return;
-
-            foreach (var waitingCar in CarsWaiting)
-            {
-                if(CarsMoving.Count == 0)
-                {
-                    waitingCar.Car.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-                    return;
-                }
-                
-                foreach (var movingCar in CarsMoving)
-                {
-                    if(waitingCar.Turn.CrossingConnections == null)
-                        throw new Exception("Crossing connections is null, intersection probably does not cover all connections");
-                    
-                    // Wait for moving car to pass
-                    if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
-                        continue;
-                    
-                    waitingCar.Car.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-                    return;
-                }
-            }
-        }
-        
-        private void OnCarEnterIntersection(TrafficAgent car)
-        {
-            // Add car to the list of cars that entered the intersection
-            // Debug.Log("Vehicle entered intersection");
-            _carsInIntersection.Add(new IntersectionCar
-            {
-                Car = car,
-                Turn = _turns.FirstOrDefault(t => IsCarMakingTurn(t, car))
-            });
-            car.IntersectionState = TrafficAgent.IntersectionStateType.Waiting;
-
-            TryMoveCars();
-        }
-        
-        private void OnCarExitIntersection(TrafficAgent car)
-        {
-            // Remove car to the list of cars that exited the intersection
-            // Debug.Log("Vehicle exited intersection");
-            car.IntersectionState = TrafficAgent.IntersectionStateType.None;
-            _carsInIntersection.Remove(_carsInIntersection.First(c => c.Car.Equals(car)));
-            
-            TryMoveCars();
-        }
+        // private void UpdateTurnStates()
+        // {
+        //     foreach (Turn turn in _turns)
+        //     {
+        //         turn.State = TurnState.Clear;
+        //
+        //         foreach (var movingCar in CarsMoving)
+        //         {
+        //             if(turn.Equals(movingCar.Turn))
+        //             {
+        //                 turn.State = TurnState.Occupied;
+        //                 break;
+        //             }
+        //             
+        //             if(turn.CrossingConnections.Contains(movingCar.Turn.Connection))
+        //             {
+        //                 turn.State = TurnState.Blocked;
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
+        //
+        // private void OnTriggerEnter(Collider other)
+        // {
+        //     TrafficAgent carController = other.gameObject.GetComponentInParent<TrafficAgent>();
+        //     if (carController != null)
+        //         OnCarEnterIntersection(carController);
+        // }
+        //
+        // private void OnTriggerExit(Collider other)
+        // {
+        //     TrafficAgent carController = other.gameObject.GetComponentInParent<TrafficAgent>();
+        //     if (carController != null)
+        //         OnCarExitIntersection(carController);
+        // }
+        //
+        //
+        // private void TryMoveCars()
+        // {
+        //     // Simple, no cars in intersection
+        //     if(_carsInIntersection.Count == 0)
+        //         return;
+        //
+        //     foreach (var waitingCar in CarsWaiting)
+        //     {
+        //         if(CarsMoving.Count == 0)
+        //         {
+        //             waitingCar.Car.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+        //             return;
+        //         }
+        //         
+        //         foreach (var movingCar in CarsMoving)
+        //         {
+        //             if(waitingCar.Turn.CrossingConnections == null)
+        //                 throw new Exception("Crossing connections is null, intersection probably does not cover all connections");
+        //             
+        //             // Wait for moving car to pass
+        //             if (waitingCar.Turn.CrossingConnections.Contains(movingCar.Turn.Connection))
+        //                 continue;
+        //             
+        //             waitingCar.Car.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+        //             return;
+        //         }
+        //     }
+        // }
+        //
+        // private void OnCarEnterIntersection(TrafficAgent car)
+        // {
+        //     // Add car to the list of cars that entered the intersection
+        //     // Debug.Log("Vehicle entered intersection");
+        //     _carsInIntersection.Add(new IntersectionCar
+        //     {
+        //         Car = car,
+        //         Turn = _turns.FirstOrDefault(t => IsCarMakingTurn(t, car))
+        //     });
+        //     car.IntersectionState = TrafficAgent.IntersectionStateType.Waiting;
+        //
+        //     TryMoveCars();
+        // }
+        //
+        // private void OnCarExitIntersection(TrafficAgent car)
+        // {
+        //     // Remove car to the list of cars that exited the intersection
+        //     // Debug.Log("Vehicle exited intersection");
+        //     car.IntersectionState = TrafficAgent.IntersectionStateType.None;
+        //     _carsInIntersection.Remove(_carsInIntersection.First(c => c.Car.Equals(car)));
+        //     
+        //     TryMoveCars();
+        // }
 
         private bool IsCarMakingTurn(Turn turn, TrafficAgent car)
         {
@@ -202,13 +231,21 @@ namespace TrafficSimulation
                     // We also ignore turns that start from the same segment
                     if(turn.Connection.From.Equals(otherTurn.Connection.From))
                         continue;
+                    
+                    // When the end of the turn is the same they are crossing
+                    if(turn.Connection.To.Equals(otherTurn.Connection.To))
+                    {
+                        turn.CrossingConnections.Add(otherTurn.Connection);
+                        continue;
+                    }
 
+                    // Check if lines intersect
                     Vector2 line2Start = ToXZ(otherTurn.Connection.From.Waypoints.Last().transform.position);
                     Vector2 line2End = ToXZ(otherTurn.Connection.To.Waypoints.First().transform.position);
-
                     if (MathExtensions.LineIntersect2D(line1Start, line1End, line2Start, line2End))
                     {
                         turn.CrossingConnections.Add(otherTurn.Connection);
+                        continue;
                     }
                 }
             }

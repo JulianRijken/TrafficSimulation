@@ -12,6 +12,7 @@ namespace TrafficSimulation
         public struct Result
         {
             public float Distance;
+            public Vector3 Velocity;
         }
 
         protected void Awake()
@@ -19,6 +20,6 @@ namespace TrafficSimulation
             _agent = GetComponentInParent<TrafficAgent>();
         }
 
-        public abstract Result Sense();
+        public abstract Result Sense(float distance);
     }
 }

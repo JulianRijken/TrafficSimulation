@@ -30,12 +30,34 @@ namespace TrafficSimulation
             public Vector3 Position;
             public Vector3 DirectionForward;
             public Vector3 DirectionRight;
+            public Segment Segment;
+            
             public bool IsAtEndOfSegment => AlphaAlongSegment >= 1.0f - 1e-6f;
             public bool IsAtStartOfSegment => AlphaAlongSegment <= 0.0f + 1e-6f;
             
             // Meters / second
             public float SpeedLimit => SpeedLimitKph / 3.6f;
 
+            public static Sample Interpolate(Sample from, Sample to, float distance)
+            {
+                float distanceBetweenSamples = Vector3.Distance(from.Position, to.Position);
+                float alpha = distance / distanceBetweenSamples;
+                
+                Sample interpolatedSample = from;
+                interpolatedSample.SpeedLimitKph = Mathf.Lerp(from.SpeedLimitKph, to.SpeedLimitKph, alpha);
+                interpolatedSample.DistanceAlongSegment = from.DistanceAlongSegment + distance;
+
+                float totalLength = from.Segment.TotalLength + distanceBetweenSamples;
+                
+                interpolatedSample.AlphaAlongSegment = interpolatedSample.DistanceAlongSegment  / totalLength;
+                interpolatedSample.DistanceToSegmentEnd = totalLength - interpolatedSample.DistanceAlongSegment;
+                interpolatedSample.Position = Vector3.Lerp(from.Position, to.Position, alpha);
+                interpolatedSample.DirectionForward = (to.Position - from.Position).normalized;
+                interpolatedSample.DirectionRight = Vector3.Cross(interpolatedSample.DirectionForward, Vector3.up);
+
+                return interpolatedSample;
+            }
+    
             
             public Vector3 GetDirectionToSampledPosition(Vector3 originalPosition)
             {
@@ -91,7 +113,7 @@ namespace TrafficSimulation
         //     return SampleFromDistance(targetLength);
         // }
         
-        public Sample SampleFromDistance(float distanceAlongPath)
+        public Sample SampleFromDistanceClamped(float distanceAlongPath)
         {
             float clampedDistance = Mathf.Clamp(distanceAlongPath, 0, TotalLength);
             
@@ -104,7 +126,7 @@ namespace TrafficSimulation
             float fromWaypointDistance = cumulativeLengths[waypointIndex];
             float toWaypointDistance = cumulativeLengths[waypointIndex + 1];
             float waypointDistance = toWaypointDistance - fromWaypointDistance;
-            float waypointAlpha = (distanceAlongPath - fromWaypointDistance) / waypointDistance;
+            float waypointAlpha = (clampedDistance - fromWaypointDistance) / waypointDistance;
 
             // Interpolate between waypoints
             var fromWaypointPosition = Waypoints[waypointIndex].Position;
@@ -113,16 +135,17 @@ namespace TrafficSimulation
             var sample = new Sample();
             sample.WaypointIndex = waypointIndex;
             sample.SpeedLimitKph = Waypoints[waypointIndex].SpeedLimitKph;
-            sample.DistanceAlongSegment = distanceAlongPath; //Mathf.Clamp(distanceAlongPath, 0, TotalLength);
-            sample.AlphaAlongSegment = distanceAlongPath / TotalLength; //Mathf.Clamp01(distanceAlongPath / TotalLength);
-            sample.DistanceToSegmentEnd = TotalLength - distanceAlongPath;
+            sample.DistanceAlongSegment = clampedDistance; 
+            sample.AlphaAlongSegment = Mathf.Clamp01(clampedDistance / TotalLength);
+            sample.DistanceToSegmentEnd = TotalLength - clampedDistance;
             sample.Position = Vector3.LerpUnclamped(fromWaypointPosition, toWaypointPosition, waypointAlpha);    
             sample.DirectionForward = (toWaypointPosition - fromWaypointPosition).normalized;
             sample.DirectionRight = Vector3.Cross(sample.DirectionForward, Vector3.up);
+            sample.Segment = this;
             return sample;
         }
         
-        public Sample SampleFromPosition(Vector3 originalPosition)
+        public Sample SampleFromPositionClamped(Vector3 originalPosition)
         {
             var closestDistance = float.MaxValue;
             var closestSample = new Sample();
@@ -139,6 +162,7 @@ namespace TrafficSimulation
 
                 if (distanceToSampledPosition > closestDistance) 
                     continue;
+                
                 closestDistance = distanceToSampledPosition;
                 
                 closestSample.WaypointIndex = i;
@@ -149,6 +173,7 @@ namespace TrafficSimulation
                 closestSample.Position = sampledPosition;
                 closestSample.DirectionForward = directionBetweenWaypoints;
                 closestSample.DirectionRight = Vector3.Cross(directionBetweenWaypoints, Vector3.up);
+                closestSample.Segment = this;
             }
 
             return closestSample;

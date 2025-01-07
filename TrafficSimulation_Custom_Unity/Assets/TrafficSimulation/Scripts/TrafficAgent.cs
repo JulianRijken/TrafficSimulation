@@ -15,6 +15,8 @@ public class TrafficAgent : MonoBehaviour
     private Segment _nextSegment;
     private Sensor.Result _frontSensorResult;
     
+    private float _senseReactionTimer = 0.0f;
+    private float _senseReactionSpeed = 0.2f;
     
     public Transform FrontSensorTransform => _frontSensor.transform;
     public Vector3 AgentSize => _agentSize;
@@ -27,7 +29,11 @@ public class TrafficAgent : MonoBehaviour
     public Segment NextSegment => _nextSegment;
     public AgentSettings Settings => _settings;
 
-    public Segment.Sample CurrentSample { get; private set; }
+    private Segment.Sample _currentSample;
+    private Segment.Sample _currentExtendedSample;
+    
+    public Segment.Sample CurrentSample  => _currentSample;
+    public Segment.Sample CurrentExtendedSample => _currentExtendedSample;
 
     public IntersectionStateType IntersectionState = IntersectionStateType.None;
 
@@ -57,11 +63,106 @@ public class TrafficAgent : MonoBehaviour
             Debug.LogError("No segment found for agent.");
         
         UpdateSegment();
-        UpdateSample();
+        UpdateSamples();
     }
 
+    private void Update()
+    {
+        if(_currentSegment == null)
+            return;
 
-    private void OnDrawGizmos()
+        UpdateSamples();
+
+        if(CurrentExtendedSample.IsAtEndOfSegment)
+            UpdateSegment();
+
+
+        if (_settings.UseFrontSensor)
+        {
+            _senseReactionTimer += Time.deltaTime;
+            if (_senseReactionTimer >= _senseReactionSpeed)
+            {
+                float senseDistance = _settings.FrontSensorDefaultDistance +
+                                      _settings.FrontSensorDistanceOverSpeed * _carBehaviour.ForwardSpeed;
+                _frontSensorResult = _frontSensor.Sense(senseDistance);
+                _senseReactionTimer = 0.0f;
+                _senseReactionSpeed = Random.Range(_settings.SensingReactionSpeed.x, _settings.SensingReactionSpeed.y);
+            }
+        }
+        else
+        {
+            _frontSensorResult = new Sensor.Result
+            {
+                Distance = Mathf.Infinity,
+                Velocity = Vector3.zero
+            };
+        }
+    }
+    
+
+    private void UpdateSamples()
+    {
+         UpdateCurrentSample(_carBehaviour.Position);
+         UpdateCurrentExtendedSample(_carBehaviour.Position);
+    }
+    
+
+    private void UpdateSegment()
+    {
+        _currentSegment = _nextSegment;
+        if(_currentSegment != null)
+            _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
+    }
+
+    
+    public Segment.Sample SampleFromDistanceExtended(float distanceAlongPath)
+    {
+        if (distanceAlongPath <= _currentSegment.TotalLength || _nextSegment == null)
+            return _currentSegment.SampleFromDistanceClamped(distanceAlongPath);
+        
+        
+        float distanceToNextSegment = Vector3.Distance(_currentSegment.EndPosition, _nextSegment.StartPosition);
+    
+        // Interpolate between current and next segment
+        if (distanceAlongPath <= _currentSegment.TotalLength + distanceToNextSegment)
+        {
+            Segment.Sample fromSample = _currentSegment.SampleFromDistanceClamped(_currentSegment.TotalLength);
+            Segment.Sample toSample = _nextSegment.SampleFromDistanceClamped(0.0f);
+            return Segment.Sample.Interpolate(fromSample, toSample, distanceAlongPath - _currentSegment.TotalLength);
+        }
+        
+        return _nextSegment.SampleFromDistanceClamped(distanceAlongPath - _currentSegment.TotalLength - distanceToNextSegment);
+    }
+
+    private void UpdateCurrentSample(Vector3 position)
+    {
+        _currentSample = _currentSegment.SampleFromPositionClamped(position);
+    }
+    
+    private void UpdateCurrentExtendedSample(Vector3 position)
+    {
+        _currentExtendedSample = _currentSample;
+        if(_nextSegment == null)
+            return;
+        
+        Vector3 directionToNextSegment = (_nextSegment.StartPosition - _currentSegment.EndPosition).normalized;
+        float distanceToNextSegment = Vector3.Distance(_currentSegment.EndPosition, _nextSegment.StartPosition);
+        float distanceAwayFromEnd = Vector3.Dot(directionToNextSegment, position - _currentSegment.EndPosition);
+        
+        if (_currentExtendedSample.IsAtEndOfSegment)
+        {
+            float alpha = distanceAwayFromEnd  / distanceToNextSegment;
+            _currentExtendedSample.Position = Vector3.Lerp(_currentSegment.EndPosition, _nextSegment.StartPosition, alpha);
+            _currentExtendedSample.DirectionForward = directionToNextSegment;
+            _currentExtendedSample.DirectionRight = Vector3.Cross(_currentExtendedSample.DirectionForward, Vector3.up);
+            _currentExtendedSample.DistanceAlongSegment += distanceAwayFromEnd;
+            _currentExtendedSample.AlphaAlongSegment =  Mathf.Clamp01(_currentExtendedSample.DistanceAlongSegment / (_currentSegment.TotalLength + distanceToNextSegment));
+        }
+        
+        _currentExtendedSample.DistanceToSegmentEnd = Mathf.Max(0.0f,_currentSegment.TotalLength + distanceToNextSegment - _currentExtendedSample.DistanceAlongSegment);
+    }
+    
+        private void OnDrawGizmos()
     {
         if(Application.isPlaying == false)
             return;
@@ -93,7 +194,7 @@ public class TrafficAgent : MonoBehaviour
             var closestSegment = _trafficSystem.GetClosestSegment(_carBehaviour.Position);
             if (closestSegment != null)
             {
-                var sample = closestSegment.SampleFromPosition(_carBehaviour.Position);
+                var sample = closestSegment.SampleFromPositionClamped(_carBehaviour.Position);
                 Gizmos.color = _settings.DebugClosestSampleColor;
                 Gizmos.DrawSphere(sample.Position, 0.5f);
                 MathExtensions.DrawArrow(_carBehaviour.Position, sample.Position);
@@ -104,7 +205,7 @@ public class TrafficAgent : MonoBehaviour
         {
             _trafficSystem.Segments.ForEach(segment =>
             {
-                var sample = segment.SampleFromPosition(_carBehaviour.Position);
+                var sample = segment.SampleFromPositionClamped(_carBehaviour.Position);
                 
                 // Random color seed based on segment index
                 int segmentIndex = _trafficSystem.Segments.IndexOf(segment);
@@ -128,54 +229,17 @@ public class TrafficAgent : MonoBehaviour
             Gizmos.color = _settings.DebugSpeedSphereColor;
             Gizmos.DrawSphere(_carBehaviour.Position + Vector3.up,  _carBehaviour.ForwardSpeed);
         }
-        
-    }
-    
-    
-    private void Update()
-    {
-        if(_currentSegment == null)
-            return;
 
-        UpdateSample();
-
-        if(CurrentSample.IsAtEndOfSegment)
-            UpdateSegment();
-
-        _frontSensorResult = _frontSensor.Sense();
-    }
-
-    private void UpdateSample()
-    {
-        CurrentSample = _currentSegment.SampleFromPosition(_carBehaviour.Position);
-    }
-    
-
-
-    private void UpdateSegment()
-    {
-        _currentSegment = _nextSegment;
-        if(_currentSegment != null)
-            _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
-    }
-
-    
-    // Also cares about next segment
-    public Segment.Sample SampleFromDistance(float distanceAlongPath)
-    {
-        if (distanceAlongPath < _currentSegment.TotalLength)
-            return _currentSegment.SampleFromDistance(distanceAlongPath);
-        
-        float distanceToNextSegment = Vector3.Distance(_currentSegment.EndPosition, _nextSegment.StartPosition);
-
-        // Interpolate between current and next segment
-        if (distanceAlongPath < _currentSegment.TotalLength + distanceToNextSegment)
+        if (_settings.DebugIntersectionState)
         {
-            float alpha = (distanceAlongPath - _currentSegment.TotalLength) / distanceToNextSegment;
-            return Segment.Sample.Interpolate(_currentSegment.SampleFromDistance(_currentSegment.TotalLength), _nextSegment.SampleFromDistance(0.0f), alpha);
+            Gizmos.color = IntersectionState switch
+            {
+                IntersectionStateType.Waiting => Color.red,
+                IntersectionStateType.Moving => Color.blue,
+                _ => Color.green
+            };
+
+            Gizmos.DrawSphere(_carBehaviour.Position + Vector3.up * 2, 0.4f);
         }
-        
-        return _nextSegment.SampleFromDistance(distanceAlongPath - _currentSegment.TotalLength);
-        
     }
 }

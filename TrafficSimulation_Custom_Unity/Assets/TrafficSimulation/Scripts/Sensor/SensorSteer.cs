@@ -47,7 +47,7 @@ namespace TrafficSimulation
             }
         }
 
-        public override Result Sense()
+        public override Result Sense(float senseDistance)
         {
             var result = new Result
             {

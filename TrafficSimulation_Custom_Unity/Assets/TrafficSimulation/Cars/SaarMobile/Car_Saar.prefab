@@ -230,6 +230,7 @@ MonoBehaviour:
   - {fileID: 4828809320104326939}
   - {fileID: 1833113719339675239}
   - {fileID: 1833113719339675239}
+  _backWheels: []
   _steerSpeed: 0.1
   _steerOverSpeed:
     serializedVersion: 2
@@ -342,11 +343,10 @@ MonoBehaviour:
   _trafficSystem: {fileID: 0}
   _carBehaviour: {fileID: 6855939628513559686}
   _settings: {fileID: 11400000, guid: b5ff438aa0347e64b81d6f36f994b3dd, type: 2}
-  _frontSensor: {fileID: 2707953989699094349}
+  _frontSensor: {fileID: 0}
   _agentSize: {x: 1.66, y: 1.18, z: 3.79}
   _agentCenter: {x: 0, y: 0.6, z: 0}
-  _frontSensorDistance: 100
-  _frontSensorAnglePositionOffset: 0.025
+  IntersectionState: 0
 --- !u!114 &755630243685525982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,12 +359,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e84ec2693fb3d945b7121a6ca63ff01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 5809686950006448449}
-  _useDistanceCorrection: 1
-  _useBackwardsCorrection: 1
-  _debugLAT: 0
-  _debugPID: 0
-  _debugLOTBallRadius: 0.5
 --- !u!114 &5881891824755646319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,11 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6a90578ad63555449890ea0f96e6d12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 5809686950006448449}
-  _lookAheadDistance: 30
-  _forceSpeedAtSpeedLimit: 0
-  _defaultStoppingDistance: 2
-  _stoppingDistanceVehicleLengthMultiplier: 0.5
+  _startAtSpeedLimitSpeed: 0
 --- !u!114 &1984549529432209406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,7 +384,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8a73fc457a16164fa2a85a235558fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 5809686950006448449}
   _agentSteering: {fileID: 755630243685525982}
   _agentPower: {fileID: 5881891824755646319}
   _sampleRate: 0.1
@@ -411,7 +400,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1017421059120008042}
-  - component: {fileID: 2707953989699094349}
   m_Layer: 7
   m_Name: FrontSensor
   m_TagString: Untagged
@@ -434,22 +422,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5141284589344598521}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2707953989699094349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1758163244030200483}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 208516e34a7c7d04b8edc8c7d628647e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _size: {x: 0.7, y: 0.3}
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 65
 --- !u!1001 &678054655012167901
 PrefabInstance:
   m_ObjectHideFlags: 0

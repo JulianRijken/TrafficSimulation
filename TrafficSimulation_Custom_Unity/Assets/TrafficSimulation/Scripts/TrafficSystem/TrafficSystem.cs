@@ -52,7 +52,7 @@ namespace TrafficSimulation
             
             foreach (var segment in Segments)
             {
-                var sample = segment.SampleFromPosition(position);
+                var sample = segment.SampleFromPositionClamped(position);
 
                 float distanceFromPath = Vector3.Distance(sample.Position, position);
                 if (distanceFromPath > closestDistance) 
