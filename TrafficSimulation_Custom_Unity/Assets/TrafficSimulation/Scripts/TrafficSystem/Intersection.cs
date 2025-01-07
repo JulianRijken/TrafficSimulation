@@ -7,6 +7,13 @@ namespace TrafficSimulation
 {
     public class Intersection : MonoBehaviour
     {
+        public enum PriorityType
+        {
+            RightHand,
+            LeftHand,
+            FirstComeFirstServe
+        }
+        
         [Serializable]
         public class Turn
         {
@@ -15,13 +22,15 @@ namespace TrafficSimulation
             
             public Segment From;
             public Segment To;
-    
+
+            public Vector3 Direction;
+            
             public List<Turn> CrossingTurns = new();
             public TurnState State = TurnState.Clear;
         }
         
         [Serializable]
-        public struct IntersectionAgent
+        public class IntersectionAgent
         {
             public TrafficAgent Agent;
             public Turn Turn;
@@ -125,14 +134,28 @@ namespace TrafficSimulation
         
         private void TryMoveCars()
         {
+            // Get all agents with free turn
+            List<(Turn turn, IntersectionAgent agent)> agentsWithFreeTurn = new();
             foreach (var waitingCar in CarsWaiting)
             {
                 if (waitingCar.Turn.State == TurnState.Clear)
-                {
-                    waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-                    UpdateTurnStates();
-                }
+                    agentsWithFreeTurn.Add((waitingCar.Turn, waitingCar));
             }
+            
+            // If no agents with free turn, return
+            if (agentsWithFreeTurn.Count == 0)
+                return;
+            
+            // Sort agents by right hand priority
+            agentsWithFreeTurn.Sort((a, b) =>
+            {
+                float signedAngle = Vector3.SignedAngle(a.turn.Direction, b.turn.Direction, Vector3.up);
+                return signedAngle < 0 ? 1 : -1;
+            });
+            
+            // Move agent with priority
+            agentsWithFreeTurn.First().agent.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+            UpdateTurnStates();
         }
         
         private void OnCarEnterIntersection(TrafficAgent agent)
@@ -213,7 +236,8 @@ namespace TrafficSimulation
                         From = fromSegment,
                         To = connectedSegment,
                         Angle = angle,
-                        Distance = Vector3.Distance(fromSegment.Waypoints.Last().transform.position, connectedSegment.Waypoints.First().transform.position)
+                        Distance = Vector3.Distance(fromSegment.Waypoints.Last().transform.position, connectedSegment.Waypoints.First().transform.position),
+                        Direction = (connectedSegment.Waypoints.First().transform.position - fromSegment.Waypoints.Last().transform.position).normalized
                     };
                     
                     _turns.Add(turn);
