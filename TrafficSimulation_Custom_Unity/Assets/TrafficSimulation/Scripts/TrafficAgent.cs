@@ -116,6 +116,7 @@ public class TrafficAgent : MonoBehaviour
         {
             Debug.LogWarning("Agent spent too much time in intersection");
             CurrentIntersection.RemoveAgent(this);
+            CurrentIntersection = null;
             IntersectionState = IntersectionStateType.None;
         }
     }
@@ -135,6 +136,13 @@ public class TrafficAgent : MonoBehaviour
         if (_currentSegment != null)
         {
             _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
+            
+            // Force remove from intersection
+            if (CurrentIntersection != null && CurrentIntersection.EarlyExitAllowed)
+            {
+                CurrentIntersection.RemoveAgent(this);
+                CurrentIntersection = null;
+            }   
         }
     }
 

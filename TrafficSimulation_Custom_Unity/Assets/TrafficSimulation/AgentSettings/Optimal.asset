@@ -38,7 +38,7 @@ MonoBehaviour:
   FrontSensorDistanceOverSpeed: 0
   UseFrontSensor: 1
   SensingReactionSpeed: {x: 0.2, y: 0.3}
-  MaxTimeInIntersection: 10
+  MaxTimeInIntersection: 100
   DebugAgentSize: 0
   DebugCurrentSample: 0
   DebugClosestSample: 0

@@ -7,13 +7,16 @@ namespace TrafficSimulation
 {
     public class Intersection : MonoBehaviour
     {
-        public enum PriorityType
-        {
-            RightHand,
-            LeftHand,
-            FirstComeFirstServe
-        }
+        [SerializeField] private TrafficSystem _trafficSystem;
+        [SerializeField] private PriorityType _priorityType = PriorityType.FirstComeFirstServe;
+        [SerializeField] private bool _allowTurnWhenOccupied = false;
+        [SerializeField] private bool _earlyExitAllowed = false;
         
+        private List<Turn> _turns = new();
+        List<IntersectionAgent> _agentsInIntersecion = new();
+
+        public bool EarlyExitAllowed => _earlyExitAllowed;
+
         [Serializable]
         public class Turn
         {
@@ -36,6 +39,14 @@ namespace TrafficSimulation
             public Turn Turn;
         }
 
+        
+        private enum PriorityType
+        {
+            FirstComeFirstServe,
+            RightHand,
+            LeftHand,
+        }
+
         public enum TurnState
         {
             Clear,
@@ -43,26 +54,14 @@ namespace TrafficSimulation
             Blocked
         }
         
-
-        [SerializeField] private TrafficSystem _trafficSystem;
-        
-        
-        private List<Turn> _turns = new();
-        List<IntersectionAgent> _carsInIntersection = new();
-
-        // TODO: Could be optimized in to two lists, one for waiting and one for moving cars
-        public List<IntersectionAgent> CarsWaiting => _carsInIntersection.Where(c => c.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
-        public List<IntersectionAgent> CarsMoving => _carsInIntersection.Where(c => c.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Moving).ToList();
-        
         private void Start()
         {
-            SetupTurn();
+            SetupTurns();
         }
 
         private void OnDrawGizmos()
         {
-            float heightOffset = 0.5f;
-            
+
             foreach (var turn in _turns)
             {
                 Gizmos.color = turn.State switch
@@ -73,32 +72,63 @@ namespace TrafficSimulation
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
-                Vector3 fromPosition = turn.From.Waypoints.Last().transform.position;
-                Vector3 toPosition = turn.To.Waypoints.First().transform.position;
-                fromPosition.y += heightOffset;
-                toPosition.y += heightOffset;
-                Gizmos.DrawLine(fromPosition,toPosition);
-                var arrowCenter = Vector3.Lerp(fromPosition, toPosition,0.5f);
-                MathExtensions.DrawArrowTip(arrowCenter, toPosition - fromPosition);
+                // Draw turn
+                {
+                    float heightOffset = 0.5f;
+                    Vector3 fromPosition = turn.From.Waypoints.Last().transform.position;
+                    Vector3 toPosition = turn.To.Waypoints.First().transform.position;
+                    fromPosition.y += heightOffset;
+                    toPosition.y += heightOffset;
+                    Gizmos.DrawLine(fromPosition, toPosition);
+                    var arrowCenter = Vector3.Lerp(fromPosition, toPosition, 0.5f);
+                    MathExtensions.DrawArrowTip(arrowCenter, toPosition - fromPosition);
+                }
+
+                Gizmos.color = Color.black;
+                // Draw Direction
+                {
+                    float heightOffset = 1.0f;
+                    Vector3 fromPosition = turn.From.Waypoints.Last().transform.position;
+                    fromPosition.y += heightOffset;
+                    MathExtensions.DrawArrowTip(fromPosition, turn.Direction);
+                }
             }
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            TrafficAgent agent = other.gameObject.GetComponentInParent<TrafficAgent>();
+            if (agent != null)
+                OnAgentEnterIntersection(agent);
+        }
+        
+        private void OnTriggerExit(Collider other)
+        {
+            TrafficAgent agent = other.gameObject.GetComponentInParent<TrafficAgent>();
+            if (agent != null)
+                OnAgentExitIntersection(agent);
+        }
+        
         
         private void UpdateTurnStates()
         {
-            foreach (Turn turn in _turns)
+            var movingAgents = _agentsInIntersecion.Where(c => c.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Moving).ToList();
+
+            foreach (var turn in _turns)
             {
                 turn.State = TurnState.Clear;
-        
-                foreach (var movingCar in CarsMoving)
+                
+                foreach (var movingAgent in movingAgents)
                 {
-                    if(turn.Equals(movingCar.Turn))
+                    // When the moving car is making the same turn
+                    if(turn.Equals(movingAgent.Turn))
                     {
                         turn.State = TurnState.Occupied;
                         break;
                     }
                     
-                    if(turn.CrossingTurns.Contains(movingCar.Turn))
+                    // When the moving car is crossing the turn
+                    if(turn.CrossingTurns.Contains(movingAgent.Turn))
                     {
                         turn.State = TurnState.Blocked;
                         break;
@@ -107,65 +137,170 @@ namespace TrafficSimulation
             }
         }
         
-        private void OnTriggerEnter(Collider other)
-        {
-            TrafficAgent agent = other.gameObject.GetComponentInParent<TrafficAgent>();
-            if (agent != null)
-                OnCarEnterIntersection(agent);
-        }
-        
-        private void OnTriggerExit(Collider other)
-        {
-            TrafficAgent agent = other.gameObject.GetComponentInParent<TrafficAgent>();
-            if (agent != null)
-                OnCarExitIntersection(agent);
-        }
         
         public void RemoveAgent(TrafficAgent agent)
         {
-            if (_carsInIntersection.Any(c => c.Agent.Equals(agent)))
+            if (_agentsInIntersecion.Any(c => c.Agent.Equals(agent)))
             {
-                _carsInIntersection.Remove(_carsInIntersection.First(c => c.Agent.Equals(agent)));
+                _agentsInIntersecion.Remove(_agentsInIntersecion.First(c => c.Agent.Equals(agent)));
                 UpdateTurnStates();
             }
             
-            agent.CurrentIntersection = null;
+            TryMoveAgents();
         }
         
-        private void TryMoveCars()
+        private void TryMoveAgents()
         {
-            // Get all agents with free turn
-            List<(Turn turn, IntersectionAgent agent)> agentsWithFreeTurn = new();
-            foreach (var waitingCar in CarsWaiting)
+            UpdateTurnStates();
+
+            var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+
+            if (_priorityType == PriorityType.RightHand)
             {
-                if (waitingCar.Turn.State == TurnState.Clear)
-                    agentsWithFreeTurn.Add((waitingCar.Turn, waitingCar));
+                waitingAgents.Sort((a, b) =>
+                {
+                    float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
+                    return signedAngle < 0 ? 1 : -1;
+                });
+            }
+            else if (_priorityType == PriorityType.LeftHand)
+            {
+                waitingAgents.Sort((a, b) =>
+                {
+                    float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
+                    return signedAngle < 0 ? -1 : 1;
+                });
+            }
+
+            foreach (var waitingCar in waitingAgents)
+            {
+                bool canMove;
+                if(_allowTurnWhenOccupied)
+                    canMove = waitingCar.Turn.State != TurnState.Blocked;
+                else
+                    canMove = waitingCar.Turn.State == TurnState.Clear;
+
+                if (canMove)
+                {
+                    waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+                    UpdateTurnStates();
+                }
+                else
+                {
+                    // When the intersection has priority force all other cars to wait
+                    if(_priorityType != PriorityType.FirstComeFirstServe)
+                        break;
+                }
             }
             
-            // If no agents with free turn, return
-            if (agentsWithFreeTurn.Count == 0)
-                return;
+            //      if(_priorityType == PriorityType.FirstComeFirstServe)
+            // {
+            //     var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+            //
+            //     foreach (var waitingCar in waitingAgents)
+            //     {
+            //         bool canMove;
+            //         if(_allowTurnWhenOccupied)
+            //             canMove = waitingCar.Turn.State != TurnState.Blocked;
+            //         else
+            //             canMove = waitingCar.Turn.State == TurnState.Clear;
+            //
+            //         if (canMove)
+            //         {
+            //             waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+            //             UpdateTurnStates();
+            //         }
+            //     }
+            // }
+            // else if(_priorityType is PriorityType.RightHand or PriorityType.LeftHand)
+            // {
+            //     var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+            //
+            //     if(_priorityType == PriorityType.RightHand)
+            //     {
+            //         waitingAgents.Sort((a, b) =>
+            //         {
+            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
+            //             return signedAngle < 0 ? 1 : -1;
+            //         });
+            //     }
+            //     else if(_priorityType == PriorityType.LeftHand)
+            //     {
+            //         waitingAgents.Sort((a, b) =>
+            //         {
+            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
+            //             return signedAngle < 0 ? -1 : 1;
+            //         });
+            //     }
+            //     
+            //     foreach (var waitingCar in waitingAgents)
+            //     {
+            //         bool canMove;
+            //         if(_allowTurnWhenOccupied)
+            //             canMove = waitingCar.Turn.State != TurnState.Blocked;
+            //         else
+            //             canMove = waitingCar.Turn.State == TurnState.Clear;
+            //
+            //         if (canMove)
+            //         {
+            //             waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+            //             UpdateTurnStates();
+            //         }
+            //         else
+            //         {
+            //             break;
+            //         }
+            //     }
+            // }
             
-            // Sort agents by right hand priority
-            agentsWithFreeTurn.Sort((a, b) =>
-            {
-                float signedAngle = Vector3.SignedAngle(a.turn.Direction, b.turn.Direction, Vector3.up);
-                return signedAngle < 0 ? 1 : -1;
-            });
+          
             
-            // Move agent with priority
-            agentsWithFreeTurn.First().agent.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-            UpdateTurnStates();
+            
+            // while(true)
+            // {
+            //     // Update waiting cars
+            //     List<IntersectionAgent> waitingCarsWithFreeTurn;
+            //
+            //     if (_allowTurnWhenOccupied)
+            //     {
+            //         waitingCarsWithFreeTurn = _carsInIntersection.Where(agent => agent.Turn.State != TurnState.Blocked && agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+            //     }
+            //     else
+            //     {
+            //         waitingCarsWithFreeTurn = _carsInIntersection.Where(agent => agent.Turn.State == TurnState.Clear && agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+            //     }
+            //     
+            //     if(waitingCarsWithFreeTurn.Count == 0)
+            //         break;
+            //     
+            //     if(_priorityType == PriorityType.RightHand)
+            //     {
+            //         waitingCarsWithFreeTurn.Sort((a, b) =>
+            //         {
+            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
+            //             return signedAngle < 0 ? 1 : -1;
+            //         });
+            //     }
+            //     else if(_priorityType == PriorityType.LeftHand)
+            //     {
+            //         waitingCarsWithFreeTurn.Sort((a, b) =>
+            //         {
+            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
+            //             return signedAngle < 0 ? -1 : 1;
+            //         });
+            //     }
+            //     
+            //     waitingCarsWithFreeTurn.First().Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+            //     UpdateTurnStates();
+            // }
         }
         
-        private void OnCarEnterIntersection(TrafficAgent agent)
+        private void OnAgentEnterIntersection(TrafficAgent agent)
         {
-            
-            
             var intersectionAgent = new IntersectionAgent
             {
                 Agent = agent,
-                Turn = _turns.FirstOrDefault(turn => IsCarMakingTurn(turn, agent))
+                Turn = _turns.FirstOrDefault(turn => turn.From.Equals(agent.CurrentSegment) && turn.To.Equals(agent.NextSegment))
             };
 
             // Ignore the agent if it is not making a turn
@@ -180,37 +315,27 @@ namespace TrafficSimulation
             }
 
             agent.CurrentIntersection = this;
-            _carsInIntersection.Add(intersectionAgent);
-            
-            
             agent.IntersectionState = TrafficAgent.IntersectionStateType.Waiting;
-            TryMoveCars();
+            _agentsInIntersecion.Add(intersectionAgent);
+            
+            TryMoveAgents();
         }
         
-        private void OnCarExitIntersection(TrafficAgent agent)
+        private void OnAgentExitIntersection(TrafficAgent agent)
         {
             // Ignore the agent if it is not in the intersection
-            if(!_carsInIntersection.Any(c => c.Agent.Equals(agent)))
+            if (agent.CurrentIntersection != this)
                 return;
             
-            if (agent.CurrentIntersection == this)
-            {
-                agent.IntersectionState = TrafficAgent.IntersectionStateType.None;
-                agent.CurrentIntersection = null;
-            }
+            agent.IntersectionState = TrafficAgent.IntersectionStateType.None;
+            agent.CurrentIntersection = null;
+            _agentsInIntersecion.Remove(_agentsInIntersecion.First(c => c.Agent.Equals(agent)));
             
-            _carsInIntersection.Remove(_carsInIntersection.First(c => c.Agent.Equals(agent)));
-            UpdateTurnStates();
-            
-            TryMoveCars();
+            TryMoveAgents();
         }
 
-        private bool IsCarMakingTurn(Turn turn, TrafficAgent car)
-        {
-            return turn.From.Equals(car.CurrentSegment) && turn.To.Equals(car.NextSegment);
-        }
-
-        private void SetupTurn()
+        
+        private void SetupTurns()
         {
             var boxCollider = GetComponent<BoxCollider>();
 
@@ -226,10 +351,9 @@ namespace TrafficSimulation
                     if (!boxCollider.bounds.Contains(fromSegment.EndPosition))
                         continue;
                     
-                    // TODO: Assumes segments are at least 2 waypoints long
-                    Vector3 fromSegmentDirection = fromSegment.Waypoints[^1].transform.position - fromSegment.Waypoints[^2].transform.position;
-                    Vector3 connectedSegmentDirection = connectedSegment.Waypoints[1].transform.position - connectedSegment.Waypoints[0].transform.position;
-                    float angle = Vector3.Angle(fromSegmentDirection, connectedSegmentDirection);
+                    var fromSegmentDirection = fromSegment.Waypoints[^1].transform.position - fromSegment.Waypoints[^2].transform.position;
+                    var connectedSegmentDirection = connectedSegment.Waypoints[1].transform.position - connectedSegment.Waypoints[0].transform.position;
+                    var angle = Vector3.Angle(fromSegmentDirection, connectedSegmentDirection);
                     
                     var turn = new Turn
                     {
@@ -237,7 +361,8 @@ namespace TrafficSimulation
                         To = connectedSegment,
                         Angle = angle,
                         Distance = Vector3.Distance(fromSegment.Waypoints.Last().transform.position, connectedSegment.Waypoints.First().transform.position),
-                        Direction = (connectedSegment.Waypoints.First().transform.position - fromSegment.Waypoints.Last().transform.position).normalized
+                        // Direction = (connectedSegment.Waypoints.First().transform.position - fromSegment.Waypoints.Last().transform.position).normalized
+                        Direction = (fromSegment.Waypoints[^1].Position - fromSegment.Waypoints[^2].Position).normalized
                     };
                     
                     _turns.Add(turn);
@@ -257,6 +382,7 @@ namespace TrafficSimulation
                 
                 foreach (var otherTurn in _turns)
                 {
+                    // Ignore self
                     if (turn.Equals(otherTurn))
                         continue;
                     
@@ -272,8 +398,8 @@ namespace TrafficSimulation
                     }
 
                     // Check if lines intersect
-                    Vector2 line2Start = ToXZ(otherTurn.From.Waypoints.Last().transform.position);
-                    Vector2 line2End = ToXZ(otherTurn.To.Waypoints.First().transform.position);
+                    var line2Start = ToXZ(otherTurn.From.Waypoints.Last().transform.position);
+                    var line2End = ToXZ(otherTurn.To.Waypoints.First().transform.position);
                     if (MathExtensions.LineIntersect2D(line1Start, line1End, line2Start, line2End))
                     {
                         turn.CrossingTurns.Add(otherTurn);
