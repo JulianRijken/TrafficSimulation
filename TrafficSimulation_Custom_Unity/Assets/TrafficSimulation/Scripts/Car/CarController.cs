@@ -10,6 +10,9 @@ namespace TrafficSimulation
 
         private void Awake()
         {
+            if(_carBehaviour == null)
+                _carBehaviour = GetComponent<CarBehaviour>();
+            
             _controls = new Controls();
             _controls.Enable();
 

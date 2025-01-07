@@ -9,6 +9,9 @@ namespace TrafficSimulation
     {
         [SerializeField] private TrafficSystem _trafficSystem;
         [SerializeField] private PriorityType _priorityType = PriorityType.FirstComeFirstServe;
+        [SerializeField] private TurnPriority _turnPriority = TurnPriority.RightTurn;
+        [SerializeField] private DirectionPriority _directionPriority = DirectionPriority.RightDirection;
+
         [SerializeField] private bool _allowTurnWhenOccupied = false;
         [SerializeField] private bool _earlyExitAllowed = false;
         
@@ -42,9 +45,21 @@ namespace TrafficSimulation
         
         private enum PriorityType
         {
+            Fill,
             FirstComeFirstServe,
-            RightHand,
-            LeftHand,
+            DirectionAndTurn,
+        }
+        
+        private enum DirectionPriority
+        {
+            RightDirection,
+            LeftDirection
+        }
+        
+        private enum TurnPriority
+        {
+            LeftTurn,
+            RightTurn
         }
 
         public enum TurnState
@@ -61,7 +76,6 @@ namespace TrafficSimulation
 
         private void OnDrawGizmos()
         {
-
             foreach (var turn in _turns)
             {
                 Gizmos.color = turn.State switch
@@ -154,21 +168,32 @@ namespace TrafficSimulation
             UpdateTurnStates();
 
             var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
-
-            if (_priorityType == PriorityType.RightHand)
+            
+            if (_priorityType == PriorityType.DirectionAndTurn)
             {
                 waitingAgents.Sort((a, b) =>
                 {
+                    // If agent is on the same segment sort by distance to the end of the segment
+                    if(a.Turn.From.Equals(b.Turn.From))
+                        return a.Agent.CurrentSample.DistanceToSegmentEnd < b.Agent.CurrentSample.DistanceToSegmentEnd ? -1 : 1;
+                    
+                    float directionDot = Vector3.Dot(a.Turn.Direction, b.Turn.Direction);
+                    bool isOppositeDirection = directionDot < -0.5f;
+                    
+                    if (isOppositeDirection)
+                    {
+                        if (_turnPriority == TurnPriority.LeftTurn)
+                            return  a.Turn.Angle > b.Turn.Angle ? 1 : -1;
+                        else
+                            return  a.Turn.Angle < b.Turn.Angle ? 1 : -1;
+                    }
+                    
+                    // When the direction is not opposite sort by right hand rule
                     float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-                    return signedAngle < 0 ? 1 : -1;
-                });
-            }
-            else if (_priorityType == PriorityType.LeftHand)
-            {
-                waitingAgents.Sort((a, b) =>
-                {
-                    float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-                    return signedAngle < 0 ? -1 : 1;
+                    if (_directionPriority == DirectionPriority.RightDirection)
+                        return signedAngle < 0 ? 1 : -1;
+                    else
+                        return signedAngle > 0 ? 1 : -1;
                 });
             }
 
@@ -187,112 +212,11 @@ namespace TrafficSimulation
                 }
                 else
                 {
-                    // When the intersection has priority force all other cars to wait
-                    if(_priorityType != PriorityType.FirstComeFirstServe)
+                    // Don't allow more cars to move if the turn is blocked
+                    if(_priorityType is PriorityType.FirstComeFirstServe or PriorityType.DirectionAndTurn)
                         break;
                 }
             }
-            
-            //      if(_priorityType == PriorityType.FirstComeFirstServe)
-            // {
-            //     var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
-            //
-            //     foreach (var waitingCar in waitingAgents)
-            //     {
-            //         bool canMove;
-            //         if(_allowTurnWhenOccupied)
-            //             canMove = waitingCar.Turn.State != TurnState.Blocked;
-            //         else
-            //             canMove = waitingCar.Turn.State == TurnState.Clear;
-            //
-            //         if (canMove)
-            //         {
-            //             waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-            //             UpdateTurnStates();
-            //         }
-            //     }
-            // }
-            // else if(_priorityType is PriorityType.RightHand or PriorityType.LeftHand)
-            // {
-            //     var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
-            //
-            //     if(_priorityType == PriorityType.RightHand)
-            //     {
-            //         waitingAgents.Sort((a, b) =>
-            //         {
-            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-            //             return signedAngle < 0 ? 1 : -1;
-            //         });
-            //     }
-            //     else if(_priorityType == PriorityType.LeftHand)
-            //     {
-            //         waitingAgents.Sort((a, b) =>
-            //         {
-            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-            //             return signedAngle < 0 ? -1 : 1;
-            //         });
-            //     }
-            //     
-            //     foreach (var waitingCar in waitingAgents)
-            //     {
-            //         bool canMove;
-            //         if(_allowTurnWhenOccupied)
-            //             canMove = waitingCar.Turn.State != TurnState.Blocked;
-            //         else
-            //             canMove = waitingCar.Turn.State == TurnState.Clear;
-            //
-            //         if (canMove)
-            //         {
-            //             waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-            //             UpdateTurnStates();
-            //         }
-            //         else
-            //         {
-            //             break;
-            //         }
-            //     }
-            // }
-            
-          
-            
-            
-            // while(true)
-            // {
-            //     // Update waiting cars
-            //     List<IntersectionAgent> waitingCarsWithFreeTurn;
-            //
-            //     if (_allowTurnWhenOccupied)
-            //     {
-            //         waitingCarsWithFreeTurn = _carsInIntersection.Where(agent => agent.Turn.State != TurnState.Blocked && agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
-            //     }
-            //     else
-            //     {
-            //         waitingCarsWithFreeTurn = _carsInIntersection.Where(agent => agent.Turn.State == TurnState.Clear && agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
-            //     }
-            //     
-            //     if(waitingCarsWithFreeTurn.Count == 0)
-            //         break;
-            //     
-            //     if(_priorityType == PriorityType.RightHand)
-            //     {
-            //         waitingCarsWithFreeTurn.Sort((a, b) =>
-            //         {
-            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-            //             return signedAngle < 0 ? 1 : -1;
-            //         });
-            //     }
-            //     else if(_priorityType == PriorityType.LeftHand)
-            //     {
-            //         waitingCarsWithFreeTurn.Sort((a, b) =>
-            //         {
-            //             float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-            //             return signedAngle < 0 ? -1 : 1;
-            //         });
-            //     }
-            //     
-            //     waitingCarsWithFreeTurn.First().Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-            //     UpdateTurnStates();
-            // }
         }
         
         private void OnAgentEnterIntersection(TrafficAgent agent)
@@ -351,9 +275,9 @@ namespace TrafficSimulation
                     if (!boxCollider.bounds.Contains(fromSegment.EndPosition))
                         continue;
                     
-                    var fromSegmentDirection = fromSegment.Waypoints[^1].transform.position - fromSegment.Waypoints[^2].transform.position;
-                    var connectedSegmentDirection = connectedSegment.Waypoints[1].transform.position - connectedSegment.Waypoints[0].transform.position;
-                    var angle = Vector3.Angle(fromSegmentDirection, connectedSegmentDirection);
+                    var fromSegmentDirection = (fromSegment.Waypoints[^1].Position - fromSegment.Waypoints[^2].Position).normalized;
+                    var connectedSegmentDirection = connectedSegment.Waypoints[1].Position - connectedSegment.Waypoints[0].Position;
+                    var angle = Vector3.SignedAngle(fromSegmentDirection, connectedSegmentDirection,Vector3.up);
                     
                     var turn = new Turn
                     {
@@ -361,8 +285,7 @@ namespace TrafficSimulation
                         To = connectedSegment,
                         Angle = angle,
                         Distance = Vector3.Distance(fromSegment.Waypoints.Last().transform.position, connectedSegment.Waypoints.First().transform.position),
-                        // Direction = (connectedSegment.Waypoints.First().transform.position - fromSegment.Waypoints.Last().transform.position).normalized
-                        Direction = (fromSegment.Waypoints[^1].Position - fromSegment.Waypoints[^2].Position).normalized
+                        Direction = fromSegmentDirection
                     };
                     
                     _turns.Add(turn);

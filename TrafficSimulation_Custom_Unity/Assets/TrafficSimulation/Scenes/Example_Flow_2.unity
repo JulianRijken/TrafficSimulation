@@ -259,8 +259,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 2
+  _turnPriority: 1
+  _directionPriority: 1
   _allowTurnWhenOccupied: 1
-  _earlyExitAllowed: 1
+  _earlyExitAllowed: 0
 --- !u!65 &14744086
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -290,12 +292,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14744084}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.23, y: 0, z: -8.98}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.23, y: 0, z: -24.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784841684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &18000745
 GameObject:
@@ -1085,8 +1087,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 2
+  _turnPriority: 1
+  _directionPriority: 1
   _allowTurnWhenOccupied: 1
-  _earlyExitAllowed: 1
+  _earlyExitAllowed: 0
 --- !u!65 &171414226
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1116,12 +1120,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171414224}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.23, y: 0, z: 9.02}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.23, y: 0, z: -6.2299995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784841684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &172186326 stripped
 Transform:
@@ -2082,7 +2086,7 @@ Transform:
   m_GameObject: {fileID: 411303829}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 15.25}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2091,7 +2095,7 @@ Transform:
   - {fileID: 500544142}
   - {fileID: 2031447362}
   - {fileID: 759986050}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784841684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &487569668
 GameObject:
@@ -3390,6 +3394,43 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
+--- !u!1 &784841683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 784841684}
+  m_Layer: 0
+  m_Name: F3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &784841684
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784841683}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 15.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 411303830}
+  - {fileID: 1121679850}
+  - {fileID: 1403558687}
+  - {fileID: 946868518}
+  - {fileID: 171414227}
+  - {fileID: 14744087}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &789710076
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4017,8 +4058,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 2
+  _turnPriority: 1
+  _directionPriority: 1
   _allowTurnWhenOccupied: 1
-  _earlyExitAllowed: 1
+  _earlyExitAllowed: 0
 --- !u!65 &946868517
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4048,12 +4091,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 946868515}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.5, y: 0, z: 0.25}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.5, y: 0, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784841684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &950276976
 PrefabInstance:
@@ -4864,12 +4907,12 @@ Transform:
   m_GameObject: {fileID: 1121679848}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 10.25}
+  m_LocalPosition: {x: 0, y: 0.5, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1174414724}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784841684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1142401442 stripped
 Transform:
@@ -5618,12 +5661,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1403558685}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: 0, z: 0.25}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -9, y: 0, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 784841684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1403558688
 MonoBehaviour:
@@ -5639,8 +5682,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 2
+  _turnPriority: 1
+  _directionPriority: 1
   _allowTurnWhenOccupied: 1
-  _earlyExitAllowed: 1
+  _earlyExitAllowed: 0
 --- !u!4 &1405868259 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1307357904924135826, guid: 5a374988c7758f642be0eb8f43a2c4d9, type: 3}
@@ -7728,13 +7773,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 208621019}
   - {fileID: 1666068360}
-  - {fileID: 411303830}
-  - {fileID: 1121679850}
+  - {fileID: 784841684}
   - {fileID: 611812822}
-  - {fileID: 1403558687}
-  - {fileID: 946868518}
-  - {fileID: 171414227}
-  - {fileID: 14744087}
   - {fileID: 1712870940}
   - {fileID: 1053014044}
   - {fileID: 9187456}
