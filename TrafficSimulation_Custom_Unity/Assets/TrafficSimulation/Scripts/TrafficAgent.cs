@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TrafficSimulation;
 using UnityEngine;
 
@@ -133,17 +134,17 @@ public class TrafficAgent : MonoBehaviour
     {
         _currentSegment = _nextSegment;
 
-        if (_currentSegment != null)
+        if (_currentSegment == null)
+            return;
+
+        _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
+
+        // Force remove from intersection
+        if (CurrentIntersection != null && CurrentIntersection.EarlyExitAllowed)
         {
-            _nextSegment = _trafficSystem.GetNextSegmentRandom(_currentSegment);
-            
-            // Force remove from intersection
-            if (CurrentIntersection != null && CurrentIntersection.EarlyExitAllowed)
-            {
-                CurrentIntersection.RemoveAgent(this);
-                CurrentIntersection = null;
-            }   
-        }
+            CurrentIntersection.RemoveAgent(this);
+            CurrentIntersection = null;
+        }   
     }
 
 

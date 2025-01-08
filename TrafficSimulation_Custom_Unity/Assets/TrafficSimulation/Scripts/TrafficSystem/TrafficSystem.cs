@@ -55,6 +55,13 @@ namespace TrafficSimulation
                 var sample = segment.SampleFromPositionClamped(position);
 
                 float distanceFromPath = Vector3.Distance(sample.Position, position);
+                if (float.IsNaN(distanceFromPath))
+                {
+                    Debug.LogError("Distance from path is NaN");
+                    Debug.Log("segment: " + segment.name);
+                    continue;
+                }
+                
                 if (distanceFromPath > closestDistance) 
                     continue;
                 

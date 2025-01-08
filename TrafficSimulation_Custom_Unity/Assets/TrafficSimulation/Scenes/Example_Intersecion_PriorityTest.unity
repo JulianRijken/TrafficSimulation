@@ -3047,7 +3047,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 20, y: 20, z: 20}
+  m_Size: {x: 30, y: 30, z: 30}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1403558687
 Transform:
@@ -3081,7 +3081,7 @@ MonoBehaviour:
   _turnPriority: 1
   _directionPriority: 0
   _allowTurnWhenOccupied: 1
-  _earlyExitAllowed: 0
+  _earlyExitAllowed: 1
 --- !u!1 &1416320181 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a715f336dadc3884188d12c8cae383ba, type: 3}

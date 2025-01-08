@@ -11,12 +11,12 @@ namespace TrafficSimulation
         [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected | GizmoType.Active)]
         private static void DrawGizmo(TrafficSystem script, GizmoType gizmoType)
         {
-            //Don't go further if we hide gizmos
             if (script.HideGizmos)
                 return;
 
             foreach (var segment in script.Segments)
             {
+                // Draw text
                 if (script.FontSize > 0)
                 {
                     //Draw segment names
@@ -32,48 +32,32 @@ namespace TrafficSimulation
                     Handles.Label(firstWaypoint + Vector3.up, segment.name, styleFirst);
                     Handles.Label(lastWaypoint + Vector3.up, segment.name, styleSecond);
                 }
-
-                //Draw waypoint
-                for (var j = 0; j < segment.Waypoints.Count; j++)
+                
+                // Draw segments
+                foreach (var waypoint in segment.Waypoints)
                 {
-                    //Get current waypoint position
-                    var p = segment.Waypoints[j].transform.position;
-
-                    //Draw sphere, increase color to show the direction
-                    Gizmos.color = new Color(1f, 1f, 1f, (j + 1) / (float)segment.Waypoints.Count);
-                    Gizmos.DrawSphere(p, script.WaypointSize);
-
-                    //Get next waypoint position
-                    var pNext = Vector3.zero;
-
-                    if (j < segment.Waypoints.Count - 1 && segment.Waypoints[j + 1] != null)
-                        pNext = segment.Waypoints[j + 1].transform.position;
-
-                    if (pNext != Vector3.zero)
-                    {
-                        // Gizmos.color = segment == script.CurSegment ? new Color(1f, .3f, .1f) : new Color(1f, 0f, 0f);
-
-                        Gizmos.color = new Color(40.0f/ 255.0f, 40.0f / 255.0f, 201.0f / 255.0f,1.0f);
-
+                    Vector3 from = waypoint.Position;
+                    Gizmos.color = new Color(1f, 1f, 1f, 1.0f);
+                    Gizmos.DrawSphere(from, script.WaypointSize);
+                    
+                    if(waypoint.NextWaypoint == null)
+                        continue;
+                    
+                    Vector3 to = waypoint.NextWaypoint.Position;
+                    
+                    Gizmos.color = new Color(40.0f/ 255.0f, 40.0f / 255.0f, 201.0f / 255.0f,1.0f);
+                    Handles.color = Gizmos.color;
+                    Handles.DrawLine(from, to, 5.0f);
                         
-                        //Draw connection line of the two waypoints
-                        // Gizmos.DrawLine(p, pNext);
-
-                        // Draw thick line 
-                        Handles.color = Gizmos.color;
-                        Handles.DrawLine(p, pNext, 5.0f);
-                        
-                        
-                        //Set arrow count based on arrowDrawType
-                        var arrows = GetArrowCount(p, pNext, script);
-
-                        //Draw arrows
-                        for (var i = 1; i < arrows + 1; i++)
-                        {
-                            var point = Vector3.Lerp(p, pNext, (float)i / (arrows + 1));
-                            DrawArrow(point, p - pNext, script.ArrowSizeWaypoint);
-                        }
-                    }
+                    
+                    var center = Vector3.Lerp(from, to, 0.5f);
+                    DrawArrow(center, to - from, script.ArrowSizeWaypoint);
+                    // var arrows = GetArrowCount(from, to, script);
+                    // for (var i = 1; i < arrows + 1; i++)
+                    // {
+                    //     var point = Vector3.Lerp(from, to, (float)i / (arrows + 1));
+                    //     DrawArrow(point, to - from, script.ArrowSizeWaypoint);
+                    // }
                 }
 
                 //Draw line linking segments

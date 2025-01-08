@@ -10,7 +10,7 @@ namespace TrafficSimulation
         public List<Segment> ConnectedSegments;
 
         [HideInInspector] public int Id;
-        [HideInInspector] public List<Waypoint> Waypoints;
+        [HideInInspector] public List<Waypoint> Waypoints = new();
 
         private List<float> cumulativeLengths;
         
@@ -138,7 +138,7 @@ namespace TrafficSimulation
             sample.DistanceAlongSegment = clampedDistance; 
             sample.AlphaAlongSegment = Mathf.Clamp01(clampedDistance / TotalLength);
             sample.DistanceToSegmentEnd = TotalLength - clampedDistance;
-            sample.Position = Vector3.LerpUnclamped(fromWaypointPosition, toWaypointPosition, waypointAlpha);    
+            sample.Position = Vector3.Lerp(fromWaypointPosition, toWaypointPosition, waypointAlpha);    
             sample.DirectionForward = (toWaypointPosition - fromWaypointPosition).normalized;
             sample.DirectionRight = Vector3.Cross(sample.DirectionForward, Vector3.up);
             sample.Segment = this;

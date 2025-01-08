@@ -8,19 +8,19 @@ namespace TrafficSimulation
     public class Intersection : MonoBehaviour
     {
         [SerializeField] private TrafficSystem _trafficSystem;
-        [SerializeField] private PriorityType _priorityType = PriorityType.FirstComeFirstServe;
+        [SerializeField] private PriorityType _priorityType = PriorityType.FirstInFirstOut;
         [SerializeField] private TurnPriority _turnPriority = TurnPriority.RightTurn;
         [SerializeField] private DirectionPriority _directionPriority = DirectionPriority.RightDirection;
 
         [SerializeField] private bool _allowTurnWhenOccupied = false;
         [SerializeField] private bool _earlyExitAllowed = false;
         
+        int _currentEnterNumber = 0;
         private List<Turn> _turns = new();
         List<IntersectionAgent> _agentsInIntersecion = new();
 
         public bool EarlyExitAllowed => _earlyExitAllowed;
 
-        [Serializable]
         public class Turn
         {
             public float Angle;
@@ -35,18 +35,18 @@ namespace TrafficSimulation
             public TurnState State = TurnState.Clear;
         }
         
-        [Serializable]
         public class IntersectionAgent
         {
             public TrafficAgent Agent;
             public Turn Turn;
+            public int EnterNumber;
         }
 
         
         private enum PriorityType
         {
-            Fill,
-            FirstComeFirstServe,
+            TurnOccupation,
+            FirstInFirstOut,
             DirectionAndTurn,
         }
         
@@ -167,54 +167,72 @@ namespace TrafficSimulation
         {
             UpdateTurnStates();
 
-            var waitingAgents = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
+            var waitingAgentsOrdered = _agentsInIntersecion.Where(agent => agent.Agent.IntersectionState == TrafficAgent.IntersectionStateType.Waiting).ToList();
             
+            // Order the cars based priority rules
             if (_priorityType == PriorityType.DirectionAndTurn)
             {
-                waitingAgents.Sort((a, b) =>
+                waitingAgentsOrdered.Sort((a, b) =>
                 {
-                    // If agent is on the same segment sort by distance to the end of the segment
-                    if(a.Turn.From.Equals(b.Turn.From))
-                        return a.Agent.CurrentSample.DistanceToSegmentEnd < b.Agent.CurrentSample.DistanceToSegmentEnd ? -1 : 1;
-                    
                     float directionDot = Vector3.Dot(a.Turn.Direction, b.Turn.Direction);
-                    bool isOppositeDirection = directionDot < -0.5f;
-                    
-                    if (isOppositeDirection)
+                    if (directionDot < -0.5f) // Opposite direction
                     {
-                        if (_turnPriority == TurnPriority.LeftTurn)
-                            return  a.Turn.Angle > b.Turn.Angle ? 1 : -1;
-                        else
-                            return  a.Turn.Angle < b.Turn.Angle ? 1 : -1;
+                        // Use angle comparison based on turn priority
+                        return _turnPriority == TurnPriority.LeftTurn
+                            ? a.Turn.Angle.CompareTo(b.Turn.Angle)
+                            : b.Turn.Angle.CompareTo(a.Turn.Angle);
                     }
                     
-                    // When the direction is not opposite sort by right hand rule
+                    // Otherwise, use the right-hand rule based on direction priority
                     float signedAngle = Vector3.SignedAngle(a.Turn.Direction, b.Turn.Direction, Vector3.up);
-                    if (_directionPriority == DirectionPriority.RightDirection)
-                        return signedAngle < 0 ? 1 : -1;
-                    else
-                        return signedAngle > 0 ? 1 : -1;
+                    return _directionPriority == DirectionPriority.RightDirection
+                        ? signedAngle.CompareTo(0) * -1 // Reverse comparison for right priority
+                        : signedAngle.CompareTo(0);
                 });
             }
-
-            foreach (var waitingCar in waitingAgents)
+            
+            foreach (var waitingAgent in waitingAgentsOrdered)
             {
-                bool canMove;
-                if(_allowTurnWhenOccupied)
-                    canMove = waitingCar.Turn.State != TurnState.Blocked;
-                else
-                    canMove = waitingCar.Turn.State == TurnState.Clear;
-
-                if (canMove)
+                bool blockedByAgentInFront = false;
+                foreach (var otherWaitingAgent in waitingAgentsOrdered)
                 {
-                    waitingCar.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
-                    UpdateTurnStates();
+                    // Skip when self
+                    if(waitingAgent.Equals(otherWaitingAgent))
+                        continue;
+                    
+                    // Skip when not in the same segment
+                    if(waitingAgent.Agent.CurrentSegment.Equals(otherWaitingAgent.Agent.CurrentSegment) == false)
+                        continue;
+                    
+                    // Skip when entered before
+                    if(waitingAgent.EnterNumber < otherWaitingAgent.EnterNumber)
+                        continue;
+
+                    blockedByAgentInFront = true;
+                    break;
+                }
+                
+                // Ignore the agent if it is blocked by another agent in front
+                if(blockedByAgentInFront)
+                    continue;
+                
+                
+                bool blocked;
+                if(_allowTurnWhenOccupied)
+                    blocked = waitingAgent.Turn.State == TurnState.Blocked;
+                else
+                    blocked = waitingAgent.Turn.State != TurnState.Clear;
+
+                if (blocked)
+                {
+                    // Don't allow more cars to move if the turn is blocked
+                    if(_priorityType is PriorityType.FirstInFirstOut or PriorityType.DirectionAndTurn)
+                        break;
                 }
                 else
                 {
-                    // Don't allow more cars to move if the turn is blocked
-                    if(_priorityType is PriorityType.FirstComeFirstServe or PriorityType.DirectionAndTurn)
-                        break;
+                    waitingAgent.Agent.IntersectionState = TrafficAgent.IntersectionStateType.Moving;
+                    UpdateTurnStates();
                 }
             }
         }
@@ -224,7 +242,8 @@ namespace TrafficSimulation
             var intersectionAgent = new IntersectionAgent
             {
                 Agent = agent,
-                Turn = _turns.FirstOrDefault(turn => turn.From.Equals(agent.CurrentSegment) && turn.To.Equals(agent.NextSegment))
+                Turn = _turns.FirstOrDefault(turn => turn.From.Equals(agent.CurrentSegment) && turn.To.Equals(agent.NextSegment)),
+                EnterNumber = _currentEnterNumber++
             };
 
             // Ignore the agent if it is not making a turn
@@ -233,10 +252,7 @@ namespace TrafficSimulation
 
             // Remove from old intersection
             if (agent.CurrentIntersection != null)
-            {
                 agent.CurrentIntersection.RemoveAgent(agent);
-                Debug.LogWarning("Agent moved to new intersection without leaving the old one");
-            }
 
             agent.CurrentIntersection = this;
             agent.IntersectionState = TrafficAgent.IntersectionStateType.Waiting;

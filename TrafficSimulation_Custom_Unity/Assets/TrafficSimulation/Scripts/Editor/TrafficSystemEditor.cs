@@ -200,7 +200,6 @@ namespace TrafficSimulation.Scripts.Editor
             }
             
             var layerMask = ~_trafficSystem.WaypointGroundSnapIgnoreLayerMask;
-            Debug.Log(layerMask);
             foreach (var waypoint in _trafficSystem.Waypoints)
             {
                 var ray = new Ray(waypoint.transform.position + Vector3.up * 0.5f, Vector3.down);
@@ -221,19 +220,21 @@ namespace TrafficSimulation.Scripts.Editor
                 var segment = segmentsTransform.GetComponent<Segment>();
                 if (segment != null)
                 {
+                    segment.Waypoints = new List<Waypoint>();
+                        
                     var waypoints = new List<Waypoint>();
                     segment.Id = segmentIndex;
                     segment.gameObject.name = "seg-" + segmentIndex;
 
-                    var itWp = 0;
-                    foreach (Transform child in segment.gameObject.transform)
+                    for (int childIndex = 0; childIndex < segment.transform.childCount; childIndex++)
                     {
+                        var child = segment.transform.GetChild(childIndex);
                         var waypoint = child.GetComponent<Waypoint>();
                         if (waypoint != null)
                         {
-                            waypoint.Refresh(itWp, segment);
+                            waypoint.NextWaypoint = null;
+                            waypoint.Refresh(childIndex, segment);
                             waypoints.Add(waypoint);
-                            itWp++;
                         }
                     }
 
@@ -260,11 +261,10 @@ namespace TrafficSimulation.Scripts.Editor
             // Update waypoint next waypoints
             foreach (var segment in allSegments)
             {
-                for (var waypointIndex = segment.Waypoints.Count - 2; waypointIndex >= 0; waypointIndex--)
-                    segment.Waypoints[waypointIndex].NextWaypoint = segment.Waypoints[waypointIndex + 1];
+                for (var i = 0; i < segment.Waypoints.Count - 1; i++)
+                    segment.Waypoints[i].NextWaypoint = segment.Waypoints[i + 1];
             }
-
-
+            
             _trafficSystem.Segments = allSegments;
             _trafficSystem.Waypoints = allWaypoints;
 

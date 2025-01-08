@@ -1331,6 +1331,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 0
+  _turnPriority: 1
+  _directionPriority: 0
+  _allowTurnWhenOccupied: 0
+  _earlyExitAllowed: 0
 --- !u!65 &266473272
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6603,6 +6607,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 2
+  _turnPriority: 1
+  _directionPriority: 0
+  _allowTurnWhenOccupied: 0
+  _earlyExitAllowed: 0
 --- !u!1 &1413088745
 GameObject:
   m_ObjectHideFlags: 0
@@ -7180,7 +7188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f40f6d097e45684a819fa52a0a59f45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeScale: 1
+  _timeScale: 11
 --- !u!1 &1680739093
 GameObject:
   m_ObjectHideFlags: 0
@@ -7526,6 +7534,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 0
+  _turnPriority: 1
+  _directionPriority: 0
+  _allowTurnWhenOccupied: 0
+  _earlyExitAllowed: 0
 --- !u!65 &1781007377
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7735,6 +7747,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 0
+  _turnPriority: 1
+  _directionPriority: 0
+  _allowTurnWhenOccupied: 0
+  _earlyExitAllowed: 0
 --- !u!65 &1847399075
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8341,6 +8357,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _trafficSystem: {fileID: 1121679849}
   _priorityType: 0
+  _turnPriority: 1
+  _directionPriority: 0
+  _allowTurnWhenOccupied: 0
+  _earlyExitAllowed: 0
 --- !u!65 &2012110160
 BoxCollider:
   m_ObjectHideFlags: 0
