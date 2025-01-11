@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -14,15 +13,13 @@ namespace TrafficSimulation
         [SerializeField] private float _sampleCount = 100;
         
         private int _sampleIndex = 0;
-        
+        private TextWriter _textWriter;
         private List<EvaluationData> _trafficAgents = new List<EvaluationData>();
-        TextWriter tw;
-        
+
         private class EvaluationData
         {
             public TrafficAgent Agent;
             public float DistanceMoved;
-            public float Velocity;
         }
         
         private void OnEnable()
@@ -35,15 +32,11 @@ namespace TrafficSimulation
                 path = $"Data/PathEvaluation_{i}_{_fileSuffix}.csv";
             }
 
-            tw = new StreamWriter(path);
-            
-            
-            
-            
+            _textWriter = new StreamWriter(path);
+
             var agents = FindObjectsByType<TrafficAgent>(FindObjectsSortMode.None);
 
-            
-            tw.Write("Time, ");
+            _textWriter.Write("Time, ");
             foreach (var agent in agents)
             {
                 _trafficAgents.Add(new EvaluationData
@@ -52,21 +45,16 @@ namespace TrafficSimulation
                     DistanceMoved = 0
                 });
             }
-            
-            // sort agents by name 
-            
+
             _trafficAgents.Sort((a, b) => string.Compare(a.Agent.name, b.Agent.name, StringComparison.Ordinal));
-
             foreach (var agent in _trafficAgents)
-            {
-                tw.Write(agent.Agent.name + ", ");
-            }
-            
-            
-            tw.Write("\n");
-            
-            InvokeRepeating(nameof(WritePoint), 0.0f, _sampleRate);
+                _textWriter.Write(agent.Agent.name + ", ");
 
+            _textWriter.Write("\n");
+
+
+            // Start writing points
+            InvokeRepeating(nameof(WritePoint), 0.0f, _sampleRate);
         }
 
         private void OnDisable()
@@ -74,7 +62,7 @@ namespace TrafficSimulation
             if(_writeToFile == false)
                 return;
             
-            tw.Close();
+            _textWriter.Close();
             Debug.Log("Finished writing to file");
         }
 
@@ -86,7 +74,6 @@ namespace TrafficSimulation
                     continue;
                 
                 agent.DistanceMoved += agent.Agent.CarBehaviour.ForwardSpeed * Time.deltaTime;
-                agent.Velocity = agent.Agent.CarBehaviour.ForwardSpeed;
             }
         }
         
@@ -95,16 +82,14 @@ namespace TrafficSimulation
             if(_writeToFile == false)
                 return;
          
-            
-            tw.Write(Time.time + ", ");
+            _textWriter.Write(Time.time + ", ");
             
             foreach (var agent in _trafficAgents)
             {
-                tw.Write(agent.DistanceMoved + ", ");
+                _textWriter.Write(agent.DistanceMoved + ", ");
             }
             
-            
-            tw.Write("\n");
+            _textWriter.Write("\n");
             
             _sampleIndex++;
             
@@ -114,7 +99,5 @@ namespace TrafficSimulation
                 Debug.Log("Intersection Evaluation Finished");
             }
         }
-
-
     }
 }

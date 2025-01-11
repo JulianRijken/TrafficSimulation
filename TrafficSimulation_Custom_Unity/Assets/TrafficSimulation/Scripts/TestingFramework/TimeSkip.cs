@@ -1,16 +1,19 @@
 using UnityEngine;
 
-public class TimeSkip : MonoBehaviour
+namespace TrafficSimulation
 {
-    [SerializeField] private float _timeScale = 1;
-
-    private void Update()
+    public class TimeSkip : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.LeftBracket))
-            _timeScale -= 0.25f;
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-            _timeScale += 0.25f;
+        [SerializeField] private float _timeScale = 1;
 
-        Time.timeScale = _timeScale;
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.LeftBracket))
+                _timeScale -= 0.25f;
+            if (Input.GetKeyDown(KeyCode.RightBracket))
+                _timeScale += 0.25f;
+
+            Time.timeScale = _timeScale;
+        }
     }
 }

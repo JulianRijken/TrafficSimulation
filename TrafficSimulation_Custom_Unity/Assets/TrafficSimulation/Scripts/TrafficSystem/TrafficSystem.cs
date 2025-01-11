@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
@@ -23,7 +22,6 @@ namespace TrafficSimulation
 
         [HideInInspector] public List<Segment> Segments = new();
         [HideInInspector] public List<Waypoint> Waypoints = new();
-
 
         public Waypoint GetNextWaypointRandom(Waypoint currentWaypoint)
         {

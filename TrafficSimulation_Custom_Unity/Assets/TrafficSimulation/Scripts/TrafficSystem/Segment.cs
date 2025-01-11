@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace TrafficSimulation
 {
@@ -105,13 +104,6 @@ namespace TrafficSimulation
                 cumulativeLengths.Add(cumulativeLengths[i - 1] + segmentLength);
             }
         }
-
-
-        // public Sample SampleFromAlpha(float alphaAlongPath)
-        // {
-        //     float targetLength = alphaAlongPath * TotalLength;
-        //     return SampleFromDistance(targetLength);
-        // }
         
         public Sample SampleFromDistanceClamped(float distanceAlongPath)
         {

@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace TrafficSimulation
 {
-    
     [RequireComponent( typeof(TrafficAgent))]
     public class TrafficAgentSteering : MonoBehaviour
     {

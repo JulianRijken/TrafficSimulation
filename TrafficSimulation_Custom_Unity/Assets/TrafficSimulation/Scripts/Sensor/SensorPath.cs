@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -118,8 +116,6 @@ namespace TrafficSimulation
                 
                 totalDistance += distance;
             }
-            
-            
             
             return result;
         }
