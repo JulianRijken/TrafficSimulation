@@ -68,12 +68,12 @@ namespace TrafficSimulation
                         var p1 = segment.Waypoints.Last().transform.position;
                         var p2 = nextSegment.Waypoints.First().transform.position;
 
-                        Gizmos.color = new Color(0.9f, 0.8f, 0.2f);
+                        Gizmos.color = new Color(0.9f, 0.8f, 0.2f,0.5f);
                         Gizmos.DrawLine(p1, p2);
                         
                         
                         if (script.ArrowDrawType != ArrowDrawType.Off)
-                            DrawArrow((p1 + p2) / 2f, p1 - p2, script.ArrowSizeIntersection);
+                            DrawArrow((p1 + p2) / 2f, p2 - p1, script.ArrowSizeIntersection);
                     }
                 }
             }
@@ -81,7 +81,7 @@ namespace TrafficSimulation
 
         private static void DrawArrow(Vector3 point, Vector3 forward, float size)
         {
-            forward = forward.normalized * size;
+            forward = forward.normalized * -size;
             var left = Quaternion.Euler(0, 45, 0) * forward;
             var right = Quaternion.Euler(0, -45, 0) * forward;
 

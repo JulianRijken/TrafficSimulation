@@ -67,16 +67,6 @@ namespace TrafficSimulation
             _turningCenter = backWheelCenter - _turningRadius * backWheelSideways;
             
             return result;
-
-            
-            // ///////////////////////
-            //
-            // bool didHit = Physics.BoxCast(transform.position, _size, transform.forward, out hit, transform.rotation, distance,_layerMask );
-            //
-            // if (didHit == false)
-            //     hit.distance = float.MaxValue;
-            //
-            // return didHit;
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace TrafficSimulation
@@ -15,12 +16,19 @@ namespace TrafficSimulation
         [SerializeField] private bool _allowTurnWhenOccupied = false;
         [SerializeField] private bool _earlyExitAllowed = false;
         
+        [SerializeField] private Color _boxColliderColor = new Color(1, 0, 0, 0.2f); 
+        [SerializeField] private bool _visualizeCollider = false;
+        
+        [SerializeField] private float _decisionDelay = 0.0f;
+        
         int _currentEnterNumber = 0;
         private List<Turn> _turns = new();
         List<IntersectionAgent> _agentsInIntersecion = new();
 
         public bool EarlyExitAllowed => _earlyExitAllowed;
 
+        
+        
         public class Turn
         {
             public float Angle;
@@ -76,11 +84,28 @@ namespace TrafficSimulation
 
         private void OnDrawGizmos()
         {
+            if (_visualizeCollider)
+            {
+                // Draw Box Collider
+                BoxCollider boxCollider = GetComponent<BoxCollider>();
+                if (boxCollider != null)
+                {
+                    Gizmos.color = _boxColliderColor;
+                    Matrix4x4 matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
+                    Gizmos.matrix = matrix;
+                    Gizmos.DrawCube(boxCollider.center, boxCollider.size);
+
+                    Gizmos.color = Color.black;
+                    Gizmos.DrawWireCube(boxCollider.center, boxCollider.size);
+                    Gizmos.matrix = Matrix4x4.identity; // Reset matrix
+                }
+            }
+
             foreach (var turn in _turns)
             {
                 Gizmos.color = turn.State switch
                 {
-                    TurnState.Clear => Color.green,
+                    TurnState.Clear => new Color(0,0.6f,0),
                     TurnState.Occupied => Color.blue,
                     TurnState.Blocked => Color.red,
                     _ => throw new ArgumentOutOfRangeException()
@@ -93,7 +118,12 @@ namespace TrafficSimulation
                     Vector3 toPosition = turn.To.Waypoints.First().transform.position;
                     fromPosition.y += heightOffset;
                     toPosition.y += heightOffset;
-                    Gizmos.DrawLine(fromPosition, toPosition);
+                    // Gizmos.DrawLine(fromPosition, toPosition);
+                    
+                    // Draw thick line using handles
+                    Handles.color = Gizmos.color;
+                    Handles.DrawLine(fromPosition, toPosition, 5.0f);
+                    
                     var arrowCenter = Vector3.Lerp(fromPosition, toPosition, 0.5f);
                     MathExtensions.DrawArrowTip(arrowCenter, toPosition - fromPosition);
                 }
@@ -107,20 +137,26 @@ namespace TrafficSimulation
                     MathExtensions.DrawArrowTip(fromPosition, turn.Direction);
                 }
             }
+            
+    
         }
 
         private void OnTriggerEnter(Collider other)
         {
             TrafficAgent agent = other.gameObject.GetComponentInParent<TrafficAgent>();
-            if (agent != null)
-                OnAgentEnterIntersection(agent);
+            if (agent == null)
+                return;
+            
+            AddAgentToIntersection(agent);
         }
         
         private void OnTriggerExit(Collider other)
         {
             TrafficAgent agent = other.gameObject.GetComponentInParent<TrafficAgent>();
-            if (agent != null)
-                OnAgentExitIntersection(agent);
+            if (agent == null)
+                return;
+            
+            RemoveAgentFromIntersection(agent);
         }
         
         
@@ -149,18 +185,6 @@ namespace TrafficSimulation
                     }
                 }
             }
-        }
-        
-        
-        public void RemoveAgent(TrafficAgent agent)
-        {
-            if (_agentsInIntersecion.Any(c => c.Agent.Equals(agent)))
-            {
-                _agentsInIntersecion.Remove(_agentsInIntersecion.First(c => c.Agent.Equals(agent)));
-                UpdateTurnStates();
-            }
-            
-            TryMoveAgents();
         }
         
         private void TryMoveAgents()
@@ -193,19 +217,20 @@ namespace TrafficSimulation
             
             foreach (var waitingAgent in waitingAgentsOrdered)
             {
+                //TODO: This code is still debatable
                 bool blockedByAgentInFront = false;
-                foreach (var otherWaitingAgent in waitingAgentsOrdered)
+                foreach (var otherAgent in waitingAgentsOrdered)
                 {
                     // Skip when self
-                    if(waitingAgent.Equals(otherWaitingAgent))
+                    if(waitingAgent.Equals(otherAgent))
                         continue;
                     
                     // Skip when not in the same segment
-                    if(waitingAgent.Agent.CurrentSegment.Equals(otherWaitingAgent.Agent.CurrentSegment) == false)
+                    if(waitingAgent.Agent.CurrentSegment.Equals(otherAgent.Agent.CurrentSegment) == false)
                         continue;
                     
                     // Skip when entered before
-                    if(waitingAgent.EnterNumber < otherWaitingAgent.EnterNumber)
+                    if(waitingAgent.EnterNumber < otherAgent.EnterNumber)
                         continue;
 
                     blockedByAgentInFront = true;
@@ -237,7 +262,7 @@ namespace TrafficSimulation
             }
         }
         
-        private void OnAgentEnterIntersection(TrafficAgent agent)
+        public void AddAgentToIntersection(TrafficAgent agent)
         {
             var intersectionAgent = new IntersectionAgent
             {
@@ -252,16 +277,17 @@ namespace TrafficSimulation
 
             // Remove from old intersection
             if (agent.CurrentIntersection != null)
-                agent.CurrentIntersection.RemoveAgent(agent);
+                agent.CurrentIntersection.RemoveAgentFromIntersection(agent);
 
             agent.CurrentIntersection = this;
+            agent.CurrentTurn = intersectionAgent.Turn;
             agent.IntersectionState = TrafficAgent.IntersectionStateType.Waiting;
             _agentsInIntersecion.Add(intersectionAgent);
             
-            TryMoveAgents();
+            Invoke(nameof(TryMoveAgents), _decisionDelay);
         }
         
-        private void OnAgentExitIntersection(TrafficAgent agent)
+        public void RemoveAgentFromIntersection(TrafficAgent agent)
         {
             // Ignore the agent if it is not in the intersection
             if (agent.CurrentIntersection != this)
@@ -269,11 +295,11 @@ namespace TrafficSimulation
             
             agent.IntersectionState = TrafficAgent.IntersectionStateType.None;
             agent.CurrentIntersection = null;
+            agent.CurrentTurn = null;
             _agentsInIntersecion.Remove(_agentsInIntersecion.First(c => c.Agent.Equals(agent)));
             
             TryMoveAgents();
         }
-
         
         private void SetupTurns()
         {

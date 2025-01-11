@@ -29,6 +29,30 @@ namespace TrafficSimulation
                 Gizmos.color = _agent.Settings.DebugPathSensorColor;
                 Gizmos.DrawSphere(sample, 0.5f);
             }
+            
+            Gizmos.color = _agent.Settings.DebugPathCastSensorColor;
+            for (int i = 0; i < _samples.Count - 1; i++)
+            {
+                Vector3 fromSample = _samples[i];
+                Vector3 toSample = _samples[i + 1];
+                Vector3 direction = (toSample - fromSample).normalized;
+                float distance = Vector3.Distance(fromSample, toSample);
+                Quaternion rotation = Quaternion.LookRotation(direction);
+
+                // Set up the transformation matrix for the box cast visualization
+                Matrix4x4 boxMatrix = Matrix4x4.TRS(
+                    fromSample + direction * distance * 0.5f,
+                    rotation, 
+                    new Vector3(_size.x * 2.0f, _size.y * 2.0f, distance));
+                Gizmos.matrix = boxMatrix;
+
+                // Draw the wireframe box
+                Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+                Gizmos.DrawCube(Vector3.zero, Vector3.one);
+            }
+
+            // Reset the Gizmos matrix
+            Gizmos.matrix = Matrix4x4.identity;
         }
 
         public override Result Sense(float senseDistance)
@@ -52,22 +76,25 @@ namespace TrafficSimulation
                 _samples.Add(sample.Position);
             }
             
-            int removed;
-            do
+            while (true)
             {
-                removed = 0;
+                int removedSamples = 0;
                 for (int i = 1; i < _samples.Count - 1; i++)
                 {
-                    Vector3 directionFrom = _samples[i] - _samples[i - 1];
-                    Vector3 directionTo = _samples[i + 1] - _samples[i];
-                    float angle = Vector3.Angle(directionFrom, directionTo);
+                    Vector3 directionToCurrentSample = _samples[i] - _samples[i - 1];
+                    Vector3 directionToNextSample = _samples[i + 1] - _samples[i];
+                    float angle = Vector3.Angle(directionToCurrentSample, directionToNextSample);
+                    
                     if (angle < _minAngle)
                     {
                         _samples.RemoveAt(i);
-                        removed++;
+                        removedSamples++;
                     }
                 }
-            } while (removed > 0);
+                
+                if (removedSamples == 0)
+                    break;
+            }
 
             float totalDistance = 0.0f;
             for (int i = 0; i < _samples.Count - 1; i++)

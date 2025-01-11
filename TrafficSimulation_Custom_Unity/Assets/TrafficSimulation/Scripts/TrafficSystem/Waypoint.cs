@@ -5,8 +5,8 @@ namespace TrafficSimulation
 {
     public class Waypoint : MonoBehaviour
     {
-        [HideInInspector] public Segment Segment;
-        [HideInInspector] public Waypoint NextWaypoint;
+        public Segment Segment;
+        public Waypoint NextWaypoint;
 
         [SerializeField] public float SpeedLimitKph = 50.0f;
         

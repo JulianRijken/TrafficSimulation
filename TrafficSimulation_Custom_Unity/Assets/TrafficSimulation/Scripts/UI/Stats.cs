@@ -27,14 +27,14 @@ namespace TrafficSimulation
             _collisionsInfo.SetTypeText("Collisions");
             _carCountInfo.SetTypeText("Car Count");
             _averageSpeedInfo.SetTypeText("Avr Speed");
-            _averageOffsetInfo.SetTypeText("Avr Offset");
+            _averageOffsetInfo.SetTypeText("Avr Deviation");
             //Reserve message from CarControllerAI.OnVehicleCollision
             // Use unity messages from   BroadcastMessage("OnCarCollision", SendMessageOptions.DontRequireReceiver);
             
             _statTrackers.ForEach(carController => carController.OnCollision += IncrementCollisionCount);
         }
         
-        [DebugGUIGraph(min: 0, max: 5, r: 0, g: 0, b: 0, autoScale: false, group: 0)]
+        // [DebugGUIGraph(min: 0, max: 5, r: 0, g: 0, b: 0, autoScale: false, group: 0)]
         private float _averageDistanceFromPath;
         
         [DebugGUIGraph(min: 0, max: 80, r: 0, g: 0, b: 0, autoScale: false, group: 1)]
