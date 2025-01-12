@@ -3417,7 +3417,7 @@ MonoBehaviour:
   _allowTurnWhenOccupied: 1
   _earlyExitAllowed: 1
   _boxColliderColor: {r: 1, g: 0, b: 0, a: 0.2}
-  _visualizeCollider: 0
+  _visualizeCollider: 1
   _decisionDelay: 0.5
 --- !u!65 &1389991149
 BoxCollider:
@@ -3438,7 +3438,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 50, y: 50, z: 50}
+  m_Size: {x: 50, y: 10, z: 50}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1391629498
 PrefabInstance:

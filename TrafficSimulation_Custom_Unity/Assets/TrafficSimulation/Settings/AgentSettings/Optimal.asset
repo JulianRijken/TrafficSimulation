@@ -46,7 +46,7 @@ MonoBehaviour:
   DebugSpeed: 0
   DebugPathSmoothing: 0
   DebugSteeringPID: 0
-  DebugStopPoint: 1
+  DebugStopPoint: 0
   DebugSpeedLimit: 0
   DebugPathSensor: 0
   DebugIntersectionState: 1

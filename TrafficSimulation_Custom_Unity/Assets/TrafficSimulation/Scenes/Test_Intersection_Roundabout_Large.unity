@@ -1320,7 +1320,7 @@ MonoBehaviour:
   _allowTurnWhenOccupied: 1
   _earlyExitAllowed: 1
   _boxColliderColor: {r: 1, g: 0, b: 0, a: 0.2}
-  _visualizeCollider: 0
+  _visualizeCollider: 1
   _decisionDelay: 0.1
 --- !u!65 &424561727
 BoxCollider:
@@ -2683,7 +2683,7 @@ MonoBehaviour:
   _allowTurnWhenOccupied: 1
   _earlyExitAllowed: 1
   _boxColliderColor: {r: 1, g: 0, b: 0, a: 0.2}
-  _visualizeCollider: 0
+  _visualizeCollider: 1
   _decisionDelay: 0.1
 --- !u!65 &984810156
 BoxCollider:
@@ -3179,7 +3179,7 @@ MonoBehaviour:
   _allowTurnWhenOccupied: 1
   _earlyExitAllowed: 1
   _boxColliderColor: {r: 1, g: 0, b: 0, a: 0.2}
-  _visualizeCollider: 0
+  _visualizeCollider: 1
   _decisionDelay: 0.1
 --- !u!65 &1134761715
 BoxCollider:
@@ -4505,7 +4505,7 @@ MonoBehaviour:
   _allowTurnWhenOccupied: 1
   _earlyExitAllowed: 1
   _boxColliderColor: {r: 1, g: 0, b: 0, a: 0.2}
-  _visualizeCollider: 0
+  _visualizeCollider: 1
   _decisionDelay: 0.1
 --- !u!1 &1407609889
 GameObject:
